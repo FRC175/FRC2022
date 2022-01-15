@@ -5,10 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.models.AdvancedXboxController;
+import frc.robot.subsystems.Drive;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -18,14 +17,50 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private Drive drive;
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private final AdvancedXboxController driverController;
+
+  private static RobotContainer instance;
+
+  // Controller ports
+  private static final int DRIVER_CONTROLLER_PORT = 0;
+  private static final double CONTROLLER_DEADBAND = 0.1;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    drive = drive.getInstance();
+
+    driverController = new AdvancedXboxController(DRIVER_CONTROLLER_PORT, CONTROLLER_DEADBAND);
+
+    configureDefaultCommands();
+
     // Configure the button bindings
     configureButtonBindings();
+  }
+
+  public static RobotContainer getInstance() {
+    if (instance == null) {
+        instance = new RobotContainer();
+    }
+
+    return instance;
+}
+
+  private void configureDefaultCommands() {
+    // Arcade Drive
+    drive.setDefaultCommand(
+      // While the drive subsystem is not called by other subsystems, call the arcade drive method using the
+      // controller's throttle and turn. When it is called, set the motors to 0% power.
+      new RunCommand(
+              () -> {
+                  double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
+                  double turn = -1 * driverController.getLeftX(); //-1 to turn in correct direction
+                  drive.arcadeDrive(throttle, turn);
+              },
+              drive
+        ).andThen(() -> drive.arcadeDrive(0, 0), drive)
+    );
   }
 
   /**
@@ -36,13 +71,10 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {}
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return m_autoCommand;
-  }
+  // /**
+  //  * Use this to pass the autonomous command to the main {@link Robot} class.
+  //  *
+  //  * @return the command to run in autonomous
+  //  */
+  // public Command getAutonomousCommand() {}
 }
