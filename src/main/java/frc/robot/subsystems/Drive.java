@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+
+import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.DriveHelper;
 
 /**
@@ -17,17 +19,6 @@ public final class Drive extends SubsystemBase {
     private final TalonSRX leftMaster, leftSlave, rightMaster, rightSlave;
     private final DriveHelper driveHelper;
 
-    // Ports
-    private static final int LEFT_MASTER_PORT = 2;
-    private static final int LEFT_SLAVE_PORT = 3;
-    private static final int RIGHT_MASTER_PORT = 15;
-    private static final int RIGHT_SLAVE_PORT = 14;
-
-    // Max rate of change for speed per second
-    public static final double THROTTLE_RATE_LIMITER = 2.5;
-    // Max rate of change for rotation per second
-    public static final double ROTATE_RATE_LIMITER = 3.0;
-
     /**
      * The single instance of {@link Drive} used to implement the "singleton" design pattern. A description of the
      * singleton design pattern can be found in the JavaDoc for {@link Drive::getInstance()}.
@@ -39,10 +30,10 @@ public final class Drive extends SubsystemBase {
      * singleton design pattern can be found in the JavaDoc for {@link Drive::getInstance()}.
      */
     private Drive() {
-        leftMaster = new TalonSRX(LEFT_MASTER_PORT);
-        leftSlave = new TalonSRX(LEFT_SLAVE_PORT);
-        rightMaster = new TalonSRX(RIGHT_MASTER_PORT);
-        rightSlave = new TalonSRX(RIGHT_SLAVE_PORT);
+        leftMaster = new TalonSRX(DriveConstants.LEFT_MASTER_PORT);
+        leftSlave = new TalonSRX(DriveConstants.LEFT_SLAVE_PORT);
+        rightMaster = new TalonSRX(DriveConstants.RIGHT_MASTER_PORT);
+        rightSlave = new TalonSRX(DriveConstants.RIGHT_SLAVE_PORT);
         driveHelper = new DriveHelper(leftMaster, rightMaster);
         configureTalons();
     }
