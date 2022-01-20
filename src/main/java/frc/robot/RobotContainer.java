@@ -5,10 +5,13 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.models.AdvancedXboxController;
+import frc.robot.models.XboxButton;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.League;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+
 
 import static frc.robot.Constants.ControllerConstants;
 
@@ -80,7 +83,15 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    new XboxButton(driverController, AdvancedXboxController.Button.A)
+                .whileHeld(() -> {
+                  league.rotate(180);
+                }, league)
+                .whenReleased(() -> {
+                  league.rotate(0);
+                }, league);
+  }
 
   // /**
   //  * Use this to pass the autonomous command to the main {@link Robot} class.
