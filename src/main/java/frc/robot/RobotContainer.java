@@ -65,11 +65,12 @@ public class RobotContainer {
 
     league.setDefaultCommand(
       new RunCommand(() -> {
-        double speed = driverController.getRightY();
-        league.spinBaby(speed);
+        double speedY = driverController.getRightY();
+        double speedX = driverController.getRightX();
+        league.spinBaby(speedY, speedX);
       },
       league
-      ).andThen(() -> league.spinBaby(0), league)
+      ).andThen(() -> league.spinBaby(0,0), league)
     );
   }
 
