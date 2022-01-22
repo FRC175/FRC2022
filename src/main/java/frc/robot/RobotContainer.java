@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.League;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
 import static frc.robot.Constants.ControllerConstants;
@@ -21,7 +20,6 @@ import static frc.robot.Constants.ControllerConstants;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drive drive;
-  private final League league;
 
   private final AdvancedXboxController driverController;
 
@@ -30,7 +28,6 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     drive = Drive.getInstance();
-    league = League.getInstance();
 
     driverController = new AdvancedXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
 
@@ -62,17 +59,7 @@ public class RobotContainer {
       drive
       ).andThen(() -> drive.arcadeDrive(0, 0), drive)
     );
-
-    league.setDefaultCommand(
-      new RunCommand(() -> {
-        double speedY = driverController.getRightY();
-        double speedX = driverController.getRightX();
-        league.spinBaby(speedY, speedX);
-      },
-      league
-      ).andThen(() -> league.spinBaby(0,0), league)
-    );
-  }
+    }
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
