@@ -1,13 +1,11 @@
 package frc.robot.utils;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkMax;
 
 public final class DriveHelper {
 
     // Talon SRXs
-    private final TalonSRX left, right;
+    private final CANSparkMax left, right;
 
     /**
      * Constructs a new DriveHelper.
@@ -15,7 +13,7 @@ public final class DriveHelper {
      * @param left  The master Talon SRX for the left drive motors
      * @param right The master Talon SRX for the right drive motors
      */
-    public DriveHelper(TalonSRX left, TalonSRX right) {
+    public DriveHelper(CANSparkMax left, CANSparkMax right) {
         this.left = left;
         this.right = right;
     }
@@ -24,7 +22,9 @@ public final class DriveHelper {
      * Arcade drive using arbitrary feed forward.
      */
     public void arcadeDrive(double throttle, double turn) {
-        left.set(ControlMode.PercentOutput, throttle, DemandType.ArbitraryFeedForward, +turn);
-        right.set(ControlMode.PercentOutput, throttle, DemandType.ArbitraryFeedForward, -turn);
+        double leftOut = throttle + turn;
+        double rightOut = throttle - turn;
+        left.set(leftOut);
+        right.set(rightOut);
     }
 }

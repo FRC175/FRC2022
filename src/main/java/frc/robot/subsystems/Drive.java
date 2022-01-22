@@ -1,11 +1,10 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
-
 import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.DriveHelper;
+
+import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.CANSparkMax;
 
 /**
  * Drive represents the drivetrain. It is composed of 4 CIM motors (all controlled with Talon SRXs), a Pigeon gyro, and
@@ -16,7 +15,7 @@ public final class Drive extends SubsystemBase {
 
     // These variables are final because they only need to be instantiated once (after all, you don't need to create a
     // new left master TalonSRX).
-    private final TalonSRX leftMaster, leftSlave, rightMaster, rightSlave;
+    private final CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
     private final DriveHelper driveHelper;
 
     /**
@@ -30,12 +29,12 @@ public final class Drive extends SubsystemBase {
      * singleton design pattern can be found in the JavaDoc for {@link Drive::getInstance()}.
      */
     private Drive() {
-        leftMaster = new TalonSRX(DriveConstants.LEFT_MASTER_PORT);
-        leftSlave = new TalonSRX(DriveConstants.LEFT_SLAVE_PORT);
-        rightMaster = new TalonSRX(DriveConstants.RIGHT_MASTER_PORT);
-        rightSlave = new TalonSRX(DriveConstants.RIGHT_SLAVE_PORT);
+        leftMaster = new CANSparkMax(DriveConstants.LEFT_MASTER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        leftSlave = new CANSparkMax(DriveConstants.LEFT_SLAVE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        rightMaster = new CANSparkMax(DriveConstants.RIGHT_MASTER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        rightSlave = new CANSparkMax(DriveConstants.RIGHT_SLAVE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         driveHelper = new DriveHelper(leftMaster, rightMaster);
-        configureTalons();
+        configureMotors();
     }
 
     /**
@@ -59,22 +58,24 @@ public final class Drive extends SubsystemBase {
     }
 
     /**
-     * Helper method that configures the Talon SRX motor controllers.
+     * Helper method that configures the Spark Max motor controllers.
      */
-    private void configureTalons() {
-        leftMaster.configFactoryDefault();
-        leftMaster.setInverted(true);
+    private void configureMotors() {
+        boolean leftInverted = true;
+        boolean rightInverted = false;
+        // leftMaster.configFactoryDefault();
+        leftMaster.setInverted(leftInverted);
 
-        leftSlave.configFactoryDefault();
+        // leftSlave.configFactoryDefault();
         leftSlave.follow(leftMaster);
-        leftSlave.setInverted(InvertType.FollowMaster);
+        leftSlave.setInverted(leftInverted);
 
-        rightMaster.configFactoryDefault();
-        rightMaster.setInverted(false);
+        // rightMaster.configFactoryDefault();
+        rightMaster.setInverted(rightInverted);
 
-        rightSlave.configFactoryDefault();
+        // rightSlave.configFactoryDefault();
         rightSlave.follow(rightMaster);
-        rightSlave.setInverted(InvertType.FollowMaster);
+        rightSlave.setInverted(rightInverted);
     }
 
     /**
@@ -84,8 +85,8 @@ public final class Drive extends SubsystemBase {
      * @param rightDemand The percent output for the right drive motors
      */
     public void setOpenLoop(double leftDemand, double rightDemand) {
-        leftMaster.set(ControlMode.PercentOutput, leftDemand);
-        rightMaster.set(ControlMode.PercentOutput, rightDemand);
+        leftMaster.set(leftDemand);
+        rightMaster.set(rightDemand);
     }
 
     /**

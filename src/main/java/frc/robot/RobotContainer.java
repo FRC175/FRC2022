@@ -9,6 +9,7 @@ import frc.robot.models.AdvancedXboxController;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.models.XboxButton;
 
 import static frc.robot.Constants.ControllerConstants;
 
@@ -57,7 +58,7 @@ public class RobotContainer {
       // controller's throttle and turn. When it is called, set the motors to 0% power.
       new RunCommand(() -> {
         double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
-        double turn = -1 * driverController.getLeftX(); //-1 to turn in correct direction
+        double turn = driverController.getLeftX(); //-1 to turn in correct direction
         drive.arcadeDrive(throttle, turn);
       }, 
       drive
@@ -67,10 +68,9 @@ public class RobotContainer {
 
     intake.setDefaultCommand(
       new RunCommand(() -> {
-
-      },
-      intake
-      )
+        intake.getColorOnIntake();
+        intake.getColorString();
+      }, intake)
     );
   }
 
@@ -81,7 +81,11 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    new XboxButton(driverController, AdvancedXboxController.Button.A)
+                .whileHeld(() -> intake.activateIntake(0.5), intake)
+                .whenReleased(() -> intake.activateIntake(0), intake);
+  }
 
   // /**
   //  * Use this to pass the autonomous command to the main {@link Robot} class.
