@@ -59,7 +59,11 @@ public class RobotContainer {
       drive
       ).andThen(() -> drive.arcadeDrive(0, 0), drive)
     );
+<<<<<<< HEAD
     }
+=======
+  }
+>>>>>>> da6d8dc621911561e47055494c290e7b2bdc0db8
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
