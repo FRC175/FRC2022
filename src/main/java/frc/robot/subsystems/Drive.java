@@ -2,8 +2,11 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
-
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.DriveHelper;
 
@@ -98,6 +101,22 @@ public final class Drive extends SubsystemBase {
         driveHelper.arcadeDrive(throttle, turn);
     }
 
+
+    public void awesomeDrive(double reqSpeed) {
+        int cancel = 1;
+        if (reqSpeed == 0) {
+            cancel = 0;
+        }
+        double leftMasterP = leftMaster.getMotorOutputPercent();
+        // double rightMasterP = rightMaster.getMotorOutputPercent();
+        double div = 20;
+        double acceleration = (reqSpeed - leftMasterP) / div;
+        double finalSpeed = (leftMasterP + acceleration) / 2 + 0.5;
+        // System.out.println(finalSpeed);
+        leftMaster.set(ControlMode.PercentOutput, finalSpeed * cancel);
+        rightMaster.set(ControlMode.PercentOutput, finalSpeed * cancel);
+
+    }
     @Override
     public void resetSensors() {
         

@@ -63,10 +63,11 @@ public class RobotContainer {
       new RunCommand(() -> {
         double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
         double turn = -1 * driverController.getLeftX(); //-1 to turn in correct direction
-        drive.arcadeDrive(throttle, turn);
+        // drive.arcadeDrive(throttle, turn);
+        drive.awesomeDrive(throttle);
       }, 
       drive
-      ).andThen(() -> drive.arcadeDrive(0, 0), drive)
+      ).andThen(() -> drive.awesomeDrive(0) , drive)
     );
 
     league.setDefaultCommand(

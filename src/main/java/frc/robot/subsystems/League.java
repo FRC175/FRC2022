@@ -34,7 +34,7 @@ public final class League extends SubsystemBase{
 
     public void spinBaby(double speedY, double speedX) {
         leagueMotor.set(ControlMode.PercentOutput, speedX);
-        // fortniteMotor.set(speedY);
+        fortniteMotor.set(speedY);
     }
 
     public void rotate(int rotate) {
