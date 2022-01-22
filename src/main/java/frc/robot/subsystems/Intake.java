@@ -8,6 +8,11 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
+
+import frc.robot.Constants;
+
 public final class Intake extends SubsystemBase {
 
     private final ColorSensorV3 colorSensor;
@@ -15,11 +20,15 @@ public final class Intake extends SubsystemBase {
     private final Color RED_CARGO = new Color(0.439, 0.394, 0.165);
     private final Color BLUE_CARGO = new Color(0.139, 0.429, 0.377);
 
+    private final CANSparkMax intakeMotor;
+
     private static Intake instance;
 
     private Intake() {
         colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         colorMatch = new ColorMatch();
+        
+        intakeMotor =  new CANSparkMax(Constants.DriveConstants.INTAKE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         configureColorMatches();
     }
@@ -56,6 +65,11 @@ public final class Intake extends SubsystemBase {
         }
 
         SmartDashboard.putString("Color", colorString);
+    }
+
+
+    public void activateIntake(double demand) {
+      intakeMotor.set(demand);
     }
 
     @Override
