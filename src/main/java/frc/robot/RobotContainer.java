@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.models.XboxButton;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.League;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
@@ -25,6 +26,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drive drive;
   private final League league;
+  private final Intake intake;
 
   private final AdvancedXboxController driverController;
 
@@ -34,6 +36,7 @@ public class RobotContainer {
   public RobotContainer() {
     drive = Drive.getInstance();
     league = League.getInstance();
+    intake = Intake.getInstance();
 
     driverController = new AdvancedXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
 
@@ -74,6 +77,13 @@ public class RobotContainer {
       },
       league
       ).andThen(() -> league.spinBaby(0,0), league)
+    );
+
+    intake.setDefaultCommand(
+      new RunCommand(() -> {
+        intake.getColorOnIntake();
+        intake.getColorString();
+      }, intake)
     );
   }
 
