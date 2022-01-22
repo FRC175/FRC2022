@@ -21,11 +21,11 @@ public final class Constants {
     }
 
     public static final class DriveConstants {
-        public static final int LEFT_MASTER_PORT = 2;
-        public static final int LEFT_SLAVE_PORT = 3;
-        public static final int RIGHT_MASTER_PORT = 15;
-        public static final int RIGHT_SLAVE_PORT = 14;
-
+        //parker i fixed you not knowing your left and right
+        public static final int RIGHT_MASTER_PORT = 2;
+        public static final int RIGHT_SLAVE_PORT = 3;
+        public static final int LEFT_MASTER_PORT = 15;
+        public static final int LEFT_SLAVE_PORT = 14;
         public static final int INTAKE_PORT = 4;
     }
 }

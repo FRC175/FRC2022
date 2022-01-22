@@ -61,6 +61,9 @@ public final class Drive extends SubsystemBase {
      * Helper method that configures the Spark Max motor controllers.
      */
     private void configureMotors() {
+
+        //IDK WHat the config lines do Parker. But all i know is theyre not in Spark Max.
+
         boolean leftInverted = true;
         boolean rightInverted = false;
         // leftMaster.configFactoryDefault();
@@ -96,6 +99,7 @@ public final class Drive extends SubsystemBase {
      * @param turn The turn from the controller
      */
     public void arcadeDrive(double throttle, double turn) {
+        //Parker what the frick i had to re write arcade drive for Spark Max
         driveHelper.arcadeDrive(throttle, turn);
     }
 
