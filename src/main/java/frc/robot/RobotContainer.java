@@ -58,7 +58,7 @@ public class RobotContainer {
       // controller's throttle and turn. When it is called, set the motors to 0% power.
       new RunCommand(() -> {
         double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
-        double turn = driverController.getLeftX(); //-1 to turn in correct direction
+        double turn = -1 * driverController.getLeftX(); //-1 to turn in correct direction
         drive.arcadeDrive(throttle, turn);
       }, 
       drive

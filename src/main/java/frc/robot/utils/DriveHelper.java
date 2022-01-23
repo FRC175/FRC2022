@@ -22,7 +22,6 @@ public final class DriveHelper {
      * Arcade drive using arbitrary feed forward.
      */
     public void arcadeDrive(double throttle, double turn) {
-        //this is some epic code ngl
         double leftOut = throttle + turn;
         double rightOut = throttle - turn;
         left.set(leftOut);
