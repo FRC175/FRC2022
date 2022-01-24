@@ -69,7 +69,6 @@ public final class Intake extends SubsystemBase {
 
 
     public void activateIntake(double demand) {
-      //Intake motor kinda litty
       intakeMotor.set(demand);
     }
 

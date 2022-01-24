@@ -58,7 +58,7 @@ public class RobotContainer {
       // controller's throttle and turn. When it is called, set the motors to 0% power.
       new RunCommand(() -> {
         double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
-        double turn = -1 * driverController.getLeftX(); //-1 to turn in correct direction
+        double turn = driverController.getLeftX(); //-1 to turn in correct direction
         drive.arcadeDrive(throttle, turn);
       }, 
       drive
@@ -83,7 +83,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     new XboxButton(driverController, AdvancedXboxController.Button.A)
-                .whileHeld(() -> intake.activateIntake(0.5), intake)
+                .whileHeld(() -> intake.activateIntake(0.25), intake)
                 .whenReleased(() -> intake.activateIntake(0), intake);
   }
 

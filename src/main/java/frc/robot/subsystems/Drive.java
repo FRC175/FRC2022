@@ -62,23 +62,19 @@ public final class Drive extends SubsystemBase {
      */
     private void configureMotors() {
 
-        //IDK WHat the config lines do Parker. But all i know is theyre not in Spark Max.
+        leftMaster.restoreFactoryDefaults();
+        leftMaster.setInverted(false);
 
-        boolean leftInverted = true;
-        boolean rightInverted = false;
-        // leftMaster.configFactoryDefault();
-        leftMaster.setInverted(leftInverted);
-
-        // leftSlave.configFactoryDefault();
+        leftSlave.restoreFactoryDefaults();
         leftSlave.follow(leftMaster);
-        leftSlave.setInverted(leftInverted);
+        leftSlave.setInverted(false);
 
-        // rightMaster.configFactoryDefault();
-        rightMaster.setInverted(rightInverted);
+        rightMaster.restoreFactoryDefaults();
+        rightMaster.setInverted(true);
 
-        // rightSlave.configFactoryDefault();
+        rightSlave.restoreFactoryDefaults();
         rightSlave.follow(rightMaster);
-        rightSlave.setInverted(rightInverted);
+        rightSlave.setInverted(true);
     }
 
     /**
@@ -99,7 +95,6 @@ public final class Drive extends SubsystemBase {
      * @param turn The turn from the controller
      */
     public void arcadeDrive(double throttle, double turn) {
-        //Parker what the frick i had to re write arcade drive for Spark Max
         driveHelper.arcadeDrive(throttle, turn);
     }
 
