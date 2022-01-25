@@ -4,14 +4,14 @@ import com.revrobotics.CANSparkMax;
 
 public final class DriveHelper {
 
-    // Talon SRXs
+    // Spark Maxes
     private final CANSparkMax left, right;
 
     /**
      * Constructs a new DriveHelper.
      *
-     * @param left  The master Talon SRX for the left drive motors
-     * @param right The master Talon SRX for the right drive motors
+     * @param left  The master Spark Max for the left drive motors
+     * @param right The master Spark Max for the right drive motors
      */
     public DriveHelper(CANSparkMax left, CANSparkMax right) {
         this.left = left;

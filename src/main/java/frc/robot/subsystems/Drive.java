@@ -34,7 +34,7 @@ public final class Drive extends SubsystemBase {
         rightMaster = new CANSparkMax(DriveConstants.RIGHT_MASTER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         rightSlave = new CANSparkMax(DriveConstants.RIGHT_SLAVE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         driveHelper = new DriveHelper(leftMaster, rightMaster);
-        configureMotors();
+        configureSparks();
     }
 
     /**
@@ -60,7 +60,7 @@ public final class Drive extends SubsystemBase {
     /**
      * Helper method that configures the Spark Max motor controllers.
      */
-    private void configureMotors() {
+    private void configureSparks() {
 
         leftMaster.restoreFactoryDefaults();
         leftMaster.setInverted(false);

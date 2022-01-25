@@ -28,7 +28,7 @@ public final class Intake extends SubsystemBase {
         colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         colorMatch = new ColorMatch();
         
-        intakeMotor =  new CANSparkMax(Constants.DriveConstants.INTAKE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        intakeMotor =  new CANSparkMax(Constants.IntakeConstants.INTAKE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         configureColorMatches();
     }
@@ -68,7 +68,7 @@ public final class Intake extends SubsystemBase {
     }
 
 
-    public void activateIntake(double demand) {
+    public void setIntakeOpenLoop(double demand) {
       intakeMotor.set(demand);
     }
 

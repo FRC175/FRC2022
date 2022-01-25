@@ -83,8 +83,8 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     new XboxButton(driverController, AdvancedXboxController.Button.A)
-                .whileHeld(() -> intake.activateIntake(0.25), intake)
-                .whenReleased(() -> intake.activateIntake(0), intake);
+        .whileHeld(() -> intake.setIntakeOpenLoop(0.25), intake)
+        .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
   }
 
   // /**
