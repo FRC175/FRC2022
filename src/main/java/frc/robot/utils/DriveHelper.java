@@ -27,4 +27,15 @@ public final class DriveHelper {
         left.set(leftOut);
         right.set(rightOut);
     }
+
+    public void accelDrive(double throttle, double turn) {
+            double leftMasterP = left.getAppliedOutput();
+            // double rightMasterP = rightMaster.getMotorOutputPercent();
+            double div = 20;
+            double acceleration = (throttle - leftMasterP) / div;
+            double finalSpeed = leftMasterP + acceleration;
+            // System.out.println(finalSpeed);
+            left.set(finalSpeed);
+            right.set(finalSpeed);
+    }
 }

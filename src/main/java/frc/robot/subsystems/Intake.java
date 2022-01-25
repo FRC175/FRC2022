@@ -29,6 +29,7 @@ public final class Intake extends SubsystemBase {
         colorMatch = new ColorMatch();
         
         intakeMotor =  new CANSparkMax(Constants.IntakeConstants.INTAKE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        intakeMotor.restoreFactoryDefaults();
 
         configureColorMatches();
     }

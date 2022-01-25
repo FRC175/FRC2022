@@ -98,6 +98,10 @@ public final class Drive extends SubsystemBase {
         driveHelper.arcadeDrive(throttle, turn);
     }
 
+    public void accelDrive(double throttle, double turn) {
+        driveHelper.accelDrive(throttle, turn);
+    }
+
     @Override
     public void resetSensors() {
         
