@@ -27,7 +27,7 @@ public class RobotContainer {
   private final Drive drive;
   private final League league;
   private final Intake intake;
-
+  private boolean inverse; 
   private final AdvancedXboxController driverController;
 
   private static RobotContainer instance;
@@ -37,7 +37,7 @@ public class RobotContainer {
     drive = Drive.getInstance();
     league = League.getInstance();
     intake = Intake.getInstance();
-
+    inverse = false; 
     driverController = new AdvancedXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
 
     // Configure the default commands
@@ -63,13 +63,19 @@ public class RobotContainer {
       new RunCommand(() -> {
         double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
         double turn = -1 * driverController.getLeftX(); //-1 to turn in correct direction
-        // drive.arcadeDrive(throttle, turn);
-        drive.awesomeDrive(throttle);
-      }, 
+         
+      if (inverse) {
+        drive.inverseDrive(throttle, turn);
+      }else {
+        drive.arcadeDrive(throttle, turn);
+      }
+      },
+     
       drive
-      ).andThen(() -> drive.awesomeDrive(0) , drive)
-    );
-
+      ).andThen(() -> drive.arcadeDrive(0, 0) , drive)
+  
+  );
+    
     league.setDefaultCommand(
       new RunCommand(() -> {
         double speedY = driverController.getRightY();
@@ -102,12 +108,25 @@ public class RobotContainer {
                 .whenReleased(() -> {
                   league.rotate(0);
                 }, league);
+    new XboxButton(driverController, AdvancedXboxController.Button.B)
+                .whenPressed(() -> {
+                  if (!inverse) {
+                    inverse = true; 
+                  }else{
+                    inverse = false; 
+                  }
+                  
+                });
+
   }
 
+  
   // /**
   //  * Use this to pass the autonomous command to the main {@link Robot} class.
   //  *
   //  * @return the command to run in autonomous
   //  */
   // public Command getAutonomousCommand() {}
+
+  
 }

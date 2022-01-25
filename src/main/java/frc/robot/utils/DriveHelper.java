@@ -27,4 +27,7 @@ public final class DriveHelper {
         left.set(ControlMode.PercentOutput, throttle, DemandType.ArbitraryFeedForward, +turn);
         right.set(ControlMode.PercentOutput, throttle, DemandType.ArbitraryFeedForward, -turn);
     }
+
+    public void inverseDrive(double d, double e) {
+    }
 }

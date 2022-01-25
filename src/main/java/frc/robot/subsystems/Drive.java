@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.DriveHelper;
+import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.models.AdvancedXboxController;
+import frc.robot.models.XboxButton;
 
 /**
  * Drive represents the drivetrain. It is composed of 4 CIM motors (all controlled with Talon SRXs), a Pigeon gyro, and
@@ -116,6 +119,11 @@ public final class Drive extends SubsystemBase {
         leftMaster.set(ControlMode.PercentOutput, finalSpeed * cancel);
         rightMaster.set(ControlMode.PercentOutput, finalSpeed * cancel);
 
+    }
+
+
+    public void inverseDrive(double throttle, double turn) {
+        driveHelper.inverseDrive(throttle * -1, turn * -1);
     }
     @Override
     public void resetSensors() {
