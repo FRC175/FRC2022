@@ -28,6 +28,10 @@ public final class DriveHelper {
         right.set(rightOut);
     }
 
+    public void inverseDrive(double throttle, double turn) {
+        arcadeDrive(-throttle, -turn);
+    }
+
     public void accelDrive(double throttle, double turn) {
             double leftMasterP = left.getAppliedOutput();
             // double rightMasterP = rightMaster.getMotorOutputPercent();

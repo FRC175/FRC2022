@@ -102,6 +102,10 @@ public final class Drive extends SubsystemBase {
         driveHelper.accelDrive(throttle, turn);
     }
 
+    public void inverseDrive(double throttle, double turn) {
+        driveHelper.inverseDrive(throttle, turn);
+    }
+
     @Override
     public void resetSensors() {
         
