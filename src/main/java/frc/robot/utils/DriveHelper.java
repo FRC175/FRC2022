@@ -33,13 +33,25 @@ public final class DriveHelper {
     }
 
     public void accelDrive(double throttle, double turn) {
-            double leftMasterP = left.getAppliedOutput();
-            // double rightMasterP = rightMaster.getMotorOutputPercent();
+            double leftV = left.getAppliedOutput();
+            double rightV = right.getAppliedOutput();
             double div = 20;
-            double acceleration = (throttle - leftMasterP) / div;
-            double finalSpeed = leftMasterP + acceleration;
-            // System.out.println(finalSpeed);
-            left.set(finalSpeed);
-            right.set(finalSpeed);
+            double accelerationL = (throttle - leftV) / div;
+            double accelerationR = (throttle - leftV) / div;
+            double leftOut;
+            double rightOut;
+            if (turn != 0) {
+                // velocity + acceleration will only ever total to 1. ± turn maxes from -2 to 2.
+                leftOut = leftV + accelerationL + turn;
+                rightOut = rightV + accelerationR - turn;
+            } else {
+                //When turning ends, the weaker motor becomes equivilant to the stronger one.
+                leftV = (leftV < rightV) ? rightV : leftV;
+                rightV = (rightV < leftV) ? leftV : rightV;
+                leftOut = leftV + accelerationL;
+                rightOut = rightV + accelerationR;
+            }
+            left.set(leftOut);
+            right.set(rightOut);
     }
 }
