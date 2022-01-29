@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Lift;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.models.XboxButton;
 
@@ -23,6 +24,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drive drive;
   private final Intake intake;
+  private final Lift lift;
 
 
   private final AdvancedXboxController driverController;
@@ -33,6 +35,7 @@ public class RobotContainer {
   public RobotContainer() {
     drive = Drive.getInstance();
     intake = Intake.getInstance();
+    lift = Lift.getInstance();
 
     driverController = new AdvancedXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
 
@@ -85,6 +88,12 @@ public class RobotContainer {
     new XboxButton(driverController, AdvancedXboxController.Button.A)
         .whileHeld(() -> intake.setIntakeOpenLoop(0.25), intake)
         .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
+
+    new XboxButton(driverController, AdvancedXboxController.Button.B)
+        .whileHeld(() -> {
+          intake.setIntakeOpenLoop(0.25);
+        }, lift)
+        .whenReleased(() -> lift.setLiftOpenLoop(0.5, 0.5), lift);
   }
 
   // /**
