@@ -26,7 +26,6 @@ public class RobotContainer {
   private final Intake intake;
   private final Lift lift;
 
-
   private final AdvancedXboxController driverController;
 
   private static RobotContainer instance;
@@ -90,10 +89,8 @@ public class RobotContainer {
         .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
 
     new XboxButton(driverController, AdvancedXboxController.Button.B)
-        .whileHeld(() -> {
-          intake.setIntakeOpenLoop(0.25);
-        }, lift)
-        .whenReleased(() -> lift.setLiftOpenLoop(0.5, 0.5), lift);
+        .whileHeld(() -> lift.setLiftOpenLoop(0.5, 0.5), lift)
+        .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
   }
 
   // /**
