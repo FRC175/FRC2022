@@ -64,11 +64,11 @@ public class RobotContainer {
       new RunCommand(() -> {
         double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
         double turn = driverController.getLeftX();
-        drive.accelDrive(throttle, turn);
+        drive.arcadeDrive(throttle, turn);
         drive.camRotate();
       }, 
       drive
-      ).andThen(() -> drive.accelDrive(0, 0), drive)
+      ).andThen(() -> drive.arcadeDrive(0, 0), drive)
     );
     
 
@@ -101,6 +101,10 @@ public class RobotContainer {
 
     new XboxButton(operatorController, AdvancedXboxController.Button.LEFT_BUMPER)
         .whenPressed(() -> drive.camAngle(false), drive);
+
+    new XboxButton(driverController, AdvancedXboxController.Button.X)
+        .whileHeld(() -> drive.shift(true), drive)
+        .whenReleased(() -> drive.shift(false), drive);
   }
 
   // /**

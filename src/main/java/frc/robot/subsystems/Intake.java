@@ -22,6 +22,8 @@ public final class Intake extends SubsystemBase {
 
     private final CANSparkMax intakeMotor;
 
+
+
     private static Intake instance;
 
     private Intake() {

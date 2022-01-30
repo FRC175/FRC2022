@@ -9,6 +9,13 @@ import com.revrobotics.CANSparkMax;
 import frc.robot.Constants.ServoConstants;
 import edu.wpi.first.wpilibj.Servo;
 
+import edu.wpi.first.wpilibj.simulation.CTREPCMSim;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import frc.robot.Constants.SolenoidConstants;
+
+import frc.robot.Constants;
+
 /**
  * Drive represents the drivetrain. It is composed of 4 CIM motors (all controlled with Talon SRXs), a Pigeon gyro, and
  * two pneumatic pistons. This class is packed with documentation to better understand design choices and robot
@@ -23,6 +30,8 @@ public final class Drive extends SubsystemBase {
 
     private final Servo camServo;
     private int camServoRotation = 90;
+
+    private final DoubleSolenoid shifter;
 
     
 
@@ -45,6 +54,8 @@ public final class Drive extends SubsystemBase {
         configureSparks();
 
         camServo = new Servo(ServoConstants.CAM_SERVO_PORT);
+
+        shifter = new DoubleSolenoid(SolenoidConstants.PCM_PORT, PneumaticsModuleType.CTREPCM, SolenoidConstants.SHIFTER_FORWARD_CHANNEL, SolenoidConstants.SHIFTER_REVERSE_CHANNEL);
     }
 
     /**
@@ -126,6 +137,10 @@ public final class Drive extends SubsystemBase {
         } else {
             camServoRotation = (camServoRotation == 0) ? camServoRotation : camServoRotation - 90;
         }
+    }
+
+    public void shift(boolean shift) {
+        shifter.set(shift ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
     }
 
     @Override
