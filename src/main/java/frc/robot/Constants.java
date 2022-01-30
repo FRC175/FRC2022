@@ -35,4 +35,8 @@ public final class Constants {
         public static final int RIGHT_PRIMARY_LIFT = 6;
         public static final int LEFT_PRIMARY_LIFT = 11;
     }
+
+    public static final class ServoConstants {
+        public static final int CAM_SERVO_PORT = 0;
+    }
 }

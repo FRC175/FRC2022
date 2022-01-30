@@ -11,6 +11,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.models.XboxButton;
+import frc.robot.models.AdvancedXboxController.Button;
 
 import static frc.robot.Constants.ControllerConstants;
 
@@ -27,6 +28,7 @@ public class RobotContainer {
   private final Lift lift;
 
   private final AdvancedXboxController driverController;
+  private final AdvancedXboxController operatorController;
 
   private static RobotContainer instance;
 
@@ -37,6 +39,7 @@ public class RobotContainer {
     lift = Lift.getInstance();
 
     driverController = new AdvancedXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
+    operatorController = new AdvancedXboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
 
     // Configure the default commands
     configureDefaultCommands();
@@ -62,6 +65,7 @@ public class RobotContainer {
         double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
         double turn = driverController.getLeftX();
         drive.accelDrive(throttle, turn);
+        drive.camRotate();
       }, 
       drive
       ).andThen(() -> drive.accelDrive(0, 0), drive)
@@ -91,6 +95,12 @@ public class RobotContainer {
     new XboxButton(driverController, AdvancedXboxController.Button.B)
         .whileHeld(() -> lift.setLiftOpenLoop(0.5, 0.5), lift)
         .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
+
+    new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_BUMPER)
+        .whenPressed(() -> drive.camAngle(true), drive);
+
+    new XboxButton(operatorController, AdvancedXboxController.Button.LEFT_BUMPER)
+        .whenPressed(() -> drive.camAngle(false), drive);
   }
 
   // /**

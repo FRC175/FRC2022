@@ -6,6 +6,9 @@ import frc.robot.utils.DriveHelper;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.CANSparkMax;
 
+import frc.robot.Constants.ServoConstants;
+import edu.wpi.first.wpilibj.Servo;
+
 /**
  * Drive represents the drivetrain. It is composed of 4 CIM motors (all controlled with Talon SRXs), a Pigeon gyro, and
  * two pneumatic pistons. This class is packed with documentation to better understand design choices and robot
@@ -17,6 +20,11 @@ public final class Drive extends SubsystemBase {
     // new left master TalonSRX).
     private final CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
     private final DriveHelper driveHelper;
+
+    private final Servo camServo;
+    private int camServoRotation = 90;
+
+    
 
     /**
      * The single instance of {@link Drive} used to implement the "singleton" design pattern. A description of the
@@ -35,6 +43,8 @@ public final class Drive extends SubsystemBase {
         rightSlave = new CANSparkMax(DriveConstants.RIGHT_SLAVE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         driveHelper = new DriveHelper(leftMaster, rightMaster);
         configureSparks();
+
+        camServo = new Servo(ServoConstants.CAM_SERVO_PORT);
     }
 
     /**
@@ -104,6 +114,18 @@ public final class Drive extends SubsystemBase {
 
     public void inverseDrive(double throttle, double turn) {
         driveHelper.inverseDrive(throttle, turn);
+    }
+
+    public void camRotate() {
+        camServo.setAngle(camServoRotation);
+    }
+
+    public void camAngle(boolean increase) {
+        if (increase) {
+            camServoRotation = (camServoRotation == 180) ? camServoRotation : camServoRotation + 90;
+        } else {
+            camServoRotation = (camServoRotation == 0) ? camServoRotation : camServoRotation - 90;
+        }
     }
 
     @Override
