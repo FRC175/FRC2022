@@ -133,9 +133,9 @@ public final class Drive extends SubsystemBase {
 
     public void camAngle(boolean increase) {
         if (increase) {
-            camServoRotation = (camServoRotation == 180) ? camServoRotation : camServoRotation + 90;
+            camServoRotation = (camServoRotation == 180) ? camServoRotation : camServoRotation + 2;
         } else {
-            camServoRotation = (camServoRotation == 0) ? camServoRotation : camServoRotation - 90;
+            camServoRotation = (camServoRotation == 0) ? camServoRotation : camServoRotation - 2;
         }
     }
 

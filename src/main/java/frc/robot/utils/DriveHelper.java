@@ -37,13 +37,15 @@ public final class DriveHelper {
             double rightV = right.getAppliedOutput();
             double div = 20;
             double accelerationL = (throttle - leftV) / div;
-            double accelerationR = (throttle - leftV) / div;
+            double accelerationR = (throttle - rightV) / div;
+            double accelerationTL = (turn - leftV) / div;
+            double accelerationTR = (turn - rightV) / div;
             double leftOut;
             double rightOut;
             if (turn != 0) {
                 // velocity + acceleration will only ever total to 1. ± turn maxes from -2 to 2.
-                leftOut = leftV + accelerationL + turn;
-                rightOut = rightV + accelerationR - turn;
+                leftOut = leftV + accelerationL + accelerationTL;
+                rightOut = rightV + accelerationR - accelerationTR;
             } else {
                 //When turning ends, the weaker motor becomes equivilant to the stronger one.
                 leftV = (leftV < rightV) ? rightV : leftV;
@@ -51,7 +53,7 @@ public final class DriveHelper {
                 leftOut = leftV + accelerationL;
                 rightOut = rightV + accelerationR;
             }
-            left.set(leftOut);
-            right.set(rightOut);
+            left.set(leftOut / 1.1);
+            right.set(rightOut / 1.1);
     }
 }

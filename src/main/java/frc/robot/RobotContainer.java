@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
@@ -64,7 +65,7 @@ public class RobotContainer {
       new RunCommand(() -> {
         double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
         double turn = driverController.getLeftX();
-        drive.arcadeDrive(throttle, turn);
+        drive.arcadeDrive(Math.abs(throttle) > 0.15 ? throttle * 0.5 : 0, turn * 0.75);
         drive.camRotate();
       }, 
       drive
@@ -97,14 +98,17 @@ public class RobotContainer {
         .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
 
     new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_BUMPER)
-        .whenPressed(() -> drive.camAngle(true), drive);
+        .whileHeld(() -> drive.camAngle(true), drive);
 
     new XboxButton(operatorController, AdvancedXboxController.Button.LEFT_BUMPER)
-        .whenPressed(() -> drive.camAngle(false), drive);
+        .whileHeld(() -> drive.camAngle(false), drive);
 
     new XboxButton(driverController, AdvancedXboxController.Button.X)
         .whileHeld(() -> drive.shift(true), drive)
         .whenReleased(() -> drive.shift(false), drive);
+
+    // new XboxButton(driverController, AdvancedXboxController.Button.Y)
+    //     .whenPressed(() -> )
   }
 
   // /**
