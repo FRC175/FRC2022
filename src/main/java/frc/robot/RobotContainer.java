@@ -82,9 +82,9 @@ public class RobotContainer {
         double turn = -1 * driverController.getLeftX(); //-1 to turn in correct direction
          
       if (inverse) {
-        drive.inverseDrive(throttle, turn);
+        drive.inverseDrive(Math.abs(throttle) > 0.15 ? throttle * 0.5 : 0, turn * 0.75);
       } else {
-        drive.arcadeDrive(throttle, turn);
+        drive.arcadeDrive(Math.abs(throttle) > 0.15 ? throttle * 0.5 : 0, turn * 0.75);
       }
 
       if (inverse) {
@@ -128,16 +128,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new XboxButton(driverController, AdvancedXboxController.Button.RIGHT_BUMPER)
-      .whileHeld(() -> {
-        degrees = degrees == 180 ? degrees : degrees + 5;
-      });
-
-    new XboxButton(driverController, AdvancedXboxController.Button.LEFT_BUMPER)
-      .whileHeld(() -> {
-         degrees = degrees == 0 ? degrees : degrees - 5;
-      });
-
     new XboxButton(driverController, AdvancedXboxController.Button.A)
       .whileHeld(() -> intake.setIntakeOpenLoop(0.25), intake)
       .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
@@ -155,6 +145,9 @@ public class RobotContainer {
     new XboxButton(driverController, AdvancedXboxController.Button.X)
       .whileHeld(() -> drive.shift(true), drive)
       .whenReleased(() -> drive.shift(false), drive);
+
+    new XboxButton(driverController, AdvancedXboxController.Button.Y)
+      .whenPressed(() -> inverse = inverse ? false : true);
 
     new XboxButton(operatorController, AdvancedXboxController.Button.A)
       .whileHeld(() -> intake.deploy(true), intake)
