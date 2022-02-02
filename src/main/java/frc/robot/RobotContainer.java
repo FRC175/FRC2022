@@ -8,13 +8,18 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.models.XboxButton;
+import frc.robot.models.AdvancedXboxController.Button;
+import frc.robot.positions.LEDColor;
+import frc.robot.positions.LEDPattern;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.League;
+import frc.robot.subsystems.LED;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
 
 import static frc.robot.Constants.ControllerConstants;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -27,19 +32,26 @@ public class RobotContainer {
   private final Drive drive;
   private final League league;
   private final Intake intake;
+  private final LED led;
   private boolean inverse; 
   private final AdvancedXboxController driverController;
 
   private static RobotContainer instance;
+
+  // private int gooda;
+  private int degrees;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     drive = Drive.getInstance();
     league = League.getInstance();
     intake = Intake.getInstance();
+    led = LED.getInstance();
     inverse = false; 
     driverController = new AdvancedXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
 
+    // gooda = 0;
+    degrees = 90;
     // Configure the default commands
     configureDefaultCommands();
 
@@ -69,6 +81,25 @@ public class RobotContainer {
       }else {
         drive.arcadeDrive(throttle, turn);
       }
+
+      if (inverse) {
+        if (throttle > 0) {
+          led.setColor(LEDColor.RED);
+        } else if (throttle < 0) {
+          led.setColor(LEDColor.GREEN);
+        } else {
+          led.setColor(LEDColor.YELLOW);
+        }
+      } else {
+        if (throttle > 0) {
+          led.setColor(LEDColor.GREEN);
+        } else if (throttle < 0) {
+          led.setColor(LEDColor.RED);
+        } else {
+          led.setColor(LEDColor.YELLOW);
+        }
+        league.rotate(degrees);
+      }
       },
      
       drive
@@ -76,15 +107,15 @@ public class RobotContainer {
   
   );
     
-    league.setDefaultCommand(
-      new RunCommand(() -> {
-        double speedY = driverController.getRightY();
-        double speedX = driverController.getRightX();
-        league.spinBaby(speedY, speedX);
-      },
-      league
-      ).andThen(() -> league.spinBaby(0,0), league)
-    );
+    // league.setDefaultCommand(
+    //   new RunCommand(() -> {
+    //     double speedY = driverController.getRightY();
+    //     double speedX = driverController.getRightX();
+    //     league.spinBaby(speedY, speedX);
+    //   },
+    //   league
+    //   ).andThen(() -> league.spinBaby(0,0), league)
+    // );
 
     intake.setDefaultCommand(
       new RunCommand(() -> {
@@ -92,6 +123,14 @@ public class RobotContainer {
         intake.getColorString();
       }, intake)
     );
+
+    // led.setDefaultCommand(
+    //   new RunCommand(() -> {
+    //     led.blinkColor(LEDColor.BLUE);
+    //   }, led)
+    // );
+
+
   }
 
   /**
@@ -101,22 +140,24 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new XboxButton(driverController, AdvancedXboxController.Button.A)
-                .whileHeld(() -> {
-                  league.rotate(180);
-                }, league)
-                .whenReleased(() -> {
-                  league.rotate(0);
-                }, league);
+    new XboxButton(driverController, AdvancedXboxController.Button.RIGHT_BUMPER)
+      .whileHeld(() -> {
+        degrees = degrees == 180 ? degrees : degrees + 5;
+      });
+
+      new XboxButton(driverController, AdvancedXboxController.Button.LEFT_BUMPER)
+      .whileHeld(() -> {
+         degrees = degrees == 0 ? degrees : degrees - 5;
+      });
+
     new XboxButton(driverController, AdvancedXboxController.Button.B)
-                .whenPressed(() -> {
-                  if (!inverse) {
-                    inverse = true; 
-                  }else{
-                    inverse = false; 
-                  }
-                  
-                });
+      .whenPressed(() -> {
+        if (!inverse) {
+          inverse = true; 
+        } else {
+          inverse = false; 
+        }
+      });
 
   }
 
