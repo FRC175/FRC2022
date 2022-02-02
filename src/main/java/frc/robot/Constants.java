@@ -30,4 +30,8 @@ public final class Constants {
         public static final int LEAGUE_PORT = 12;
         public static final int FORTNITE_PORT = 4;
     }
+
+    public static final class LEDConstants {
+        public static final int LED_PORT =1;
+    }
 }
