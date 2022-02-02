@@ -5,14 +5,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.models.XboxButton;
-import frc.robot.models.AdvancedXboxController.Button;
 
 import static frc.robot.Constants.ControllerConstants;
 
@@ -72,7 +70,6 @@ public class RobotContainer {
       ).andThen(() -> drive.arcadeDrive(0, 0), drive)
     );
     
-
     intake.setDefaultCommand(
       new RunCommand(() -> {
         intake.getColorOnIntake();
@@ -98,10 +95,10 @@ public class RobotContainer {
         .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
 
     new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_BUMPER)
-        .whileHeld(() -> drive.camAngle(true), drive);
+        .whileHeld(() -> drive.updateCamAngle(true), drive);
 
     new XboxButton(operatorController, AdvancedXboxController.Button.LEFT_BUMPER)
-        .whileHeld(() -> drive.camAngle(false), drive);
+        .whileHeld(() -> drive.updateCamAngle(false), drive);
 
     new XboxButton(driverController, AdvancedXboxController.Button.X)
         .whileHeld(() -> drive.shift(true), drive)
@@ -114,9 +111,6 @@ public class RobotContainer {
     new XboxButton(operatorController, AdvancedXboxController.Button.B)
         .whileHeld(() -> lift.extend(true), lift)
         .whenReleased(() -> lift.extend(false), lift);
-
-    // new XboxButton(driverController, AdvancedXboxController.Button.Y)
-    //     .whenPressed(() -> )
   }
 
   // /**

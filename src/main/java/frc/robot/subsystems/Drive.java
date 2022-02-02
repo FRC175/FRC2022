@@ -9,12 +9,9 @@ import com.revrobotics.CANSparkMax;
 import frc.robot.Constants.ServoConstants;
 import edu.wpi.first.wpilibj.Servo;
 
-import edu.wpi.first.wpilibj.simulation.CTREPCMSim;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.Constants.SolenoidConstants;
-
-import frc.robot.Constants;
 
 /**
  * Drive represents the drivetrain. It is composed of 4 CIM motors (all controlled with Talon SRXs), a Pigeon gyro, and
@@ -131,7 +128,7 @@ public final class Drive extends SubsystemBase {
         camServo.setAngle(camServoRotation);
     }
 
-    public void camAngle(boolean increase) {
+    public void updateCamAngle(boolean increase) {
         if (increase) {
             camServoRotation = (camServoRotation == 180) ? camServoRotation : camServoRotation + 2;
         } else {
