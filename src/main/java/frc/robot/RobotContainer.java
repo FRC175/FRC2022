@@ -14,6 +14,7 @@ import frc.robot.positions.LEDPattern;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.League;
+import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.LED;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
@@ -32,9 +33,11 @@ public class RobotContainer {
   private final Drive drive;
   private final League league;
   private final Intake intake;
+  private final Lift lift;
   private final LED led;
   private boolean inverse; 
   private final AdvancedXboxController driverController;
+  private final AdvancedXboxController operatorController;
 
   private static RobotContainer instance;
 
@@ -46,11 +49,13 @@ public class RobotContainer {
     drive = Drive.getInstance();
     league = League.getInstance();
     intake = Intake.getInstance();
+    lift = Lift.getInstance();
     led = LED.getInstance();
     inverse = false; 
-    driverController = new AdvancedXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
 
-    // gooda = 0;
+    driverController = new AdvancedXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
+    operatorController = new AdvancedXboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
+
     degrees = 90;
     // Configure the default commands
     configureDefaultCommands();
@@ -65,7 +70,7 @@ public class RobotContainer {
     }
 
     return instance;
-}
+  }
 
   private void configureDefaultCommands() {
     // Arcade Drive
@@ -78,7 +83,7 @@ public class RobotContainer {
          
       if (inverse) {
         drive.inverseDrive(throttle, turn);
-      }else {
+      } else {
         drive.arcadeDrive(throttle, turn);
       }
 
@@ -107,29 +112,12 @@ public class RobotContainer {
   
   );
     
-    // league.setDefaultCommand(
-    //   new RunCommand(() -> {
-    //     double speedY = driverController.getRightY();
-    //     double speedX = driverController.getRightX();
-    //     league.spinBaby(speedY, speedX);
-    //   },
-    //   league
-    //   ).andThen(() -> league.spinBaby(0,0), league)
-    // );
-
     intake.setDefaultCommand(
       new RunCommand(() -> {
         intake.getColorOnIntake();
         intake.getColorString();
       }, intake)
     );
-
-    // led.setDefaultCommand(
-    //   new RunCommand(() -> {
-    //     led.blinkColor(LEDColor.BLUE);
-    //   }, led)
-    // );
-
 
   }
 
@@ -145,29 +133,35 @@ public class RobotContainer {
         degrees = degrees == 180 ? degrees : degrees + 5;
       });
 
-      new XboxButton(driverController, AdvancedXboxController.Button.LEFT_BUMPER)
+    new XboxButton(driverController, AdvancedXboxController.Button.LEFT_BUMPER)
       .whileHeld(() -> {
          degrees = degrees == 0 ? degrees : degrees - 5;
       });
 
+    new XboxButton(driverController, AdvancedXboxController.Button.A)
+      .whileHeld(() -> intake.setIntakeOpenLoop(0.25), intake)
+      .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
+
     new XboxButton(driverController, AdvancedXboxController.Button.B)
-      .whenPressed(() -> {
-        if (!inverse) {
-          inverse = true; 
-        } else {
-          inverse = false; 
-        }
-      });
+      .whileHeld(() -> lift.setLiftOpenLoop(0.5, 0.5), lift)
+      .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
 
-  }
+    new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_BUMPER)
+      .whileHeld(() -> drive.updateCamAngle(true), drive);
 
-  
-  // /**
-  //  * Use this to pass the autonomous command to the main {@link Robot} class.
-  //  *
-  //  * @return the command to run in autonomous
-  //  */
-  // public Command getAutonomousCommand() {}
+    new XboxButton(operatorController, AdvancedXboxController.Button.LEFT_BUMPER)
+      .whileHeld(() -> drive.updateCamAngle(false), drive);
 
-  
+    new XboxButton(driverController, AdvancedXboxController.Button.X)
+      .whileHeld(() -> drive.shift(true), drive)
+      .whenReleased(() -> drive.shift(false), drive);
+
+    new XboxButton(operatorController, AdvancedXboxController.Button.A)
+      .whileHeld(() -> intake.deploy(true), intake)
+      .whenReleased(() -> intake.deploy(false), intake);
+
+    new XboxButton(operatorController, AdvancedXboxController.Button.B)
+      .whileHeld(() -> lift.extend(true), lift)
+      .whenReleased(() -> lift.extend(false), lift);
+    }
 }

@@ -1,17 +1,17 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.DriveHelper;
-import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.models.AdvancedXboxController;
-import frc.robot.models.XboxButton;
+
+import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.CANSparkMax;
+
+import frc.robot.Constants.ServoConstants;
+import edu.wpi.first.wpilibj.Servo;
+
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import frc.robot.Constants.SolenoidConstants;
 
 /**
  * Drive represents the drivetrain. It is composed of 4 CIM motors (all controlled with Talon SRXs), a Pigeon gyro, and
@@ -22,8 +22,15 @@ public final class Drive extends SubsystemBase {
 
     // These variables are final because they only need to be instantiated once (after all, you don't need to create a
     // new left master TalonSRX).
-    private final TalonSRX leftMaster, leftSlave, rightMaster, rightSlave;
+    private final CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
     private final DriveHelper driveHelper;
+
+    private final Servo camServo;
+    private int camServoRotation = 90;
+
+    private final DoubleSolenoid shifter;
+
+    
 
     /**
      * The single instance of {@link Drive} used to implement the "singleton" design pattern. A description of the
@@ -36,12 +43,16 @@ public final class Drive extends SubsystemBase {
      * singleton design pattern can be found in the JavaDoc for {@link Drive::getInstance()}.
      */
     private Drive() {
-        leftMaster = new TalonSRX(DriveConstants.LEFT_MASTER_PORT);
-        leftSlave = new TalonSRX(DriveConstants.LEFT_SLAVE_PORT);
-        rightMaster = new TalonSRX(DriveConstants.RIGHT_MASTER_PORT);
-        rightSlave = new TalonSRX(DriveConstants.RIGHT_SLAVE_PORT);
+        leftMaster = new CANSparkMax(DriveConstants.LEFT_MASTER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        leftSlave = new CANSparkMax(DriveConstants.LEFT_SLAVE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        rightMaster = new CANSparkMax(DriveConstants.RIGHT_MASTER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        rightSlave = new CANSparkMax(DriveConstants.RIGHT_SLAVE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         driveHelper = new DriveHelper(leftMaster, rightMaster);
-        configureTalons();
+        configureSparks();
+
+        camServo = new Servo(ServoConstants.CAM_SERVO_PORT);
+
+        shifter = new DoubleSolenoid(SolenoidConstants.PCM_PORT, PneumaticsModuleType.CTREPCM, SolenoidConstants.SHIFTER_FORWARD_CHANNEL, SolenoidConstants.SHIFTER_REVERSE_CHANNEL);
     }
 
     /**
@@ -65,22 +76,23 @@ public final class Drive extends SubsystemBase {
     }
 
     /**
-     * Helper method that configures the Talon SRX motor controllers.
+     * Helper method that configures the Spark Max motor controllers.
      */
-    private void configureTalons() {
-        leftMaster.configFactoryDefault();
-        leftMaster.setInverted(true);
+    private void configureSparks() {
 
-        leftSlave.configFactoryDefault();
+        leftMaster.restoreFactoryDefaults();
+        leftMaster.setInverted(false);
+
+        leftSlave.restoreFactoryDefaults();
         leftSlave.follow(leftMaster);
-        leftSlave.setInverted(InvertType.FollowMaster);
+        leftSlave.setInverted(false);
 
-        rightMaster.configFactoryDefault();
-        rightMaster.setInverted(false);
+        rightMaster.restoreFactoryDefaults();
+        rightMaster.setInverted(true);
 
-        rightSlave.configFactoryDefault();
+        rightSlave.restoreFactoryDefaults();
         rightSlave.follow(rightMaster);
-        rightSlave.setInverted(InvertType.FollowMaster);
+        rightSlave.setInverted(true);
     }
 
     /**
@@ -90,8 +102,8 @@ public final class Drive extends SubsystemBase {
      * @param rightDemand The percent output for the right drive motors
      */
     public void setOpenLoop(double leftDemand, double rightDemand) {
-        leftMaster.set(ControlMode.PercentOutput, leftDemand);
-        rightMaster.set(ControlMode.PercentOutput, rightDemand);
+        leftMaster.set(leftDemand);
+        rightMaster.set(rightDemand);
     }
 
     /**
@@ -104,27 +116,30 @@ public final class Drive extends SubsystemBase {
         driveHelper.arcadeDrive(throttle, turn);
     }
 
-
-    public void awesomeDrive(double reqSpeed) {
-        int cancel = 1;
-        if (reqSpeed == 0) {
-            cancel = 0;
-        }
-        double leftMasterP = leftMaster.getMotorOutputPercent();
-        // double rightMasterP = rightMaster.getMotorOutputPercent();
-        double div = 20;
-        double acceleration = (reqSpeed - leftMasterP) / div;
-        double finalSpeed = (leftMasterP + acceleration) / 2 + 0.5;
-        // System.out.println(finalSpeed);
-        leftMaster.set(ControlMode.PercentOutput, finalSpeed * cancel);
-        rightMaster.set(ControlMode.PercentOutput, finalSpeed * cancel);
-
+    public void accelDrive(double throttle, double turn) {
+        driveHelper.accelDrive(throttle, turn);
     }
-
 
     public void inverseDrive(double throttle, double turn) {
-        driveHelper.inverseDrive(throttle * -1, turn * -1);
+        driveHelper.inverseDrive(throttle, turn);
     }
+
+    public void camRotate() {
+        camServo.setAngle(camServoRotation);
+    }
+
+    public void updateCamAngle(boolean increase) {
+        if (increase) {
+            camServoRotation = (camServoRotation == 180) ? camServoRotation : camServoRotation + 2;
+        } else {
+            camServoRotation = (camServoRotation == 0) ? camServoRotation : camServoRotation - 2;
+        }
+    }
+
+    public void shift(boolean shift) {
+        shifter.set(shift ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+    }
+
     @Override
     public void resetSensors() {
         

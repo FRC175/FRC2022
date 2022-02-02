@@ -4,9 +4,18 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
+
+import frc.robot.Constants.SolenoidConstants;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+
+import frc.robot.Constants;
 
 public final class Intake extends SubsystemBase {
 
@@ -15,11 +24,22 @@ public final class Intake extends SubsystemBase {
     private final Color RED_CARGO = new Color(0.439, 0.394, 0.165);
     private final Color BLUE_CARGO = new Color(0.139, 0.429, 0.377);
 
+    private final CANSparkMax intakeMotor;
+
+    private final DoubleSolenoid deployer;
+
+
+
     private static Intake instance;
 
     private Intake() {
         colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         colorMatch = new ColorMatch();
+        
+        intakeMotor =  new CANSparkMax(Constants.IntakeConstants.INTAKE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        intakeMotor.restoreFactoryDefaults();
+
+        deployer = new DoubleSolenoid(SolenoidConstants.PCM_PORT, PneumaticsModuleType.CTREPCM, SolenoidConstants.INTAKE_ARM_FORWARD_CHANNEL, SolenoidConstants.INTAKE_ARM_REVERSE_CHANNEL);
 
         configureColorMatches();
     }
@@ -56,6 +76,15 @@ public final class Intake extends SubsystemBase {
         }
 
         SmartDashboard.putString("Color", colorString);
+    }
+
+
+    public void setIntakeOpenLoop(double demand) {
+      intakeMotor.set(demand);
+    }
+
+    public void deploy(boolean deploy) {
+      deployer.set(deploy ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
     }
 
     @Override
