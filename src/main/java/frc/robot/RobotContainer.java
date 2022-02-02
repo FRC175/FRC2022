@@ -107,6 +107,14 @@ public class RobotContainer {
         .whileHeld(() -> drive.shift(true), drive)
         .whenReleased(() -> drive.shift(false), drive);
 
+    new XboxButton(operatorController, AdvancedXboxController.Button.A)
+        .whileHeld(() -> intake.deploy(true), intake)
+        .whenReleased(() -> intake.deploy(false), intake);
+
+    new XboxButton(operatorController, AdvancedXboxController.Button.B)
+        .whileHeld(() -> lift.extend(true), lift)
+        .whenReleased(() -> lift.extend(false), lift);
+
     // new XboxButton(driverController, AdvancedXboxController.Button.Y)
     //     .whenPressed(() -> )
   }

@@ -44,5 +44,9 @@ public final class Constants {
         public static final int PCM_PORT = 18;
         public static final int SHIFTER_FORWARD_CHANNEL = 0;
         public static final int SHIFTER_REVERSE_CHANNEL = 1;
+        public static final int INTAKE_ARM_FORWARD_CHANNEL = 2;
+        public static final int INTAKE_ARM_REVERSE_CHANNEL = 3;
+        public static final int FORWARD_CHANNEL = 4;
+        public static final int REVERSE_CHANNEL = 5;
     }
 }
