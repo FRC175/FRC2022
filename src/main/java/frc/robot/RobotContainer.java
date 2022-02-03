@@ -13,7 +13,6 @@ import frc.robot.positions.LEDColor;
 import frc.robot.positions.LEDPattern;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.League;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.LED;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -31,7 +30,6 @@ import static frc.robot.Constants.ControllerConstants;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drive drive;
-  private final League league;
   private final Intake intake;
   private final Lift lift;
   private final LED led;
@@ -41,13 +39,10 @@ public class RobotContainer {
 
   private static RobotContainer instance;
 
-  // private int gooda;
-  private int degrees;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     drive = Drive.getInstance();
-    league = League.getInstance();
     intake = Intake.getInstance();
     lift = Lift.getInstance();
     led = LED.getInstance();
@@ -56,7 +51,6 @@ public class RobotContainer {
     driverController = new AdvancedXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
     operatorController = new AdvancedXboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
 
-    degrees = 90;
     // Configure the default commands
     configureDefaultCommands();
 
@@ -103,7 +97,7 @@ public class RobotContainer {
         } else {
           led.setColor(LEDColor.YELLOW);
         }
-        league.rotate(degrees);
+        drive.camRotate();
       }
       },
      
