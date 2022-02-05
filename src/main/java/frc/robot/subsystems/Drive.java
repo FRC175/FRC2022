@@ -4,6 +4,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.DriveHelper;
 
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax;
 
 import frc.robot.Constants.ServoConstants;
@@ -23,6 +24,7 @@ public final class Drive extends SubsystemBase {
     // These variables are final because they only need to be instantiated once (after all, you don't need to create a
     // new left master TalonSRX).
     private final CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
+    private final RelativeEncoder leftMasterE, leftSlaveE, rightMasterE, rightSlaveE;
     private final DriveHelper driveHelper;
 
     private final Servo camServo;
@@ -49,6 +51,11 @@ public final class Drive extends SubsystemBase {
         rightSlave = new CANSparkMax(DriveConstants.RIGHT_SLAVE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         driveHelper = new DriveHelper(leftMaster, rightMaster);
         configureSparks();
+
+        leftMasterE = leftMaster.getEncoder();
+        leftSlaveE = leftSlave.getEncoder();
+        rightMasterE = rightMaster.getEncoder();
+        rightSlaveE = rightSlave.getEncoder();
 
         camServo = new Servo(ServoConstants.CAM_SERVO_PORT);
 
@@ -130,14 +137,18 @@ public final class Drive extends SubsystemBase {
 
     public void updateCamAngle(boolean increase) {
         if (increase) {
-            camServoRotation = (camServoRotation == 180) ? camServoRotation : camServoRotation + 2;
+            camServoRotation = (camServoRotation == 180) ? camServoRotation : camServoRotation++;
         } else {
-            camServoRotation = (camServoRotation == 0) ? camServoRotation : camServoRotation - 2;
+            camServoRotation = (camServoRotation == 0) ? camServoRotation : camServoRotation--;
         }
     }
 
     public void shift(boolean shift) {
         shifter.set(shift ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+    }
+
+    public double getRightRPM() {
+        return rightMasterE.getVelocity();
     }
 
     @Override
