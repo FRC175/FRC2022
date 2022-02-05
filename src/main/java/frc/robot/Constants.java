@@ -37,7 +37,7 @@ public final class Constants {
     }
 
     public static final class LEDConstants {
-        public static final int LED_PORT =1;
+        public static final int LED_PORT = 1;
     }
 
     public static final class ServoConstants {
@@ -52,5 +52,11 @@ public final class Constants {
         public static final int INTAKE_ARM_REVERSE_CHANNEL = 3;
         public static final int FORWARD_CHANNEL = 4;
         public static final int REVERSE_CHANNEL = 5;
+    }
+
+    public static final class ShootConstants {
+        public static final int INDEXER_PORT = 7;
+        public static final int SHOOT_MASTER_PORT = 8;
+        public static final int SHOOT_SLAVE_PORT = 9;
     }
 }
