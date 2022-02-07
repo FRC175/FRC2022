@@ -5,11 +5,15 @@ import frc.robot.Constants.ShootConstants;
 
 
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.RelativeEncoder;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter extends SubsystemBase{
     private final CANSparkMax indexer;
     private final CANSparkMax shooterMaster;
     private final CANSparkMax shooterSlave;
+    private final RelativeEncoder shooterMasterE;
 
     private static Shooter instance;
 
@@ -19,6 +23,8 @@ public class Shooter extends SubsystemBase{
         shooterMaster = new CANSparkMax(ShootConstants.SHOOT_MASTER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         shooterSlave = new CANSparkMax(ShootConstants.SHOOT_SLAVE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         configureSparks();
+
+        shooterMasterE = shooterMaster.getEncoder();
 
     }
 
@@ -47,7 +53,12 @@ public class Shooter extends SubsystemBase{
     }
 
     public void shooterSetOpenLoop(double demand) {
-        shooterMaster.set(demand);
+        shooterMaster.set(demand / 2);
+    }
+
+    public double getShooterRPM() {
+        SmartDashboard.putNumber("Shooter RPM", shooterMasterE.getVelocity());
+        return shooterMasterE.getVelocity();
     }
 
 

@@ -101,7 +101,7 @@ public class RobotContainer {
         }
         drive.camRotate();
       }
-      System.out.println(drive.getRightRPM());
+      // System.out.println(drive.getRightRPM());
 
       
       },
@@ -122,6 +122,7 @@ public class RobotContainer {
       new RunCommand(() -> {
         double demand = operatorController.getRightY();
         shooter.shooterSetOpenLoop(demand);
+        System.out.println(shooter.getShooterRPM());
       }, shooter
       ).andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
     );
@@ -165,7 +166,7 @@ public class RobotContainer {
       .whenReleased(() -> lift.extend(false), lift);
 
     new XboxButton(operatorController, AdvancedXboxController.Button.A)
-      .whileHeld(() -> shooter.indexerSetOpenLoop(0.5), shooter)
+      .whileHeld(() -> shooter.indexerSetOpenLoop(0.25), shooter)
       .whenReleased(() -> shooter.indexerSetOpenLoop(0), shooter);
     }
 }
