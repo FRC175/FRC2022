@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.models.XboxButton;
 import frc.robot.positions.LEDColor;
-import frc.robot.positions.LEDPattern;
+// import frc.robot.positions.LEDPattern;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
@@ -165,8 +165,8 @@ public class RobotContainer {
       .whileHeld(() -> lift.extend(true), lift)
       .whenReleased(() -> lift.extend(false), lift);
 
-    new XboxButton(operatorController, AdvancedXboxController.Button.A)
-      .whileHeld(() -> shooter.indexerSetOpenLoop(0.25), shooter)
-      .whenReleased(() -> shooter.indexerSetOpenLoop(0), shooter);
+    // new XboxButton(operatorController, AdvancedXboxController.Button.A)
+    //   .whileHeld(() -> shooter.indexerSetOpenLoop(0.25), shooter)
+    //   .whenReleased(() -> shooter.indexerSetOpenLoop(0), shooter);
     }
 }

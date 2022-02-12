@@ -41,11 +41,11 @@ public class Shooter extends SubsystemBase{
         indexer.setInverted(false);
 
         shooterMaster.restoreFactoryDefaults();
-        shooterMaster.setInverted(false);
+        shooterMaster.setInverted(true);
 
         shooterSlave.restoreFactoryDefaults();
         shooterSlave.follow(shooterMaster);
-        shooterSlave.setInverted(true);
+        shooterSlave.setInverted(false);
     }
 
     public void indexerSetOpenLoop(double demand) {
@@ -53,12 +53,13 @@ public class Shooter extends SubsystemBase{
     }
 
     public void shooterSetOpenLoop(double demand) {
-        shooterMaster.set(demand / 2);
+        SmartDashboard.putNumber("Demand", demand);
+        shooterMaster.set(demand);
     }
 
     public double getShooterRPM() {
-        SmartDashboard.putNumber("Shooter RPM", shooterMasterE.getVelocity());
-        return shooterMasterE.getVelocity();
+        SmartDashboard.putNumber("Shooter RPM", -shooterMasterE.getVelocity());
+        return -shooterMasterE.getVelocity();
     }
 
 
