@@ -14,6 +14,7 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LED;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
@@ -32,6 +33,7 @@ public class RobotContainer {
   private final Drive drive;
   private final Intake intake;
   private final Lift lift;
+  private final Limelight limelight;
   private final LED led;
   private final Shooter shooter;
   private boolean inverse; 
@@ -47,6 +49,7 @@ public class RobotContainer {
     intake = Intake.getInstance();
     lift = Lift.getInstance();
     shooter = Shooter.getInstance();
+    limelight = Limelight.getInstance();
     led = LED.getInstance();
     inverse = false; 
 
@@ -102,7 +105,8 @@ public class RobotContainer {
         drive.camRotate();
       }
       // System.out.println(drive.getRightRPM());
-
+      limelight.isTargetDetected();
+      limelight.distance();
       
       },
      
@@ -122,7 +126,7 @@ public class RobotContainer {
       new RunCommand(() -> {
         double demand = operatorController.getRightY();
         shooter.shooterSetOpenLoop(demand);
-        System.out.println(shooter.getShooterRPM());
+        // System.out.println(shooter.getShooterRPM());
       }, shooter
       ).andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
     );
