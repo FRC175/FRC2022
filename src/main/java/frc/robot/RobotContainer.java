@@ -119,6 +119,7 @@ public class RobotContainer {
       new RunCommand(() -> {
         intake.getColorOnIntake();
         intake.getColorString();
+        lift.getAngle();
       }, intake)
     );
 
@@ -127,6 +128,7 @@ public class RobotContainer {
         double demand = operatorController.getRightY();
         shooter.shooterSetOpenLoop(demand);
         // System.out.println(shooter.getShooterRPM());
+
       }, shooter
       ).andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
     );
