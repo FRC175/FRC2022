@@ -8,14 +8,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.models.XboxButton;
-import frc.robot.positions.LEDColor;
-// import frc.robot.positions.LEDPattern;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Lift;
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.LED;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
 
@@ -31,11 +25,7 @@ import static frc.robot.Constants.ControllerConstants;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drive drive;
-  private final Intake intake;
-  private final Lift lift;
   private final Limelight limelight;
-  private final LED led;
-  private final Shooter shooter;
   private boolean inverse; 
   private final AdvancedXboxController driverController;
   private final AdvancedXboxController operatorController;
@@ -46,11 +36,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     drive = Drive.getInstance();
-    intake = Intake.getInstance();
-    lift = Lift.getInstance();
-    shooter = Shooter.getInstance();
     limelight = Limelight.getInstance();
-    led = LED.getInstance();
     inverse = false; 
 
     driverController = new AdvancedXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
@@ -85,26 +71,6 @@ public class RobotContainer {
       } else {
         drive.arcadeDrive(Math.abs(throttle) > 0.15 ? throttle * 0.5 : 0, turn * 0.75);
       }
-
-      if (inverse) {
-        if (throttle > 0) {
-          led.setColor(LEDColor.RED);
-        } else if (throttle < 0) {
-          led.setColor(LEDColor.GREEN);
-        } else {
-          led.setColor(LEDColor.YELLOW);
-        }
-      } else {
-        if (throttle > 0) {
-          led.setColor(LEDColor.GREEN);
-        } else if (throttle < 0) {
-          led.setColor(LEDColor.RED);
-        } else {
-          led.setColor(LEDColor.YELLOW);
-        }
-        drive.camRotate();
-      }
-      // System.out.println(drive.getRightRPM());
       limelight.isTargetDetected();
       limelight.distance();
       
@@ -115,23 +81,6 @@ public class RobotContainer {
   
   );
     
-    intake.setDefaultCommand(
-      new RunCommand(() -> {
-        intake.getColorOnIntake();
-        intake.getColorString();
-        lift.getAngle();
-      }, intake)
-    );
-
-    shooter.setDefaultCommand(
-      new RunCommand(() -> {
-        double demand = operatorController.getRightY();
-        shooter.shooterSetOpenLoop(demand);
-        // System.out.println(shooter.getShooterRPM());
-
-      }, shooter
-      ).andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
-    );
 
   }
 
@@ -142,37 +91,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new XboxButton(driverController, AdvancedXboxController.Button.A)
-      .whileHeld(() -> intake.setIntakeOpenLoop(0.25), intake)
-      .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
-
-    new XboxButton(driverController, AdvancedXboxController.Button.B)
-      .whileHeld(() -> lift.setLiftOpenLoop(0.5, 0.5), lift)
-      .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
-
-    new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_BUMPER)
-      .whileHeld(() -> drive.updateCamAngle(true), drive);
-
-    new XboxButton(operatorController, AdvancedXboxController.Button.LEFT_BUMPER)
-      .whileHeld(() -> drive.updateCamAngle(false), drive);
-
-    new XboxButton(driverController, AdvancedXboxController.Button.X)
-      .whileHeld(() -> drive.shift(true), drive)
-      .whenReleased(() -> drive.shift(false), drive);
-
     new XboxButton(driverController, AdvancedXboxController.Button.Y)
       .whenPressed(() -> inverse = inverse ? false : true);
-
-    new XboxButton(operatorController, AdvancedXboxController.Button.X)
-      .whileHeld(() -> intake.deploy(true), intake)
-      .whenReleased(() -> intake.deploy(false), intake);
-
-    new XboxButton(operatorController, AdvancedXboxController.Button.Y)
-      .whileHeld(() -> lift.extend(true), lift)
-      .whenReleased(() -> lift.extend(false), lift);
-
-    // new XboxButton(operatorController, AdvancedXboxController.Button.A)
-    //   .whileHeld(() -> shooter.indexerSetOpenLoop(0.25), shooter)
-    //   .whenReleased(() -> shooter.indexerSetOpenLoop(0), shooter);
     }
 }
