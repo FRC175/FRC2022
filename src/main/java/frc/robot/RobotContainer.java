@@ -64,12 +64,12 @@ public class RobotContainer {
       // controller's throttle and turn. When it is called, set the motors to 0% power.
       new RunCommand(() -> {
         double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
-        double turn = -1 * driverController.getLeftX(); //-1 to turn in correct direction
+        double turn = driverController.getLeftX(); //-1 to turn in correct direction
          
       if (inverse) {
         drive.inverseDrive(Math.abs(throttle) > 0.15 ? throttle * 0.5 : 0, turn * 0.75);
       } else {
-        drive.arcadeDrive(Math.abs(throttle) > 0.15 ? throttle * 0.5 : 0, turn * 0.75);
+        drive.arcadeDrive(throttle, turn);
       }
       limelight.isTargetDetected();
       limelight.distance();

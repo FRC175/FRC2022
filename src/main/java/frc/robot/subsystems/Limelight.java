@@ -103,15 +103,15 @@ public final class Limelight extends SubsystemBase {
 
     public double distance() {
         //height from ground camera
-        double h1 = 1;
+        double h1 = 22.5;
         //height from ground tape
-        double h2 = 2.6416;
+        double h2 = 102;
         //Mounting angle
-        double a1 = 56;
+        double a1 = 8;
         //Angle from camera to tape
         double a2 = getVerticalOffset();
         //distance equation results in meters
-        double d = (h2-h1) / Math.tan(a1+a2);
+        double d = (h2 - h1) / Math.tan((a1 + a2) * (3.14159 / 180.0));
         SmartDashboard.putNumber("Distance to Tape", d);
         return d;
     }
