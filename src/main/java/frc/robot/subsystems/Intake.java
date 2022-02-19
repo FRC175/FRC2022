@@ -8,14 +8,13 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
-import frc.robot.Constants.SolenoidConstants;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 
 public final class Intake extends SubsystemBase {
 
@@ -39,7 +38,7 @@ public final class Intake extends SubsystemBase {
         intakeMotor =  new CANSparkMax(Constants.IntakeConstants.INTAKE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         intakeMotor.restoreFactoryDefaults();
 
-        deployer = new DoubleSolenoid(SolenoidConstants.PCM_PORT, PneumaticsModuleType.CTREPCM, SolenoidConstants.INTAKE_ARM_FORWARD_CHANNEL, SolenoidConstants.INTAKE_ARM_REVERSE_CHANNEL);
+        deployer = new DoubleSolenoid(Constants.PCM_PORT, PneumaticsModuleType.CTREPCM, IntakeConstants.INTAKE_ARM_FORWARD_CHANNEL, IntakeConstants.INTAKE_ARM_REVERSE_CHANNEL);
 
         configureColorMatches();
     }

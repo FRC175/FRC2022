@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.DriveHelper;
 
@@ -11,7 +12,6 @@ import edu.wpi.first.wpilibj.Servo;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import frc.robot.Constants.SolenoidConstants;
 
 /**
  * Drive represents the drivetrain. It is composed of 4 CIM motors (all controlled with Talon SRXs), a Pigeon gyro, and
@@ -52,7 +52,7 @@ public final class Drive extends SubsystemBase {
 
         camServo = new Servo(ServoConstants.CAM_SERVO_PORT);
 
-        shifter = new DoubleSolenoid(SolenoidConstants.PCM_PORT, PneumaticsModuleType.CTREPCM, SolenoidConstants.SHIFTER_FORWARD_CHANNEL, SolenoidConstants.SHIFTER_REVERSE_CHANNEL);
+        shifter = new DoubleSolenoid(Constants.PCM_PORT, PneumaticsModuleType.CTREPCM, DriveConstants.SHIFTER_FORWARD_CHANNEL, DriveConstants.SHIFTER_REVERSE_CHANNEL);
     }
 
     /**

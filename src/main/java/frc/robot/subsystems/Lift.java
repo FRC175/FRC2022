@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 import frc.robot.Constants.LiftConstants;
-import frc.robot.Constants.SolenoidConstants;
+import frc.robot.Constants;
 
 public final class Lift extends SubsystemBase {
 
@@ -22,7 +22,7 @@ public final class Lift extends SubsystemBase {
         leftPrimary = new VictorSPX(LiftConstants.LEFT_PRIMARY_LIFT);
         rightPrimary = new VictorSPX(LiftConstants.RIGHT_PRIMARY_LIFT);
 
-        liftExtend = new DoubleSolenoid(SolenoidConstants.PCM_PORT, PneumaticsModuleType.CTREPCM, SolenoidConstants.FORWARD_CHANNEL, SolenoidConstants.REVERSE_CHANNEL);
+        liftExtend = new DoubleSolenoid(Constants.PCM_PORT, PneumaticsModuleType.CTREPCM, LiftConstants.LIFT_FORWARD_CHANNEL, LiftConstants.LIFT_REVERSE_CHANNEL);
 
         configureVictors();
     }

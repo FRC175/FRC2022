@@ -13,6 +13,8 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+    public static final int PCM_PORT = 18;
     public static final class ControllerConstants {
         public static final int DRIVER_CONTROLLER_PORT = 0;
         public static final int OPERATOR_CONTROLLER_PORT = 1;
@@ -25,28 +27,37 @@ public final class Constants {
         public static final int RIGHT_SLAVE_PORT = 12;
         public static final int LEFT_MASTER_PORT = 2;
         public static final int LEFT_SLAVE_PORT = 3;
+
+        public static final int SHIFTER_FORWARD_CHANNEL = 0;
+        public static final int SHIFTER_REVERSE_CHANNEL = 1;
     }
 
     public static final class IntakeConstants {
         public static final int INTAKE_PORT = 10;
+
+        public static final int INTAKE_ARM_FORWARD_CHANNEL = 2;
+        public static final int INTAKE_ARM_REVERSE_CHANNEL = 3;
     }
 
     public static final class LiftConstants {
         public static final int RIGHT_PRIMARY_LIFT = 6;
         public static final int LEFT_PRIMARY_LIFT = 11;
+
+        public static final int LIFT_FORWARD_CHANNEL = 4;
+        public static final int LIFT_REVERSE_CHANNEL = 5;
+    }
+
+    public static final class ShooterConstants {
+        public static final int INDEXER_PORT = 7;
+        public static final int SHOOT_MASTER_PORT = 8;
+        public static final int SHOOT_SLAVE_PORT = 9;
+    }
+
+    public static final class LEDConstants {
+        public static final int LED_PORT = 1;
     }
 
     public static final class ServoConstants {
         public static final int CAM_SERVO_PORT = 0;
-    }
-
-    public static final class SolenoidConstants {
-        public static final int PCM_PORT = 18;
-        public static final int SHIFTER_FORWARD_CHANNEL = 0;
-        public static final int SHIFTER_REVERSE_CHANNEL = 1;
-        public static final int INTAKE_ARM_FORWARD_CHANNEL = 2;
-        public static final int INTAKE_ARM_REVERSE_CHANNEL = 3;
-        public static final int FORWARD_CHANNEL = 4;
-        public static final int REVERSE_CHANNEL = 5;
     }
 }
