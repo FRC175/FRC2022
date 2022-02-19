@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -12,19 +12,19 @@ import frc.robot.Constants;
 
 public final class Lift extends SubsystemBase {
 
-    private final VictorSPX leftPrimary, rightPrimary;
+    private final TalonSRX leftPrimary, rightPrimary;
 
     private static Lift instance;
 
     private final DoubleSolenoid liftExtend;
 
     private Lift() {
-        leftPrimary = new VictorSPX(LiftConstants.LEFT_PRIMARY_LIFT);
-        rightPrimary = new VictorSPX(LiftConstants.RIGHT_PRIMARY_LIFT);
+        leftPrimary = new TalonSRX(LiftConstants.LEFT_PRIMARY_LIFT);
+        rightPrimary = new TalonSRX(LiftConstants.RIGHT_PRIMARY_LIFT);
 
         liftExtend = new DoubleSolenoid(Constants.PCM_PORT, PneumaticsModuleType.CTREPCM, LiftConstants.LIFT_FORWARD_CHANNEL, LiftConstants.LIFT_REVERSE_CHANNEL);
 
-        configureVictors();
+        configureTalons();
     }
 
     public static Lift getInstance() {
@@ -35,7 +35,7 @@ public final class Lift extends SubsystemBase {
         return instance;
     }
 
-    private void configureVictors() {
+    private void configureTalons() {
         leftPrimary.configFactoryDefault();
         rightPrimary.configFactoryDefault();
     }

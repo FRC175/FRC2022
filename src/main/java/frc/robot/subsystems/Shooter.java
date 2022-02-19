@@ -9,23 +9,20 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Shooter extends SubsystemBase{
+public class Shooter extends SubsystemBase {
     private final CANSparkMax indexer;
-    private final CANSparkMax shooterMaster;
-    private final CANSparkMax shooterSlave;
-    private final RelativeEncoder shooterMasterE;
+    private final CANSparkMax shooterWheel;
+    private final RelativeEncoder shooterWheelEncoder;
 
     private static Shooter instance;
 
 
     private Shooter() {
-        indexer = new CANSparkMax(ShooterConstants.INDEXER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
-        shooterMaster = new CANSparkMax(ShooterConstants.SHOOT_MASTER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
-        shooterSlave = new CANSparkMax(ShooterConstants.SHOOT_SLAVE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        indexer = new CANSparkMax(ShooterConstants.SHOOTER_INDEXER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        shooterWheel = new CANSparkMax(ShooterConstants.SHOOTER_WHEEL_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         configureSparks();
 
-        shooterMasterE = shooterMaster.getEncoder();
-
+        shooterWheelEncoder = shooterWheel.getEncoder();
     }
 
     public static Shooter getInstance() {
@@ -40,12 +37,8 @@ public class Shooter extends SubsystemBase{
         indexer.restoreFactoryDefaults();
         indexer.setInverted(false);
 
-        shooterMaster.restoreFactoryDefaults();
-        shooterMaster.setInverted(true);
-
-        shooterSlave.restoreFactoryDefaults();
-        shooterSlave.follow(shooterMaster);
-        shooterSlave.setInverted(false);
+        shooterWheel.restoreFactoryDefaults();
+        shooterWheel.setInverted(true);
     }
 
     public void indexerSetOpenLoop(double demand) {
@@ -54,12 +47,12 @@ public class Shooter extends SubsystemBase{
 
     public void shooterSetOpenLoop(double demand) {
         SmartDashboard.putNumber("Demand", demand);
-        shooterMaster.set(demand);
+        shooterWheel.set(demand);
     }
 
     public double getShooterRPM() {
-        SmartDashboard.putNumber("Shooter RPM", -shooterMasterE.getVelocity());
-        return -shooterMasterE.getVelocity();
+        SmartDashboard.putNumber("Shooter RPM", -shooterWheelEncoder.getVelocity());
+        return -shooterWheelEncoder.getVelocity();
     }
 
 
