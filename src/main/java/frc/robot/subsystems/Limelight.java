@@ -111,7 +111,7 @@ public final class Limelight extends SubsystemBase {
         //Angle from camera to tape
         double a2 = getVerticalOffset();
         //distance equation results in meters
-        double d = (h2-h1) / Math.tan(a1+a2);
+        double d = (h2-h1) / Math.tan((a1+a2) * (3.141592 / 180));
         SmartDashboard.putNumber("Distance to Tape", d);
         return d;
     }

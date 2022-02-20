@@ -86,6 +86,8 @@ public class RobotContainer {
         drive.arcadeDrive(Math.abs(throttle) > 0.15 ? throttle * 0.5 : 0, turn * 0.75);
       }
 
+        System.out.println(drive.dist());
+
       if (inverse) {
         if (throttle > 0) {
           led.setColor(LEDColor.RED);

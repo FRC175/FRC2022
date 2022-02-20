@@ -9,10 +9,14 @@ import com.revrobotics.CANSparkMax;
 
 import frc.robot.Constants.ServoConstants;
 import edu.wpi.first.wpilibj.Servo;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.Constants.SolenoidConstants;
+
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
+
 
 /**
  * Drive represents the drivetrain. It is composed of 4 CIM motors (all controlled with Talon SRXs), a Pigeon gyro, and
@@ -31,6 +35,8 @@ public final class Drive extends SubsystemBase {
     private int camServoRotation = 90;
 
     private final DoubleSolenoid shifter;
+
+    private final AnalogInput ultra;
 
     
 
@@ -56,6 +62,9 @@ public final class Drive extends SubsystemBase {
         leftSlaveE = leftSlave.getEncoder();
         rightMasterE = rightMaster.getEncoder();
         rightSlaveE = rightSlave.getEncoder();
+
+        ultra = new AnalogInput(0);
+        
 
         camServo = new Servo(ServoConstants.CAM_SERVO_PORT);
 
@@ -113,9 +122,15 @@ public final class Drive extends SubsystemBase {
         rightMaster.set(rightDemand);
     }
 
+    public double dist() {
+        double distance = (5 * (ultra.getVoltage() / 4.883));
+        SmartDashboard.putNumber("Sonic Dist", distance);
+        return distance;
+    }
+
     /**
      * Controls the drive motor using arcade controls - with a throttle and a turn.
-     *
+     * 
      * @param throttle The throttle from the controller
      * @param turn The turn from the controller
      */
