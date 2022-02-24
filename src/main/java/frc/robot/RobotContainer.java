@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import frc.robot.commands.DriveTarmac;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.models.XboxButton;
 import frc.robot.positions.LEDColor;
@@ -16,7 +18,9 @@ import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LED;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.commands.DriveAndShoot;
 
 
 import static frc.robot.Constants.ControllerConstants;
@@ -40,6 +44,9 @@ public class RobotContainer {
   private final AdvancedXboxController driverController;
   private final AdvancedXboxController operatorController;
 
+
+  private final SendableChooser<Command> autoChooser;
+
   private static RobotContainer instance;
 
 
@@ -51,6 +58,8 @@ public class RobotContainer {
     shooter = Shooter.getInstance();
     limelight = Limelight.getInstance();
     led = LED.getInstance();
+
+    autoChooser = new SendableChooser<>();
     inverse = false; 
 
     driverController = new AdvancedXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
@@ -61,6 +70,8 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+
+    configureAutoChooser();
   }
 
   public static RobotContainer getInstance() {
@@ -86,7 +97,7 @@ public class RobotContainer {
         drive.arcadeDrive(Math.abs(throttle) > 0.15 ? throttle * 0.5 : 0, turn * 0.75);
       }
 
-        System.out.println(drive.dist());
+        // System.out.println(drive.dist());
 
       if (inverse) {
         if (throttle > 0) {
@@ -104,12 +115,11 @@ public class RobotContainer {
         } else {
           led.setColor(LEDColor.YELLOW);
         }
-        drive.camRotate();
+        // drive.camRotate();
       }
       // System.out.println(drive.getRightRPM());
-      limelight.isTargetDetected();
-      limelight.distance();
-      drive.position();
+      // limelight.isTargetDetected();
+      // limelight.distance();
       
       },
      
@@ -178,4 +188,13 @@ public class RobotContainer {
     //   .whileHeld(() -> shooter.indexerSetOpenLoop(0.25), shooter)
     //   .whenReleased(() -> shooter.indexerSetOpenLoop(0), shooter);
     }
+
+
+  private void configureAutoChooser() {
+    autoChooser.setDefaultOption("DriveAndShoot", new DriveAndShoot(drive, shooter, true));
+  }
+
+  public Command getAutoMode() {
+    return autoChooser.getSelected();
+  } 
 }

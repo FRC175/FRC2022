@@ -69,6 +69,8 @@ public final class Drive extends SubsystemBase {
         camServo = new Servo(ServoConstants.CAM_SERVO_PORT);
 
         shifter = new DoubleSolenoid(SolenoidConstants.PCM_PORT, PneumaticsModuleType.CTREPCM, SolenoidConstants.SHIFTER_FORWARD_CHANNEL, SolenoidConstants.SHIFTER_REVERSE_CHANNEL);
+
+        resetSensors();
     }
 
     /**
@@ -166,8 +168,15 @@ public final class Drive extends SubsystemBase {
         return rightMasterE.getVelocity();
     }
 
+    public double rightCounts() {
+        return rightMasterE.getPosition();
+    }
+
     @Override
     public void resetSensors() {
-        
+        rightMasterE.setPosition(0);
+        leftMasterE.setPosition(0);
+        rightSlaveE.setPosition(0);
+        leftSlaveE.setPosition(0);  
     }
 }
