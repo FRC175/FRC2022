@@ -165,6 +165,7 @@ public final class Drive extends SubsystemBase {
     }
 
     public double getRightRPM() {
+        SmartDashboard.putNumber("Right RPM", rightMasterE.getVelocity());
         return rightMasterE.getVelocity();
     }
 

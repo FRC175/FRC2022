@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.DriveTarmac;
-import frc.robot.commands.Shoot;
 
 
 public final class DriveAndShoot extends SequentialCommandGroup {

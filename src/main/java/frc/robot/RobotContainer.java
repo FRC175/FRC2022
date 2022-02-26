@@ -92,9 +92,9 @@ public class RobotContainer {
         double turn = -1 * driverController.getLeftX(); //-1 to turn in correct direction
          
       if (inverse) {
-        drive.inverseDrive(Math.abs(throttle) > 0.15 ? throttle * 0.5 : 0, turn * 0.75);
+        drive.inverseDrive(Math.abs(throttle) > 0.15 ? throttle * 0.4 : 0, turn * 0.4);
       } else {
-        drive.arcadeDrive(Math.abs(throttle) > 0.15 ? throttle * 0.5 : 0, turn * 0.75);
+        drive.arcadeDrive(Math.abs(throttle) > 0.15 ? throttle * 0.4 : 0, turn * 0.25);
       }
 
         // System.out.println(drive.dist());
