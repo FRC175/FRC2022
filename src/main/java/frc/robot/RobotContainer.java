@@ -5,14 +5,24 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import frc.robot.commands.DriveAndShoot;
 import frc.robot.models.AdvancedXboxController;
+import frc.robot.models.XboxButton;
+// import frc.robot.positions.LEDPattern;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Limelight;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.models.XboxButton;
+
+
 
 import static frc.robot.Constants.ControllerConstants;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -25,17 +35,28 @@ public class RobotContainer {
   private final Drive drive;
   private final Intake intake;
   private final Lift lift;
-
+  private final Limelight limelight;
+  private final Shooter shooter;
+  private boolean inverse; 
   private final AdvancedXboxController driverController;
   private final AdvancedXboxController operatorController;
 
+
+  private final SendableChooser<Command> autoChooser;
+
   private static RobotContainer instance;
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     drive = Drive.getInstance();
     intake = Intake.getInstance();
     lift = Lift.getInstance();
+    shooter = Shooter.getInstance();
+    limelight = Limelight.getInstance();
+
+    autoChooser = new SendableChooser<>();
+    inverse = false; 
 
     driverController = new AdvancedXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
     operatorController = new AdvancedXboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
@@ -45,6 +66,8 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+
+    configureAutoChooser();
   }
 
   public static RobotContainer getInstance() {
@@ -53,7 +76,7 @@ public class RobotContainer {
     }
 
     return instance;
-}
+  }
 
   private void configureDefaultCommands() {
     // Arcade Drive
@@ -62,13 +85,21 @@ public class RobotContainer {
       // controller's throttle and turn. When it is called, set the motors to 0% power.
       new RunCommand(() -> {
         double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
-        double turn = driverController.getLeftX();
-        drive.arcadeDrive(Math.abs(throttle) > 0.15 ? throttle * 0.5 : 0, turn * 0.75);
-        drive.camRotate();
-      }, 
+        double turn = -1 * driverController.getLeftX(); //-1 to turn in correct direction
+         
+      if (inverse) {
+        drive.inverseDrive(Math.abs(throttle) > 0.15 ? throttle * 0.4 : 0, turn * 0.4);
+      } else {
+        drive.arcadeDrive(Math.abs(throttle) > 0.15 ? throttle * 0.4 : 0, turn * 0.25);
+      }
+
+      
+      },
+     
       drive
-      ).andThen(() -> drive.arcadeDrive(0, 0), drive)
-    );
+      ).andThen(() -> drive.arcadeDrive(0, 0) , drive)
+  
+  );
     
     intake.setDefaultCommand(
       new RunCommand(() -> {
@@ -76,8 +107,18 @@ public class RobotContainer {
         intake.getColorString();
       }, intake)
     );
-  }
 
+    shooter.setDefaultCommand(
+      new RunCommand(() -> {
+        double demand = operatorController.getRightY();
+        shooter.shooterSetOpenLoop(demand);
+        // System.out.println(shooter.getShooterRPM());
+
+      }, shooter
+      ).andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
+    );
+
+  }
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -87,36 +128,45 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     new XboxButton(driverController, AdvancedXboxController.Button.A)
-        .whileHeld(() -> intake.setIntakeOpenLoop(0.25), intake)
-        .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
+      .whileHeld(() -> intake.setIntakeOpenLoop(0.25), intake)
+      .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
 
     new XboxButton(driverController, AdvancedXboxController.Button.B)
-        .whileHeld(() -> lift.setLiftOpenLoop(0.5, 0.5), lift)
-        .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
+      .whileHeld(() -> lift.setLiftOpenLoop(0.5, 0.5), lift)
+      .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
 
     new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_BUMPER)
-        .whileHeld(() -> drive.updateCamAngle(true), drive);
+      .whileHeld(() -> drive.updateCamAngle(true), drive);
 
     new XboxButton(operatorController, AdvancedXboxController.Button.LEFT_BUMPER)
-        .whileHeld(() -> drive.updateCamAngle(false), drive);
+      .whileHeld(() -> drive.updateCamAngle(false), drive);
 
     new XboxButton(driverController, AdvancedXboxController.Button.X)
-        .whileHeld(() -> drive.shift(true), drive)
-        .whenReleased(() -> drive.shift(false), drive);
+      .whileHeld(() -> drive.shift(true), drive)
+      .whenReleased(() -> drive.shift(false), drive);
+
+    new XboxButton(driverController, AdvancedXboxController.Button.Y)
+      .whenPressed(() -> inverse = inverse ? false : true);
+
+    new XboxButton(operatorController, AdvancedXboxController.Button.X)
+      .whileHeld(() -> intake.deploy(true), intake)
+      .whenReleased(() -> intake.deploy(false), intake);
+
+    new XboxButton(operatorController, AdvancedXboxController.Button.Y)
+      .whileHeld(() -> lift.extend(true), lift)
+      .whenReleased(() -> lift.extend(false), lift);
 
     new XboxButton(operatorController, AdvancedXboxController.Button.A)
-        .whileHeld(() -> intake.deploy(true), intake)
-        .whenReleased(() -> intake.deploy(false), intake);
+      .whileHeld(() -> shooter.indexerSetOpenLoop(0.25), shooter)
+      .whenReleased(() -> shooter.indexerSetOpenLoop(0), shooter);
+    }
 
-    new XboxButton(operatorController, AdvancedXboxController.Button.B)
-        .whileHeld(() -> lift.extend(true), lift)
-        .whenReleased(() -> lift.extend(false), lift);
+
+  private void configureAutoChooser() {
+    autoChooser.setDefaultOption("DriveAndShoot", new DriveAndShoot(drive, shooter, true));
   }
 
-  // /**
-  //  * Use this to pass the autonomous command to the main {@link Robot} class.
-  //  *
-  //  * @return the command to run in autonomous
-  //  */
-  // public Command getAutonomousCommand() {}
+  public Command getAutoMode() {
+    return autoChooser.getSelected();
+  } 
 }
