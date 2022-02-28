@@ -1,17 +1,22 @@
 package frc.robot.subsystems;
 
-import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.DriveHelper;
 
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax;
 
 import frc.robot.Constants.ServoConstants;
 import edu.wpi.first.wpilibj.Servo;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import frc.robot.Constants;
+
+import edu.wpi.first.wpilibj.AnalogInput;
+
+
 
 /**
  * Drive represents the drivetrain. It is composed of 4 CIM motors (all controlled with Talon SRXs), a Pigeon gyro, and
@@ -23,12 +28,15 @@ public final class Drive extends SubsystemBase {
     // These variables are final because they only need to be instantiated once (after all, you don't need to create a
     // new left master TalonSRX).
     private final CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
+    private final RelativeEncoder leftMasterE, leftSlaveE, rightMasterE, rightSlaveE;
     private final DriveHelper driveHelper;
 
     private final Servo camServo;
     private int camServoRotation = 90;
 
     private final DoubleSolenoid shifter;
+
+    private final AnalogInput ultra;
 
     
 
@@ -50,9 +58,19 @@ public final class Drive extends SubsystemBase {
         driveHelper = new DriveHelper(leftMaster, rightMaster);
         configureSparks();
 
+        leftMasterE = leftMaster.getEncoder();
+        leftSlaveE = leftSlave.getEncoder();
+        rightMasterE = rightMaster.getEncoder();
+        rightSlaveE = rightSlave.getEncoder();
+
+        ultra = new AnalogInput(0);
+        
+
         camServo = new Servo(ServoConstants.CAM_SERVO_PORT);
 
         shifter = new DoubleSolenoid(Constants.PCM_PORT, PneumaticsModuleType.CTREPCM, DriveConstants.SHIFTER_FORWARD_CHANNEL, DriveConstants.SHIFTER_REVERSE_CHANNEL);
+
+        resetSensors();
     }
 
     /**
@@ -106,9 +124,15 @@ public final class Drive extends SubsystemBase {
         rightMaster.set(rightDemand);
     }
 
+    public double dist() {
+        double distance = (5 * (ultra.getVoltage() / 4.883));
+        SmartDashboard.putNumber("Sonic Dist", distance);
+        return distance;
+    }
+
     /**
      * Controls the drive motor using arcade controls - with a throttle and a turn.
-     *
+     * 
      * @param throttle The throttle from the controller
      * @param turn The turn from the controller
      */
@@ -130,9 +154,9 @@ public final class Drive extends SubsystemBase {
 
     public void updateCamAngle(boolean increase) {
         if (increase) {
-            camServoRotation = (camServoRotation == 180) ? camServoRotation : camServoRotation + 2;
+            camServoRotation = (camServoRotation == 180) ? camServoRotation : camServoRotation++;
         } else {
-            camServoRotation = (camServoRotation == 0) ? camServoRotation : camServoRotation - 2;
+            camServoRotation = (camServoRotation == 0) ? camServoRotation : camServoRotation--;
         }
     }
 
@@ -140,8 +164,20 @@ public final class Drive extends SubsystemBase {
         shifter.set(shift ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
     }
 
+    public double getRightRPM() {
+        SmartDashboard.putNumber("Right RPM", rightMasterE.getVelocity());
+        return rightMasterE.getVelocity();
+    }
+
+    public double rightCounts() {
+        return rightMasterE.getPosition();
+    }
+
     @Override
     public void resetSensors() {
-        
+        rightMasterE.setPosition(0);
+        leftMasterE.setPosition(0);
+        rightSlaveE.setPosition(0);
+        leftSlaveE.setPosition(0);  
     }
 }
