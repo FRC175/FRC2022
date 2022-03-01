@@ -42,7 +42,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void indexerSetOpenLoop(double demand) {
-        indexer.set(demand);   
+        indexer.set(-demand);   
     }
 
     public void shooterSetOpenLoop(double demand) {

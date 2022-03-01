@@ -111,13 +111,12 @@ public class RobotContainer {
     shooter.setDefaultCommand(
       new RunCommand(() -> {
         double demand = operatorController.getRightY();
-        shooter.shooterSetOpenLoop(demand);
+        shooter.shooterSetOpenLoop(-Math.abs(demand));
         // System.out.println(shooter.getShooterRPM());
 
       }, shooter
       ).andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
     );
-
   }
 
   /**
@@ -135,11 +134,6 @@ public class RobotContainer {
       .whileHeld(() -> lift.setLiftOpenLoop(0.5, 0.5), lift)
       .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
 
-    new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_BUMPER)
-      .whileHeld(() -> drive.updateCamAngle(true), drive);
-
-    new XboxButton(operatorController, AdvancedXboxController.Button.LEFT_BUMPER)
-      .whileHeld(() -> drive.updateCamAngle(false), drive);
 
     new XboxButton(driverController, AdvancedXboxController.Button.X)
       .whileHeld(() -> drive.shift(true), drive)
