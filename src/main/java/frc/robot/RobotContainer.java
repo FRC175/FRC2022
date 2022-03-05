@@ -7,7 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.commands.DriveAndShoot;
+import frc.robot.auto.DriveAndShoot;
+import frc.robot.auto.DriveTarmac;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.models.XboxButton;
 // import frc.robot.positions.LEDPattern;
@@ -157,7 +158,8 @@ public class RobotContainer {
 
 
   private void configureAutoChooser() {
-    autoChooser.setDefaultOption("DriveAndShoot", new DriveAndShoot(drive, shooter, true));
+    autoChooser.setDefaultOption("DriveTarmac", new DriveTarmac(drive));
+    autoChooser.addOption("DriveAndShoot", new DriveAndShoot(drive, shooter, true));
   }
 
   public Command getAutoMode() {
