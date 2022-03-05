@@ -103,17 +103,52 @@ public final class Limelight extends SubsystemBase {
 
     public double distance() {
         //height from ground camera
-        double h1 = 22.5;
+        double h1 = 42;
         //height from ground tape
         double h2 = 102;
         //Mounting angle
-        double a1 = 8;
+        double a1 = 5;
         //Angle from camera to tape
         double a2 = getVerticalOffset();
         // distance equation results in inches
         double d = (h2 - h1) / Math.tan((a1 + a2) * (3.14159 / 180.0));
         SmartDashboard.putNumber("Distance to Tape", d);
         return d;
+    }
+
+    public double calculateRPM(double distance, String hubToScore) {
+        // Distance Constants
+        double d1 = 120;
+        double d2 = 170;
+        double d3 = 220;
+        double d4 = 270;
+        // CHANGE THESE VALUES
+        double RPMupper1 = 3000;
+        double RPMupper2 = 3500;
+        double RPMupper3 = 4000;
+        double RPMupper4 = 4500;
+        double RPMlower1 = 2000;
+        double RPMlower2 = 2500;
+        double RPMlower3 = 3000;
+        double RPMlower4 = 3500;
+
+        double estimateRPM;
+
+        if (hubToScore.toLowerCase() == "upper") {
+            estimateRPM = RPMupper1 * (distance - d2) / (d1 - d2) * (distance - d3) / (d1 - d3) * (distance - d4) / (d1 - d4) +
+                RPMupper2 * (distance - d1) / (d2 - d1) * (distance - d3) / (d2 - d3) * (distance - d4) / (d2 - d4) +
+                RPMupper3 * (distance - d1) / (d3 - d1) * (distance - d2) / (d3 - d2) * (distance - d4) / (d3 - d4) +
+                RPMupper4 * (distance - d1) / (d4 - d1) * (distance - d2) / (d4 - d2) * (distance - d3) / (d4 - d3);
+        } else if (hubToScore.toLowerCase() == "lower") {
+            estimateRPM = RPMlower1 * (distance - d2) / (d1 - d2) * (distance - d3) / (d1 - d3) * (distance - d4) / (d1 - d4) +
+                RPMlower2 * (distance - d1) / (d2 - d1) * (distance - d3) / (d2 - d3) * (distance - d4) / (d2 - d4) +
+                RPMlower3 * (distance - d1) / (d3 - d1) * (distance - d2) / (d3 - d2) * (distance - d4) / (d3 - d4) +
+                RPMlower4 * (distance - d1) / (d4 - d1) * (distance - d2) / (d4 - d2) * (distance - d3) / (d4 - d3);
+        } else {
+            estimateRPM = 1500;
+        }
+
+        return estimateRPM;
     }
 
 

@@ -49,6 +49,6 @@ public final class Constants {
 
     public static final class ShooterConstants {
         public static final int SHOOTER_INDEXER_PORT = 8;
-        public static final int SHOOTER_WHEEL_PORT = 16;
+        public static final int SHOOTER_WHEEL_PORT = 10;
     }
 }

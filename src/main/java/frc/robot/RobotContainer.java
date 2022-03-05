@@ -7,8 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.auto.DriveAndShoot;
-import frc.robot.auto.DriveTarmac;
+import frc.robot.commands.Shoot;
+import frc.robot.commands.auto.DriveAndShoot;
+import frc.robot.commands.auto.DriveTarmac;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.models.XboxButton;
 // import frc.robot.positions.LEDPattern;
@@ -113,7 +114,7 @@ public class RobotContainer {
       new RunCommand(() -> {
         double demand = operatorController.getRightY();
         shooter.shooterSetOpenLoop(-Math.abs(demand));
-        // System.out.println(shooter.getShooterRPM());
+        shooter.getShooterRPM();
 
       }, shooter
       ).andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
@@ -152,14 +153,21 @@ public class RobotContainer {
       .whenReleased(() -> lift.extend(false), lift);
 
     new XboxButton(operatorController, AdvancedXboxController.Button.A)
-      .whileHeld(() -> shooter.indexerSetOpenLoop(0.25), shooter)
+      .whileHeld(() -> shooter.indexerSetOpenLoop(0.35), shooter)
       .whenReleased(() -> shooter.indexerSetOpenLoop(0), shooter);
+
+      new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
+        .whenPressed(new Shoot(shooter, limelight, "upper"))
+        .whenReleased(() -> {
+          shooter.shooterSetOpenLoop(0);
+          shooter.indexerSetOpenLoop(0);
+        }, shooter);
     }
 
 
   private void configureAutoChooser() {
     autoChooser.setDefaultOption("DriveTarmac", new DriveTarmac(drive));
-    autoChooser.addOption("DriveAndShoot", new DriveAndShoot(drive, shooter, true));
+    autoChooser.addOption("DriveAndShoot", new DriveAndShoot(drive, shooter, limelight, "upper"));
   }
 
   public Command getAutoMode() {
