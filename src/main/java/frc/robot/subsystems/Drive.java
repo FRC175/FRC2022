@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.Constants;
 
+import edu.wpi.first.wpilibj.Ultrasonic;
+
 
 
 /**
@@ -26,6 +28,8 @@ public final class Drive extends SubsystemBase {
     private final CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
     private final RelativeEncoder leftMasterE, leftSlaveE, rightMasterE, rightSlaveE;
     private final DriveHelper driveHelper;
+
+    private final Ultrasonic sonic;
 
     private final DoubleSolenoid shifter;
 
@@ -55,6 +59,7 @@ public final class Drive extends SubsystemBase {
         rightMasterE = rightMaster.getEncoder();
         rightSlaveE = rightSlave.getEncoder();
 
+        sonic = new Ultrasonic(1, 2);
         
 
 
@@ -81,6 +86,10 @@ public final class Drive extends SubsystemBase {
         }
 
         return instance;
+    }
+
+    public double detRange() {
+        return sonic.getRangeInches();
     }
 
     /**

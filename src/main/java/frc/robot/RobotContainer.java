@@ -82,6 +82,7 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     // Arcade Drive
+    System.out.println(drive.detRange());
     drive.setDefaultCommand(
       // While the drive subsystem is not called by other subsystems, call the arcade drive method using the
       // controller's throttle and turn. When it is called, set the motors to 0% power.
