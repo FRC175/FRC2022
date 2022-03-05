@@ -14,10 +14,7 @@ public final class DriveAndShoot extends SequentialCommandGroup {
     public DriveAndShoot(Drive drive, Shooter shoot, Limelight limelight, String hubToScore) {
         addCommands(
                 new Shoot(shoot, limelight, hubToScore),
-                new WaitCommand(2),
-                new DriveTarmac(drive),
-                new InstantCommand(() -> drive.setOpenLoop(0, 0))
-
+                new DriveTarmac(drive)
         );
     }
 

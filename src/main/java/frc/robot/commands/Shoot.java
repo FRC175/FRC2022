@@ -3,6 +3,7 @@ package frc.robot.commands;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 
 public class Shoot extends CommandBase{
@@ -42,6 +43,7 @@ public class Shoot extends CommandBase{
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    new WaitCommand(0.3);
     shooter.shooterSetOpenLoop(0);
   }
 
