@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.commands.Shoot;
@@ -82,7 +83,6 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     // Arcade Drive
-    System.out.println(drive.detRange());
     drive.setDefaultCommand(
       // While the drive subsystem is not called by other subsystems, call the arcade drive method using the
       // controller's throttle and turn. When it is called, set the motors to 0% power.
@@ -95,6 +95,7 @@ public class RobotContainer {
       } else {
         drive.arcadeDrive(Math.abs(throttle) > 0.15 ? throttle * 0.4 : 0, turn * 0.25);
       }
+      System.out.println(drive.getRange());
 
       
       },
@@ -122,6 +123,9 @@ public class RobotContainer {
     );
   }
 
+  public static double getVoltage() {
+    return RobotController.getVoltage5V();
+  }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -158,7 +162,7 @@ public class RobotContainer {
       .whenReleased(() -> shooter.indexerSetOpenLoop(0), shooter);
 
       new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
-        .whenPressed(new Shoot(shooter, limelight, "upper"))
+        .whenPressed(new Shoot(shooter, limelight, "upper", true))
         .whenReleased(() -> {
           shooter.shooterSetOpenLoop(0);
           shooter.indexerSetOpenLoop(0);

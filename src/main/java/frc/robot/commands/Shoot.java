@@ -3,7 +3,6 @@ package frc.robot.commands;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 
 public class Shoot extends CommandBase{
@@ -11,17 +10,19 @@ public class Shoot extends CommandBase{
   private final Shooter shooter;
   private final Limelight limelight;
   private String hubToScore;
+  private boolean start;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public Shoot(Shooter shooter, Limelight limelight, String hubToScore) {
+  public Shoot(Shooter shooter, Limelight limelight, String hubToScore, boolean start) {
       this.shooter = shooter;
       this.limelight = limelight;
 	  
 	  this.hubToScore = hubToScore;
+    this.start = start;
 
       addRequirements(shooter, limelight);
   }
@@ -35,16 +36,20 @@ public class Shoot extends CommandBase{
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-	  double estimateRPM = limelight.calculateRPM(limelight.distance(), hubToScore);
-	  shooter.shooterSetOpenLoop(estimateRPM / 6000);
-	  shooter.indexerSetOpenLoop(1);
+    if (start) {
+	    double estimateRPM = limelight.calculateRPM(limelight.distance(), hubToScore);
+	    shooter.shooterSetOpenLoop(estimateRPM / 6000);
+	    shooter.indexerSetOpenLoop(1);
+    } else {
+      shooter.shooterSetOpenLoop(0);
+      shooter.shooterSetOpenLoop(0);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    new WaitCommand(0.3);
-    shooter.shooterSetOpenLoop(0);
+    
   }
 
   // Returns true when the command should end.

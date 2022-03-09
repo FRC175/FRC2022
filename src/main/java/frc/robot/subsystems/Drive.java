@@ -11,8 +11,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.AnalogInput;
 
-import edu.wpi.first.wpilibj.Ultrasonic;
+import frc.robot.RobotContainer;
 
 
 
@@ -29,7 +30,7 @@ public final class Drive extends SubsystemBase {
     private final RelativeEncoder leftMasterE, leftSlaveE, rightMasterE, rightSlaveE;
     private final DriveHelper driveHelper;
 
-    private final Ultrasonic sonic;
+    private final AnalogInput sonic;
 
     private final DoubleSolenoid shifter;
 
@@ -59,7 +60,9 @@ public final class Drive extends SubsystemBase {
         rightMasterE = rightMaster.getEncoder();
         rightSlaveE = rightSlave.getEncoder();
 
-        sonic = new Ultrasonic(1, 2);
+        sonic = new AnalogInput(0);
+
+        
         
 
 
@@ -86,10 +89,6 @@ public final class Drive extends SubsystemBase {
         }
 
         return instance;
-    }
-
-    public double detRange() {
-        return sonic.getRangeInches();
     }
 
     /**
@@ -148,6 +147,17 @@ public final class Drive extends SubsystemBase {
     public double getRightRPM() {
         SmartDashboard.putNumber("Right RPM", rightMasterE.getVelocity());
         return rightMasterE.getVelocity();
+    }
+
+    public double getRange() {
+        double rawValue = sonic.getValue();
+        //voltage_scale_factor allows us to compensate for differences in supply voltage.
+
+        double voltage_scale_factor = 5 / RobotContainer.getVoltage();
+        double currentDistanceCentimeters = rawValue * voltage_scale_factor * 0.125;
+        // double currentDistanceInches = rawValue * voltage_scale_factor * 0.0492;
+        SmartDashboard.putNumber("Sonic Distance", currentDistanceCentimeters);
+        return currentDistanceCentimeters;
     }
 
     public double rightCounts() {

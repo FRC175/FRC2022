@@ -33,7 +33,7 @@ public final class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int INTAKE_PORT = 10;
+        public static final int INTAKE_PORT = 11;
 
         public static final int INTAKE_ARM_FORWARD_CHANNEL = 2;
         public static final int INTAKE_ARM_REVERSE_CHANNEL = 3;
