@@ -22,10 +22,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ColorSensor;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.PerpetualCommand;
-
 
 
 import static frc.robot.Constants.ControllerConstants;
@@ -154,7 +151,7 @@ public class RobotContainer {
       .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
 
 
-    new XboxButton(driverController, AdvancedXboxController.Button.X)
+    new XboxButton(driverController, AdvancedXboxController.Button.LEFT_STICK)
       .whileHeld(() -> drive.shift(true), drive)
       .whenReleased(() -> drive.shift(false), drive);
 

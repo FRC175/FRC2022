@@ -12,7 +12,7 @@ import frc.robot.Constants;
 
 public final class Lift extends SubsystemBase {
 
-    private final TalonSRX leftPrimary, rightPrimary;
+    private final TalonSRX leftPrimary, rightPrimary, centralPrimary;
 
     private static Lift instance;
 
@@ -21,6 +21,7 @@ public final class Lift extends SubsystemBase {
     private Lift() {
         leftPrimary = new TalonSRX(LiftConstants.LEFT_PRIMARY_LIFT);
         rightPrimary = new TalonSRX(LiftConstants.RIGHT_PRIMARY_LIFT);
+        centralPrimary = new TalonSRX(LiftConstants.CENTRAL_LIFT);
 
         liftExtend = new DoubleSolenoid(Constants.PCM_PORT, PneumaticsModuleType.CTREPCM, LiftConstants.LIFT_FORWARD_CHANNEL, LiftConstants.LIFT_REVERSE_CHANNEL);
 
@@ -38,11 +39,16 @@ public final class Lift extends SubsystemBase {
     private void configureTalons() {
         leftPrimary.configFactoryDefault();
         rightPrimary.configFactoryDefault();
+        centralPrimary.configFactoryDefault();
     }
 
     public void setLiftOpenLoop(double leftDemand, double rightDemand) {
         leftPrimary.set(ControlMode.PercentOutput, leftDemand);
         rightPrimary.set(ControlMode.PercentOutput, rightDemand);
+    }
+
+    public void setCentralOpenLoop(double centralDemand) {
+        centralPrimary.set(ControlMode.PercentOutput, centralDemand);
     }
 
     public void extend(boolean extend) {
