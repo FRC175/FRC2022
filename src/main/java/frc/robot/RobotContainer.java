@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import frc.robot.commands.IntakeSensor;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.auto.DriveAndShoot;
 import frc.robot.commands.auto.DriveTarmac;
@@ -19,8 +20,11 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.ColorSensor;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.PerpetualCommand;
 
 
 
@@ -40,6 +44,7 @@ public class RobotContainer {
   private final Lift lift;
   private final Limelight limelight;
   private final Shooter shooter;
+  private final ColorSensor colorSensor;
   private boolean inverse; 
   private final AdvancedXboxController driverController;
   private final AdvancedXboxController operatorController;
@@ -57,6 +62,7 @@ public class RobotContainer {
     lift = Lift.getInstance();
     shooter = Shooter.getInstance();
     limelight = Limelight.getInstance();
+    colorSensor = ColorSensor.getInstance();
 
     autoChooser = new SendableChooser<>();
     inverse = false; 
@@ -66,6 +72,8 @@ public class RobotContainer {
 
     // Configure the default commands
     configureDefaultCommands();
+
+    configureCommands();
 
     // Configure the button bindings
     configureButtonBindings();
@@ -104,13 +112,6 @@ public class RobotContainer {
       ).andThen(() -> drive.arcadeDrive(0, 0) , drive)
   
   );
-    
-    intake.setDefaultCommand(
-      new RunCommand(() -> {
-        intake.getColorOnIntake();
-        intake.getColorString();
-      }, intake)
-    );
 
     shooter.setDefaultCommand(
       new RunCommand(() -> {
@@ -121,6 +122,17 @@ public class RobotContainer {
       }, shooter
       ).andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
     );
+
+    colorSensor.setDefaultCommand(
+      new RunCommand(() -> {
+        colorSensor.getColorOnIntake();
+        colorSensor.getColorString();
+      }, colorSensor)
+    );
+  }
+
+  private void configureCommands() {
+    
   }
 
   public static double getVoltage() {
@@ -166,6 +178,12 @@ public class RobotContainer {
         .whenReleased(() -> {
           shooter.shooterSetOpenLoop(0);
           shooter.indexerSetOpenLoop(0);
+        }, shooter);
+
+        new XboxButton(operatorController, AdvancedXboxController.Trigger.LEFT)
+        .whenPressed(new IntakeSensor(intake, colorSensor))
+        .whenReleased(() -> {
+          intake.setIntakeOpenLoop(0);
         }, shooter);
     }
 
