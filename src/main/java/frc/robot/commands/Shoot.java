@@ -42,7 +42,7 @@ public class Shoot extends CommandBase{
 	    shooter.indexerSetOpenLoop(1);
     } else {
       shooter.shooterSetOpenLoop(0);
-      shooter.shooterSetOpenLoop(0);
+      shooter.indexerSetOpenLoop(0);
     }
   }
 

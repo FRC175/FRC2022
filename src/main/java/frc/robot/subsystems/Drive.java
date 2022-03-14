@@ -27,7 +27,7 @@ public final class Drive extends SubsystemBase {
     // These variables are final because they only need to be instantiated once (after all, you don't need to create a
     // new left master TalonSRX).
     private final CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
-    private final RelativeEncoder leftMasterE, leftSlaveE, rightMasterE, rightSlaveE;
+    private final RelativeEncoder leftMasterEncoder, leftSlaveEncoder, rightMasterEncoder, rightSlaveEncoder;
     private final DriveHelper driveHelper;
 
     private final AnalogInput sonic;
@@ -55,10 +55,10 @@ public final class Drive extends SubsystemBase {
         driveHelper = new DriveHelper(leftMaster, rightMaster);
         configureSparks();
 
-        leftMasterE = leftMaster.getEncoder();
-        leftSlaveE = leftSlave.getEncoder();
-        rightMasterE = rightMaster.getEncoder();
-        rightSlaveE = rightSlave.getEncoder();
+        leftMasterEncoder = leftMaster.getEncoder();
+        leftSlaveEncoder = leftSlave.getEncoder();
+        rightMasterEncoder = rightMaster.getEncoder();
+        rightSlaveEncoder = rightSlave.getEncoder();
 
         sonic = new AnalogInput(0);
 
@@ -145,8 +145,8 @@ public final class Drive extends SubsystemBase {
     }
 
     public double getRightRPM() {
-        SmartDashboard.putNumber("Right RPM", rightMasterE.getVelocity());
-        return rightMasterE.getVelocity();
+        SmartDashboard.putNumber("Right RPM", rightMasterEncoder.getVelocity());
+        return rightMasterEncoder.getVelocity();
     }
 
     public double getRange() {
@@ -161,14 +161,14 @@ public final class Drive extends SubsystemBase {
     }
 
     public double rightCounts() {
-        return rightMasterE.getPosition();
+        return rightMasterEncoder.getPosition();
     }
 
     @Override
     public void resetSensors() {
-        rightMasterE.setPosition(0);
-        leftMasterE.setPosition(0);
-        rightSlaveE.setPosition(0);
-        leftSlaveE.setPosition(0);  
+        rightMasterEncoder.setPosition(0);
+        leftMasterEncoder.setPosition(0);
+        rightSlaveEncoder.setPosition(0);
+        leftSlaveEncoder.setPosition(0);  
     }
 }

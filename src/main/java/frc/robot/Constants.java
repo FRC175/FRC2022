@@ -42,6 +42,7 @@ public final class Constants {
     public static final class LiftConstants {
         public static final int RIGHT_PRIMARY_LIFT = 13;
         public static final int LEFT_PRIMARY_LIFT = 6;
+        public static final int CENTRAL_LIFT = 19;
 
         public static final int LIFT_FORWARD_CHANNEL = 4;
         public static final int LIFT_REVERSE_CHANNEL = 5;

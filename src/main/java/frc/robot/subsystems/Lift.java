@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import com.ctre.phoenix.sensors.CANCoder;
 
 import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants;
@@ -13,6 +14,8 @@ import frc.robot.Constants;
 public final class Lift extends SubsystemBase {
 
     private final TalonSRX leftPrimary, rightPrimary, centralPrimary;
+
+    private final CANCoder leftEncoder, rightEncoder, centralEncoder;
 
     private static Lift instance;
 
@@ -23,9 +26,15 @@ public final class Lift extends SubsystemBase {
         rightPrimary = new TalonSRX(LiftConstants.RIGHT_PRIMARY_LIFT);
         centralPrimary = new TalonSRX(LiftConstants.CENTRAL_LIFT);
 
+        leftEncoder = new CANCoder(LiftConstants.LEFT_PRIMARY_LIFT);
+        rightEncoder = new CANCoder(LiftConstants.RIGHT_PRIMARY_LIFT);
+        centralEncoder = new CANCoder(LiftConstants.CENTRAL_LIFT);
+
         liftExtend = new DoubleSolenoid(Constants.PCM_PORT, PneumaticsModuleType.CTREPCM, LiftConstants.LIFT_FORWARD_CHANNEL, LiftConstants.LIFT_REVERSE_CHANNEL);
 
         configureTalons();
+
+        resetSensors();
     }
 
     public static Lift getInstance() {
@@ -40,19 +49,44 @@ public final class Lift extends SubsystemBase {
         leftPrimary.configFactoryDefault();
         rightPrimary.configFactoryDefault();
         centralPrimary.configFactoryDefault();
+
+        leftEncoder.configFactoryDefault();
+        rightEncoder.configFactoryDefault();
+        centralEncoder.configFactoryDefault();
     }
 
+    double maxCounts = 20.75;
     public void setLiftOpenLoop(double leftDemand, double rightDemand) {
-        leftPrimary.set(ControlMode.PercentOutput, leftDemand);
-        rightPrimary.set(ControlMode.PercentOutput, rightDemand);
+        if (leftEncoder.getPosition() > maxCounts) {
+            leftPrimary.set(ControlMode.PercentOutput, -1);
+            rightPrimary.set(ControlMode.PercentOutput, -1);
+        } else if (leftEncoder.getPosition() < 0) {
+            leftPrimary.set(ControlMode.PercentOutput, 1);
+            rightPrimary.set(ControlMode.PercentOutput, 1);
+        } else {
+            leftPrimary.set(ControlMode.PercentOutput, leftDemand);
+            rightPrimary.set(ControlMode.PercentOutput, rightDemand);
+        }
     }
 
     public void setCentralOpenLoop(double centralDemand) {
-        centralPrimary.set(ControlMode.PercentOutput, centralDemand);
+        if (centralEncoder.getPosition() > maxCounts) {
+            centralPrimary.set(ControlMode.PercentOutput, -1);
+        } else if (leftEncoder.getPosition() < 0) {
+            centralPrimary.set(ControlMode.PercentOutput, 1);
+        } else {
+            centralPrimary.set(ControlMode.PercentOutput, centralDemand);
+        }
     }
 
     public void extend(boolean extend) {
         liftExtend.set(extend ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+    }
+
+    public void resetSensors() {
+        rightEncoder.setPosition(0);
+        leftEncoder.setPosition(0);
+        centralEncoder.setPosition(0);
     }
 
 }
