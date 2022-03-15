@@ -45,8 +45,8 @@ public final class Lift extends SubsystemBase {
         rightPrimary.set(ControlMode.PercentOutput, rightDemand);
     }
 
-    public void extend(boolean extend) {
-        liftExtend.set(extend ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
-    }
+    // public void extend(boolean extend) {
+    //     liftExtend.set(extend ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+    // }
 
 }

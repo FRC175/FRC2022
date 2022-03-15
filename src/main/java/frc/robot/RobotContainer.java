@@ -129,16 +129,19 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new XboxButton(driverController, AdvancedXboxController.Button.A)
+    new XboxButton(operatorController, AdvancedXboxController.Trigger.LEFT)
       .whileHeld(() -> intake.setIntakeOpenLoop(0.25), intake)
       .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
 
-    new XboxButton(driverController, AdvancedXboxController.Button.B)
+    new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_BUMPER)
       .whileHeld(() -> lift.setLiftOpenLoop(0.5, 0.5), lift)
       .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
 
+    new XboxButton(operatorController, AdvancedXboxController.Button.LEFT_BUMPER)
+      .whileHeld(() -> lift.setLiftOpenLoop(-0.5, -0.5), lift)
+      .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
 
-    new XboxButton(driverController, AdvancedXboxController.Button.X)
+    new XboxButton(driverController, AdvancedXboxController.Button.LEFT_STICK)
       .whileHeld(() -> drive.shift(true), drive)
       .whenReleased(() -> drive.shift(false), drive);
 
@@ -148,10 +151,6 @@ public class RobotContainer {
     new XboxButton(operatorController, AdvancedXboxController.Button.X)
       .whileHeld(() -> intake.deploy(true), intake)
       .whenReleased(() -> intake.deploy(false), intake);
-
-    new XboxButton(operatorController, AdvancedXboxController.Button.Y)
-      .whileHeld(() -> lift.extend(true), lift)
-      .whenReleased(() -> lift.extend(false), lift);
 
     new XboxButton(operatorController, AdvancedXboxController.Button.A)
       .whileHeld(() -> shooter.indexerSetOpenLoop(0.35), shooter)
