@@ -118,15 +118,15 @@ public final class Limelight extends SubsystemBase {
 
     public double calculateRPM(double distance, String hubToScore) {
         // Distance Constants
-        double d1 = 120;
-        double d2 = 170;
-        double d3 = 220;
-        double d4 = 270;
+        double d1 = 36;
+        double d2 = 72;
+        double d3 = 96;
+        double d4 = 108;
         // CHANGE THESE VALUES
-        double RPMupper1 = 3000;
-        double RPMupper2 = 3500;
-        double RPMupper3 = 4000;
-        double RPMupper4 = 4500;
+        double RPMupper1 = 3300;
+        double RPMupper2 = 3450;
+        double RPMupper3 = 3600;
+        double RPMupper4 = 3700;
         double RPMlower1 = 2000;
         double RPMlower2 = 2500;
         double RPMlower3 = 3000;

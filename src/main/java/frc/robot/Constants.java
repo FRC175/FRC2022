@@ -33,7 +33,7 @@ public final class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int INTAKE_PORT = 10;
+        public static final int INTAKE_PORT = 11;
 
         public static final int INTAKE_ARM_FORWARD_CHANNEL = 2;
         public static final int INTAKE_ARM_REVERSE_CHANNEL = 3;
@@ -42,6 +42,7 @@ public final class Constants {
     public static final class LiftConstants {
         public static final int RIGHT_PRIMARY_LIFT = 13;
         public static final int LEFT_PRIMARY_LIFT = 6;
+        public static final int CENTRAL_LIFT = 19;
 
         public static final int LIFT_FORWARD_CHANNEL = 4;
         public static final int LIFT_REVERSE_CHANNEL = 5;

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.commands.Shoot;
@@ -18,9 +19,9 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.ColorSensor;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-
 
 
 import static frc.robot.Constants.ControllerConstants;
@@ -39,6 +40,7 @@ public class RobotContainer {
   private final Lift lift;
   private final Limelight limelight;
   private final Shooter shooter;
+  private final ColorSensor colorSensor;
   private boolean inverse; 
   private final AdvancedXboxController driverController;
   private final AdvancedXboxController operatorController;
@@ -56,6 +58,7 @@ public class RobotContainer {
     lift = Lift.getInstance();
     shooter = Shooter.getInstance();
     limelight = Limelight.getInstance();
+    colorSensor = ColorSensor.getInstance();
 
     autoChooser = new SendableChooser<>();
     inverse = false; 
@@ -65,6 +68,8 @@ public class RobotContainer {
 
     // Configure the default commands
     configureDefaultCommands();
+
+    configureCommands();
 
     // Configure the button bindings
     configureButtonBindings();
@@ -82,7 +87,6 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     // Arcade Drive
-    System.out.println(drive.detRange());
     drive.setDefaultCommand(
       // While the drive subsystem is not called by other subsystems, call the arcade drive method using the
       // controller's throttle and turn. When it is called, set the motors to 0% power.
@@ -95,6 +99,7 @@ public class RobotContainer {
       } else {
         drive.arcadeDrive(Math.abs(throttle) > 0.15 ? throttle * 0.4 : 0, turn * 0.25);
       }
+      System.out.println(drive.getRange());
 
       
       },
@@ -103,13 +108,6 @@ public class RobotContainer {
       ).andThen(() -> drive.arcadeDrive(0, 0) , drive)
   
   );
-    
-    intake.setDefaultCommand(
-      new RunCommand(() -> {
-        intake.getColorOnIntake();
-        intake.getColorString();
-      }, intake)
-    );
 
     shooter.setDefaultCommand(
       new RunCommand(() -> {
@@ -120,8 +118,22 @@ public class RobotContainer {
       }, shooter
       ).andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
     );
+
+    colorSensor.setDefaultCommand(
+      new RunCommand(() -> {
+        colorSensor.getColorOnIntake();
+        colorSensor.getColorString();
+      }, colorSensor)
+    );
   }
 
+  private void configureCommands() {
+    
+  }
+
+  public static double getVoltage() {
+    return RobotController.getVoltage5V();
+  }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -157,17 +169,25 @@ public class RobotContainer {
       .whenReleased(() -> shooter.indexerSetOpenLoop(0), shooter);
 
       new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
-        .whenPressed(new Shoot(shooter, limelight, "upper"))
+        .whenPressed(new Shoot(shooter, limelight, colorSensor, "upper", true))
         .whenReleased(() -> {
           shooter.shooterSetOpenLoop(0);
           shooter.indexerSetOpenLoop(0);
         }, shooter);
+
+        new XboxButton(operatorController, AdvancedXboxController.Trigger.LEFT)
+        .whenPressed(() -> {
+          intake.setIntakeOpenLoop(1);
+        }, intake)
+        .whenReleased(() -> {
+          intake.setIntakeOpenLoop(0);
+        }, intake);
     }
 
 
   private void configureAutoChooser() {
     autoChooser.setDefaultOption("DriveTarmac", new DriveTarmac(drive));
-    autoChooser.addOption("DriveAndShoot", new DriveAndShoot(drive, shooter, limelight, "upper"));
+    autoChooser.addOption("DriveAndShoot", new DriveAndShoot(drive, shooter, limelight, colorSensor, "upper"));
   }
 
   public Command getAutoMode() {
