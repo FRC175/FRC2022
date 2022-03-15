@@ -40,16 +40,14 @@ public class RobotContainer {
   private final Lift lift;
   private final Limelight limelight;
   private final Shooter shooter;
-  private final ColorSensor colorSensor;
-  private boolean inverse; 
+  private final ColorSensor colorSensor; 
   private final AdvancedXboxController driverController;
   private final AdvancedXboxController operatorController;
-
-
   private final SendableChooser<Command> autoChooser;
 
   private static RobotContainer instance;
 
+  private boolean inverse;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -69,11 +67,10 @@ public class RobotContainer {
     // Configure the default commands
     configureDefaultCommands();
 
-    configureCommands();
-
     // Configure the button bindings
     configureButtonBindings();
 
+    // Configure auto mode
     configureAutoChooser();
   }
 
@@ -94,30 +91,25 @@ public class RobotContainer {
         double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
         double turn = -1 * driverController.getLeftX(); //-1 to turn in correct direction
          
-      if (inverse) {
-        drive.inverseDrive(Math.abs(throttle) > 0.15 ? throttle * 0.4 : 0, turn * 0.4);
-      } else {
-        drive.arcadeDrive(Math.abs(throttle) > 0.15 ? throttle * 0.4 : 0, turn * 0.25);
-      }
-      System.out.println(drive.getRange());
+        // inverse / regular drive
+        if (inverse) {
+          drive.inverseDrive(Math.abs(throttle) > 0.15 ? throttle * 0.4 : 0, turn * 0.25);
+        } else {
+          drive.arcadeDrive(Math.abs(throttle) > 0.15 ? throttle * 0.4 : 0, turn * 0.25);
+        }
 
-      
-      },
-     
-      drive
-      ).andThen(() -> drive.arcadeDrive(0, 0) , drive)
-  
-  );
-
-    shooter.setDefaultCommand(
-      new RunCommand(() -> {
-        double demand = operatorController.getRightY();
-        shooter.shooterSetOpenLoop(-Math.abs(demand));
-        shooter.getShooterRPM();
-
-      }, shooter
-      ).andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
+      }, drive ).andThen(() -> drive.arcadeDrive(0, 0) , drive)
     );
+
+    // shooter.setDefaultCommand(
+    //   new RunCommand(() -> {
+    //     double demand = operatorController.getRightY();
+    //     shooter.shooterSetOpenLoop(-Math.abs(demand));
+    //     shooter.getShooterRPM();
+
+    //   }, shooter
+    //   ).andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
+    // );
 
     colorSensor.setDefaultCommand(
       new RunCommand(() -> {
@@ -125,10 +117,6 @@ public class RobotContainer {
         colorSensor.getColorString();
       }, colorSensor)
     );
-  }
-
-  private void configureCommands() {
-    
   }
 
   public static double getVoltage() {
@@ -141,47 +129,56 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new XboxButton(operatorController, AdvancedXboxController.Trigger.LEFT)
-      .whileHeld(() -> intake.setIntakeOpenLoop(0.25), intake)
-      .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
-
-    new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_BUMPER)
-      .whileHeld(() -> lift.setLiftOpenLoop(0.5, 0.5), lift)
-      .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
-
-    new XboxButton(operatorController, AdvancedXboxController.Button.LEFT_BUMPER)
-      .whileHeld(() -> lift.setLiftOpenLoop(-0.5, -0.5), lift)
-      .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
-
+    //shift
     new XboxButton(driverController, AdvancedXboxController.Button.LEFT_STICK)
       .whileHeld(() -> drive.shift(true), drive)
       .whenReleased(() -> drive.shift(false), drive);
 
-    new XboxButton(driverController, AdvancedXboxController.Button.Y)
-      .whenPressed(() -> inverse = inverse ? false : true);
+    //inverse drive
+    new XboxButton(driverController, AdvancedXboxController.Button.B)
+      .whileHeld(() -> inverse = inverse ? false : true);
 
-    new XboxButton(operatorController, AdvancedXboxController.Button.X)
-      .whileHeld(() -> intake.deploy(true), intake)
-      .whenReleased(() -> intake.deploy(false), intake);
+    //intake spin
+    new XboxButton(operatorController, AdvancedXboxController.Trigger.LEFT)
+      .whenPressed(() -> intake.setIntakeOpenLoop(1), intake)
+      .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
 
-    new XboxButton(operatorController, AdvancedXboxController.Button.A)
-      .whileHeld(() -> shooter.indexerSetOpenLoop(0.35), shooter)
-      .whenReleased(() -> shooter.indexerSetOpenLoop(0), shooter);
+    // deploy intake
+    new XboxButton(operatorController, AdvancedXboxController.DPad.DOWN)
+      .whenPressed(() -> intake.deploy(true), intake);
 
-      new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
-        .whenPressed(new Shoot(shooter, limelight, colorSensor, "upper", true))
-        .whenReleased(() -> {
-          shooter.shooterSetOpenLoop(0);
-          shooter.indexerSetOpenLoop(0);
-        }, shooter);
+    // retract intake
+    new XboxButton(operatorController, AdvancedXboxController.DPad.UP)
+      .whenPressed(() -> intake.deploy(false), intake);
 
-        new XboxButton(operatorController, AdvancedXboxController.Trigger.LEFT)
-        .whenPressed(() -> {
-          intake.setIntakeOpenLoop(1);
-        }, intake)
-        .whenReleased(() -> {
-          intake.setIntakeOpenLoop(0);
-        }, intake);
+    //lift up
+    new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_BUMPER)
+      .whileHeld(() -> lift.setLiftOpenLoop(0.5, 0.5), lift)
+      .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
+
+    //lift down
+    new XboxButton(operatorController, AdvancedXboxController.Button.LEFT_BUMPER)
+      .whileHeld(() -> lift.setLiftOpenLoop(-0.5, -0.5), lift)
+      .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
+
+    //shoot
+    new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
+      .whenPressed(new Shoot(shooter, limelight, colorSensor, "upper", true))
+      .whenReleased(() -> {
+        shooter.shooterSetOpenLoop(0);
+        shooter.indexerSetOpenLoop(0);
+      }, shooter);
+
+    //shooter wimpy shot manual
+    new XboxButton(operatorController, AdvancedXboxController.Button.Y)
+      .whileHeld(() -> {
+        shooter.shooterSetOpenLoop(.25);
+        shooter.indexerSetOpenLoop(.5);
+      }, shooter)
+      .whenReleased(() -> {
+        shooter.shooterSetOpenLoop(0);
+        shooter.indexerSetOpenLoop(0);
+      }, shooter);
     }
 
 

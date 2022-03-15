@@ -4,12 +4,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import com.ctre.phoenix.sensors.CANCoder;
 
 import frc.robot.Constants.LiftConstants;
-import frc.robot.Constants;
 
 public final class Lift extends SubsystemBase {
 
@@ -19,8 +16,6 @@ public final class Lift extends SubsystemBase {
 
     private static Lift instance;
 
-    private final DoubleSolenoid liftExtend;
-
     private Lift() {
         leftPrimary = new TalonSRX(LiftConstants.LEFT_PRIMARY_LIFT);
         rightPrimary = new TalonSRX(LiftConstants.RIGHT_PRIMARY_LIFT);
@@ -29,8 +24,6 @@ public final class Lift extends SubsystemBase {
         leftEncoder = new CANCoder(LiftConstants.LEFT_PRIMARY_LIFT);
         rightEncoder = new CANCoder(LiftConstants.RIGHT_PRIMARY_LIFT);
         centralEncoder = new CANCoder(LiftConstants.CENTRAL_LIFT);
-
-        liftExtend = new DoubleSolenoid(Constants.PCM_PORT, PneumaticsModuleType.CTREPCM, LiftConstants.LIFT_FORWARD_CHANNEL, LiftConstants.LIFT_REVERSE_CHANNEL);
 
         configureTalons();
 
@@ -78,10 +71,6 @@ public final class Lift extends SubsystemBase {
             centralPrimary.set(ControlMode.PercentOutput, centralDemand);
         }
     }
-
-    // public void extend(boolean extend) {
-    //     liftExtend.set(extend ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
-    // }
 
     public void resetSensors() {
         rightEncoder.setPosition(0);

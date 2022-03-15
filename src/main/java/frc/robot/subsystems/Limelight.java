@@ -63,10 +63,6 @@ public final class Limelight extends SubsystemBase {
         // setPipeline(2);
     }
 
-    private int getPipeline() {
-        return (int) table.getEntry("getpipe").getDouble(0);
-    }
-
     public boolean isTargetDetected() {
         SmartDashboard.putBoolean("Detected?", table.getEntry("tv").getDouble(0) == 1);
         return table.getEntry("tv").getDouble(0) == 1;
