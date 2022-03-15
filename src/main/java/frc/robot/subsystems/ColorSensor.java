@@ -60,6 +60,22 @@ public class ColorSensor extends SubsystemBase{
         return colorString;
     }
 
+    public boolean isRightBall(String color) {
+        if (color.toLowerCase() == "blue") {
+            if (getColorString().toLowerCase() == "blue") {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (getColorString().toLowerCase() == "red") {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
     @Override
     public void resetSensors() {
         // TODO Auto-generated method stub

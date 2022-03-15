@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.commands.IntakeSensor;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.auto.DriveAndShoot;
 import frc.robot.commands.auto.DriveTarmac;
@@ -171,23 +170,25 @@ public class RobotContainer {
       .whenReleased(() -> shooter.indexerSetOpenLoop(0), shooter);
 
       new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
-        .whenPressed(new Shoot(shooter, limelight, "upper", true))
+        .whenPressed(new Shoot(shooter, limelight, colorSensor, "upper", true))
         .whenReleased(() -> {
           shooter.shooterSetOpenLoop(0);
           shooter.indexerSetOpenLoop(0);
         }, shooter);
 
         new XboxButton(operatorController, AdvancedXboxController.Trigger.LEFT)
-        .whenPressed(new IntakeSensor(intake, colorSensor))
+        .whenPressed(() -> {
+          intake.setIntakeOpenLoop(1);
+        }, intake)
         .whenReleased(() -> {
           intake.setIntakeOpenLoop(0);
-        }, shooter);
+        }, intake);
     }
 
 
   private void configureAutoChooser() {
     autoChooser.setDefaultOption("DriveTarmac", new DriveTarmac(drive));
-    autoChooser.addOption("DriveAndShoot", new DriveAndShoot(drive, shooter, limelight, "upper"));
+    autoChooser.addOption("DriveAndShoot", new DriveAndShoot(drive, shooter, limelight, colorSensor, "upper"));
   }
 
   public Command getAutoMode() {
