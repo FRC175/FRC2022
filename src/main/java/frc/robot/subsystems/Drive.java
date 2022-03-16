@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.SPI;
 
 import frc.robot.RobotContainer;
 
@@ -33,6 +35,8 @@ public final class Drive extends SubsystemBase {
     private final AnalogInput sonic;
 
     private final DoubleSolenoid shifter;
+
+    private final ADXRS450_Gyro gyro;
 
 
     
@@ -67,6 +71,9 @@ public final class Drive extends SubsystemBase {
 
 
         shifter = new DoubleSolenoid(Constants.PCM_PORT, PneumaticsModuleType.CTREPCM, DriveConstants.SHIFTER_FORWARD_CHANNEL, DriveConstants.SHIFTER_REVERSE_CHANNEL);
+
+        gyro = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
+        gyro.calibrate();
 
         resetSensors();
     }
@@ -158,6 +165,11 @@ public final class Drive extends SubsystemBase {
         // double currentDistanceInches = rawValue * voltage_scale_factor * 0.0492;
         SmartDashboard.putNumber("Sonic Distance", currentDistanceCentimeters);
         return currentDistanceCentimeters;
+    }
+
+    public double getAngle() {
+        SmartDashboard.putNumber("Gyro Angle", gyro.getAngle());
+        return gyro.getAngle();
     }
 
     public double rightCounts() {
