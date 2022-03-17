@@ -15,12 +15,11 @@ public final class Intake extends SubsystemBase {
 
     private final DoubleSolenoid deployer;
 
-
-
     private static Intake instance;
 
     private Intake() {
         intakeMotor =  new CANSparkMax(Constants.IntakeConstants.INTAKE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        intakeMotor.setInverted(true);
         intakeMotor.restoreFactoryDefaults();
 
         deployer = new DoubleSolenoid(Constants.PCM_PORT, PneumaticsModuleType.CTREPCM, IntakeConstants.INTAKE_ARM_FORWARD_CHANNEL, IntakeConstants.INTAKE_ARM_REVERSE_CHANNEL);
@@ -41,6 +40,7 @@ public final class Intake extends SubsystemBase {
 
     public void deploy(boolean deploy) {
       deployer.set(deploy ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+      intakeMotor.set(-0.20);
     }
 
     @Override

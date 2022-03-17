@@ -26,7 +26,7 @@ public final class Constants {
         public static final int RIGHT_MASTER_PORT = 2;
         public static final int RIGHT_SLAVE_PORT = 5;
         public static final int LEFT_MASTER_PORT = 17;
-        public static final int LEFT_SLAVE_PORT = 12;
+        public static final int LEFT_SLAVE_PORT = 14;
 
         public static final int SHIFTER_FORWARD_CHANNEL = 0;
         public static final int SHIFTER_REVERSE_CHANNEL = 1;
@@ -50,6 +50,6 @@ public final class Constants {
 
     public static final class ShooterConstants {
         public static final int SHOOTER_INDEXER_PORT = 8;
-        public static final int SHOOTER_WHEEL_PORT = 10;
+        public static final int SHOOTER_WHEEL_PORT = 16;
     }
 }

@@ -22,8 +22,8 @@ public final class DriveHelper {
      * Arcade drive using arbitrary feed forward.
      */
     public void arcadeDrive(double throttle, double turn) {
-        double leftOut = throttle + turn;
-        double rightOut = throttle - turn;
+        double leftOut = throttle - turn;
+        double rightOut = throttle + turn;
         left.set(leftOut);
         right.set(rightOut);
     }

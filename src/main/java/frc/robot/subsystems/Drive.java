@@ -66,10 +66,6 @@ public final class Drive extends SubsystemBase {
 
         sonic = new AnalogInput(0);
 
-        
-        
-
-
         shifter = new DoubleSolenoid(Constants.PCM_PORT, PneumaticsModuleType.CTREPCM, DriveConstants.SHIFTER_FORWARD_CHANNEL, DriveConstants.SHIFTER_REVERSE_CHANNEL);
 
         gyro = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);

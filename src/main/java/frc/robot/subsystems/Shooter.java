@@ -38,7 +38,7 @@ public class Shooter extends SubsystemBase {
         indexer.setInverted(false);
 
         shooterWheel.restoreFactoryDefaults();
-        shooterWheel.setInverted(true);
+        shooterWheel.setInverted(false);
     }
 
     public void indexerSetOpenLoop(double demand) {

@@ -99,11 +99,11 @@ public final class Limelight extends SubsystemBase {
 
     public double distance() {
         //height from ground camera
-        double h1 = 42;
+        double h1 = 25.5;
         //height from ground tape
         double h2 = 102;
         //Mounting angle
-        double a1 = 5;
+        double a1 = 2;
         //Angle from camera to tape
         double a2 = getVerticalOffset();
         // distance equation results in inches

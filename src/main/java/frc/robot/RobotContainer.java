@@ -93,9 +93,9 @@ public class RobotContainer {
          
         // inverse / regular drive
         if (inverse) {
-          drive.inverseDrive(Math.abs(throttle) > 0.15 ? throttle * 0.4 : 0, turn * 0.25);
+          drive.inverseDrive(throttle, turn);
         } else {
-          drive.arcadeDrive(Math.abs(throttle) > 0.15 ? throttle * 0.4 : 0, turn * 0.25);
+          drive.arcadeDrive(throttle, turn);
         }
 
       }, drive ).andThen(() -> drive.arcadeDrive(0, 0) , drive)
@@ -140,16 +140,18 @@ public class RobotContainer {
 
     //intake spin
     new XboxButton(operatorController, AdvancedXboxController.Trigger.LEFT)
-      .whenPressed(() -> intake.setIntakeOpenLoop(1), intake)
+      .whenPressed(() -> intake.setIntakeOpenLoop(-0.5), intake)
       .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
 
     // deploy intake
     new XboxButton(operatorController, AdvancedXboxController.DPad.DOWN)
-      .whenPressed(() -> intake.deploy(true), intake);
+      .whenPressed(() -> intake.deploy(false), intake)
+      .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
 
     // retract intake
     new XboxButton(operatorController, AdvancedXboxController.DPad.UP)
-      .whenPressed(() -> intake.deploy(false), intake);
+      .whenPressed(() -> intake.deploy(true), intake)
+      .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
 
     //lift up
     new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_BUMPER)
