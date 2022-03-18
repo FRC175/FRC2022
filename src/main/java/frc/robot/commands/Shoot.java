@@ -41,16 +41,15 @@ public class Shoot extends CommandBase{
   @Override
   public void execute() {
     if (start) {
-      if (colorSensor.isRightBall(SmartDashboard.getString("Team Color", "null"))) {
+      // if (colorSensor.isRightBall(SmartDashboard.getString("Team Color", "null"))) {
         //regular shot
 	      double estimateRPM = limelight.calculateRPM(limelight.distance(), hubToScore);
-	      shooter.shooterSetOpenLoop(estimateRPM / 6000);
-	      shooter.indexerSetOpenLoop(1);
-      } else {
-        //wimpy shot
-        shooter.shooterSetOpenLoop(.25);
-        shooter.indexerSetOpenLoop(.5);
-      }
+	      shooter.shooterSetOpenLoop(Math.abs(estimateRPM / 6000));
+      // } else {
+        // //wimpy shot
+        // shooter.shooterSetOpenLoop(.25);
+        // shooter.indexerSetOpenLoop(.5);
+      // }
     } else {
       //turn off
       shooter.shooterSetOpenLoop(0);
@@ -67,6 +66,6 @@ public class Shoot extends CommandBase{
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

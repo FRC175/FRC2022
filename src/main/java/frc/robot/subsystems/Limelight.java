@@ -124,9 +124,9 @@ public final class Limelight extends SubsystemBase {
         double RPMupper3 = 3600;
         double RPMupper4 = 3700;
         double RPMlower1 = 2000;
-        double RPMlower2 = 2500;
-        double RPMlower3 = 3000;
-        double RPMlower4 = 3500;
+        double RPMlower2 = 3000;
+        double RPMlower3 = 3200;
+        double RPMlower4 = 3400;
 
         double estimateRPM;
 

@@ -8,7 +8,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.ShootDelay;
 import frc.robot.commands.auto.DriveAndShoot;
 import frc.robot.commands.auto.DriveTarmac;
 import frc.robot.models.AdvancedXboxController;
@@ -103,8 +105,8 @@ public class RobotContainer {
 
     // shooter.setDefaultCommand(
     //   new RunCommand(() -> {
-    //     double demand = operatorController.getRightY();
-    //     shooter.shooterSetOpenLoop(-Math.abs(demand));
+    //     double demand = driverController.getRightY();
+    //     shooter.shooterSetOpenLoop(Math.abs(demand));
     //     shooter.getShooterRPM();
 
     //   }, shooter
@@ -165,28 +167,27 @@ public class RobotContainer {
 
     //shoot
     new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
-      .whenPressed(new Shoot(shooter, limelight, colorSensor, "upper", true))
+      .whenPressed(new ShootDelay(shooter, limelight, colorSensor, "upper"))
       .whenReleased(() -> {
         shooter.shooterSetOpenLoop(0);
         shooter.indexerSetOpenLoop(0);
       }, shooter);
 
     //shooter wimpy shot manual
-    new XboxButton(operatorController, AdvancedXboxController.Button.Y)
-      .whileHeld(() -> {
-        shooter.shooterSetOpenLoop(.25);
-        shooter.indexerSetOpenLoop(.5);
-      }, shooter)
-      .whenReleased(() -> {
-        shooter.shooterSetOpenLoop(0);
-        shooter.indexerSetOpenLoop(0);
-      }, shooter);
+    // new XboxButton(operatorController, AdvancedXboxController.Button.Y)
+    //   .whileHeld(() -> {
+    //     shooter.shooterSetOpenLoop(.25);
+    //     shooter.indexerSetOpenLoop(.5);
+    //   }, shooter)
+    //   .whenReleased(new Shoot(shooter, limelight, colorSensor, "upper", false));
     }
 
 
   private void configureAutoChooser() {
     autoChooser.setDefaultOption("DriveTarmac", new DriveTarmac(drive));
     autoChooser.addOption("DriveAndShoot", new DriveAndShoot(drive, shooter, limelight, colorSensor, "upper"));
+
+    SmartDashboard.putData(autoChooser);
   }
 
   public Command getAutoMode() {

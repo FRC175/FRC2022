@@ -8,7 +8,7 @@ public class DriveTarmac extends SequentialCommandGroup{
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     public DriveTarmac(Drive drive) {
       addCommands(
-              new DriveC(drive, 40)
+              new DriveC(drive, 45)
       );
   }
 }

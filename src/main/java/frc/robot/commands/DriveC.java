@@ -31,9 +31,9 @@ public class DriveC extends CommandBase{
   @Override
   public void execute() {
       while (drive.rightCounts() <= counts) {
-        if (drive.getRange() > 30) {
+        // if (drive.getRange() > 30) {
           drive.accelDrive(0.5, 0);
-        }
+        // }
       }
   }
 
