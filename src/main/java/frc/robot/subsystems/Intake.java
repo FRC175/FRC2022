@@ -40,7 +40,6 @@ public final class Intake extends SubsystemBase {
 
     public void deploy(boolean deploy) {
       deployer.set(deploy ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
-      intakeMotor.set(-0.20);
     }
 
     @Override

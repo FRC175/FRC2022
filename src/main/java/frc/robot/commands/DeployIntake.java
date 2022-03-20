@@ -1,46 +1,39 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Intake;
 
-public class DriveC extends CommandBase{
+
+public class DeployIntake extends CommandBase{
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Drive drive;
-  private final int counts;
+  private final Intake intake;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new RevIndexer command.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public DriveC(Drive drive, int counts) {
-    this.drive = drive;
-    this.counts = counts;
+  public DeployIntake(Intake intake) {
+      this.intake = intake;
 
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(drive);
+      addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-      drive.resetSensors();
+      intake.resetSensors();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      while (drive.rightCounts() <= counts) {
-        // if (drive.getRange() > 30) {
-          drive.arcadeDrive(0.5, 0);
-        // }
-      }
+      intake.deploy(false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drive.arcadeDrive(0, 0);
   }
 
   // Returns true when the command should end.

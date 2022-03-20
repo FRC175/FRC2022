@@ -9,17 +9,19 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.Shoot;
+import frc.robot.commands.RevIndexer;
 import frc.robot.commands.ShootDelay;
 import frc.robot.commands.auto.DriveAndShoot;
 import frc.robot.commands.auto.DriveTarmac;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.models.XboxButton;
+import frc.robot.models.AdvancedXboxController.Button;
 // import frc.robot.positions.LEDPattern;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Shuffleboard;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ColorSensor;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,6 +45,7 @@ public class RobotContainer {
   private final Limelight limelight;
   private final Shooter shooter;
   private final ColorSensor colorSensor; 
+  private final Shuffleboard shuffleboard;
   private final AdvancedXboxController driverController;
   private final AdvancedXboxController operatorController;
   private final SendableChooser<Command> autoChooser;
@@ -59,6 +62,7 @@ public class RobotContainer {
     shooter = Shooter.getInstance();
     limelight = Limelight.getInstance();
     colorSensor = ColorSensor.getInstance();
+    shuffleboard = Shuffleboard.getInstance();
 
     autoChooser = new SendableChooser<>();
     inverse = false; 
@@ -74,6 +78,8 @@ public class RobotContainer {
 
     // Configure auto mode
     configureAutoChooser();
+
+    limelight.turnOffLED();
   }
 
   public static RobotContainer getInstance() {
@@ -119,6 +125,10 @@ public class RobotContainer {
         colorSensor.getColorString();
       }, colorSensor)
     );
+
+    shuffleboard.setDefaultCommand(
+      new RunCommand(() -> shuffleboard.logShooter(), shuffleboard)
+    );
   }
 
   public static double getVoltage() {
@@ -136,9 +146,9 @@ public class RobotContainer {
       .whileHeld(() -> drive.shift(true), drive)
       .whenReleased(() -> drive.shift(false), drive);
 
-    //inverse drive
-    new XboxButton(driverController, AdvancedXboxController.Button.B)
-      .whileHeld(() -> inverse = inverse ? false : true);
+    // //inverse drive
+    // new XboxButton(driverController, AdvancedXboxController.Button.B)
+    //   .whileHeld(() -> inverse = inverse ? false : true);
 
     //intake spin
     new XboxButton(operatorController, AdvancedXboxController.Trigger.LEFT)
@@ -157,35 +167,53 @@ public class RobotContainer {
 
     //lift up
     new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_BUMPER)
-      .whileHeld(() -> lift.setLiftOpenLoop(0.5, 0.5), lift)
+      .whileHeld(() -> lift.setLiftOpenLoop(0.66, 0.66), lift)
       .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
 
     //lift down
     new XboxButton(operatorController, AdvancedXboxController.Button.LEFT_BUMPER)
-      .whileHeld(() -> lift.setLiftOpenLoop(-0.5, -0.5), lift)
+      .whileHeld(() -> lift.setLiftOpenLoop(-0.66, -0.66), lift)
       .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
 
     //shoot
     new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
-      .whenPressed(new ShootDelay(shooter, limelight, colorSensor, "upper"))
-      .whenReleased(() -> {
-        shooter.shooterSetOpenLoop(0);
-        shooter.indexerSetOpenLoop(0);
-      }, shooter);
+      .whileHeld(() -> shooter.indexerSetOpenLoop(0.4), shooter)
+      .whenReleased(() -> shooter.turnOffShooter(), shooter);
 
-    //shooter wimpy shot manual
-    // new XboxButton(operatorController, AdvancedXboxController.Button.Y)
-    //   .whileHeld(() -> {
-    //     shooter.shooterSetOpenLoop(.25);
-    //     shooter.indexerSetOpenLoop(.5);
-    //   }, shooter)
-    //   .whenReleased(new Shoot(shooter, limelight, colorSensor, "upper", false));
+    // Upper hub
+    new XboxButton(operatorController, AdvancedXboxController.Button.Y)
+      .whileHeld(() -> shooter.shooterSetOpenLoop(0.6), shooter)
+      .whenReleased(() -> shooter.shooterSetOpenLoop(0), shooter);
+
+    new XboxButton(operatorController, AdvancedXboxController.Button.B)
+      .whileHeld(() -> shooter.shooterSetOpenLoop(0.4))
+      .whenReleased(() -> shooter.turnOffShooter(), shooter);
+    
+    // Lower hub
+    new XboxButton(operatorController, AdvancedXboxController.Button.A)
+      .whileHeld(() -> shooter.shooterSetOpenLoop(0.33))
+      .whenReleased(() -> shooter.turnOffShooter(), shooter);
+
+    // shooter wimpy shot manual
+    new XboxButton(operatorController, AdvancedXboxController.Button.X)
+      .whileHeld(() -> {
+        shooter.shooterSetOpenLoop(0.25);
+        shooter.indexerSetOpenLoop(0.5);
+      }, shooter)
+      .whenReleased(() -> shooter.turnOffShooter(), shooter);
+
+    new XboxButton(driverController, AdvancedXboxController.Button.X)
+      .whenPressed(() -> {
+        shooter.shooterSetOpenLoop(-0.5);
+        shooter.indexerSetOpenLoop(-0.5);
+      }, shooter)
+      .whenReleased(() -> shooter.turnOffShooter(), shooter);
     }
 
 
   private void configureAutoChooser() {
-    autoChooser.setDefaultOption("DriveTarmac", new DriveTarmac(drive));
-    autoChooser.addOption("DriveAndShoot", new DriveAndShoot(drive, shooter, limelight, colorSensor, "upper"));
+    autoChooser.addOption("DriveTarmac", new DriveTarmac(drive));
+    autoChooser.setDefaultOption("DriveAndShoot", new DriveAndShoot(drive, shooter, intake));
 
     SmartDashboard.putData(autoChooser);
   }

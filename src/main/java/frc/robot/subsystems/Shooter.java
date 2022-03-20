@@ -16,6 +16,8 @@ public class Shooter extends SubsystemBase {
 
     private static Shooter instance;
 
+    private boolean scoreInUpperHub;
+
 
     private Shooter() {
         indexer = new CANSparkMax(ShooterConstants.SHOOTER_INDEXER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -23,6 +25,8 @@ public class Shooter extends SubsystemBase {
         configureSparks();
 
         shooterWheelEncoder = shooterWheel.getEncoder();
+
+        scoreInUpperHub = false;
     }
 
     public static Shooter getInstance() {
@@ -51,10 +55,21 @@ public class Shooter extends SubsystemBase {
     }
 
     public double getShooterRPM() {
-        SmartDashboard.putNumber("Shooter RPM", -shooterWheelEncoder.getVelocity());
-        return -shooterWheelEncoder.getVelocity();
+        return shooterWheelEncoder.getVelocity();
     }
 
+    public void turnOffShooter() {
+        shooterSetOpenLoop(0);
+        indexerSetOpenLoop(0);
+    }
+
+    public boolean getScoreInUpperHub() {
+        return scoreInUpperHub;
+    }
+
+    public void switchScoreInUpperHub() {
+        scoreInUpperHub = !scoreInUpperHub;
+    }
 
     @Override
     public void resetSensors() {
