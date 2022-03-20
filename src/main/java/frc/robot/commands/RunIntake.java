@@ -1,20 +1,22 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
-public class DeployIntake extends CommandBase{
+public class RunIntake extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Intake intake;
+  private boolean runIntake;
 
   /**
-   * Creates a new DeployIntake command.
+   * Creates a new RunIntake command.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public DeployIntake(Intake intake) {
+  public RunIntake(Intake intake, boolean runIntake) {
       this.intake = intake;
+      this.runIntake = runIntake;
 
       addRequirements(intake);
   }
@@ -22,13 +24,15 @@ public class DeployIntake extends CommandBase{
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-      intake.resetSensors();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      intake.deploy(false);
+
+		intake.setIntakeOpenLoop(runIntake ? 0.4 : 0);
+
   }
 
   // Called once the command ends or is interrupted.

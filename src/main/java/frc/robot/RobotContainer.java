@@ -9,13 +9,11 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.RevIndexer;
-import frc.robot.commands.ShootDelay;
-import frc.robot.commands.auto.DriveAndShoot;
 import frc.robot.commands.auto.DriveTarmac;
+import frc.robot.commands.auto.LowGoalAndDrive;
+import frc.robot.commands.auto.HighGoalAndDrive;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.models.XboxButton;
-import frc.robot.models.AdvancedXboxController.Button;
 // import frc.robot.positions.LEDPattern;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
@@ -212,8 +210,9 @@ public class RobotContainer {
 
 
   private void configureAutoChooser() {
+    autoChooser.setDefaultOption("HighGoalAndShoot", new HighGoalAndDrive(drive, shooter, intake));
+    autoChooser.addOption("LowGoalAndShoot", new LowGoalAndDrive(drive, shooter, intake));
     autoChooser.addOption("DriveTarmac", new DriveTarmac(drive));
-    autoChooser.setDefaultOption("DriveAndShoot", new DriveAndShoot(drive, shooter, intake));
 
     SmartDashboard.putData(autoChooser);
   }

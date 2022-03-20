@@ -6,13 +6,15 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.DeployIntake;
+import frc.robot.commands.DriveAuto;
 import frc.robot.commands.RevIndexer;
 import frc.robot.commands.RevShooter;
+import frc.robot.commands.TurnOffShooter;
 
 
-public final class DriveAndShoot extends SequentialCommandGroup {
+public final class LowGoalAndDrive extends SequentialCommandGroup {
 
-    public DriveAndShoot(Drive drive, Shooter shooter, Intake intake) {
+    public LowGoalAndDrive(Drive drive, Shooter shooter, Intake intake) {
 
         addCommands(
             new DeployIntake(intake),
@@ -20,7 +22,8 @@ public final class DriveAndShoot extends SequentialCommandGroup {
             new RevShooter(shooter, 0.33, 2000),
             new RevIndexer(shooter),
             new WaitCommand(1),
-            new DriveTarmac(drive)
+            new TurnOffShooter(shooter),
+            new DriveAuto(drive, 70)
         );
     }
 

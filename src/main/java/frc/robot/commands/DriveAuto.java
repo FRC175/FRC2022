@@ -3,7 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drive;
 
-public class DriveC extends CommandBase{
+public class DriveAuto extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Drive drive;
   private final int counts;
@@ -13,7 +13,7 @@ public class DriveC extends CommandBase{
    *
    * @param subsystem The subsystem used by this command.
    */
-  public DriveC(Drive drive, int counts) {
+  public DriveAuto(Drive drive, int counts) {
     this.drive = drive;
     this.counts = counts;
 
