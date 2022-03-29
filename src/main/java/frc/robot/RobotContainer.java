@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.RevShooter;
+import frc.robot.commands.Shoot;
+import frc.robot.commands.TurnOffShooter;
 import frc.robot.commands.auto.DriveTarmac;
 import frc.robot.commands.auto.LowGoalAndDrive;
 import frc.robot.commands.auto.HighGoalAndDrive;
@@ -76,8 +79,6 @@ public class RobotContainer {
 
     // Configure auto mode
     configureAutoChooser();
-
-    limelight.turnOffLED();
   }
 
   public static RobotContainer getInstance() {
@@ -107,15 +108,13 @@ public class RobotContainer {
       }, drive ).andThen(() -> drive.arcadeDrive(0, 0) , drive)
     );
 
-    // shooter.setDefaultCommand(
-    //   new RunCommand(() -> {
-    //     double demand = driverController.getRightY();
-    //     shooter.shooterSetOpenLoop(Math.abs(demand));
-    //     shooter.getShooterRPM();
-
-    //   }, shooter
-    //   ).andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
-    // );
+    shooter.setDefaultCommand(
+      new RunCommand(() -> {
+        double demand = operatorController.getRightY();
+        shooter.shooterSetOpenLoop(Math.abs(demand));
+      }, shooter
+      ).andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
+    );
 
     colorSensor.setDefaultCommand(
       new RunCommand(() -> {
@@ -165,32 +164,32 @@ public class RobotContainer {
 
     //lift up
     new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_BUMPER)
-      .whileHeld(() -> lift.setLiftOpenLoop(0.66, 0.66), lift)
-      .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
+      .whileHeld(() -> lift.setLiftOpenLoop(1), lift)
+      .whenReleased(() -> lift.setLiftOpenLoop(0), lift);
 
     //lift down
     new XboxButton(operatorController, AdvancedXboxController.Button.LEFT_BUMPER)
-      .whileHeld(() -> lift.setLiftOpenLoop(-0.66, -0.66), lift)
-      .whenReleased(() -> lift.setLiftOpenLoop(0, 0), lift);
+      .whileHeld(() -> lift.setLiftOpenLoop(-1), lift)
+      .whenReleased(() -> lift.setLiftOpenLoop(0), lift);
 
     //shoot
-    new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
-      .whileHeld(() -> shooter.indexerSetOpenLoop(0.4), shooter)
-      .whenReleased(() -> shooter.turnOffShooter(), shooter);
+    // new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
+    //   .whileHeld(new Shoot(shooter))
+    //   .whenReleased(new TurnOffShooter(shooter));
 
     // Upper hub
-    new XboxButton(operatorController, AdvancedXboxController.Button.Y)
-      .whileHeld(() -> shooter.shooterSetOpenLoop(0.6), shooter)
-      .whenReleased(() -> shooter.shooterSetOpenLoop(0), shooter);
+    // new XboxButton(operatorController, AdvancedXboxController.Button.Y)
+    //   .whileHeld(() -> shooter.shooterSetOpenLoop(0.6), shooter)
+    //   .whenReleased(() -> shooter.shooterSetOpenLoop(0), shooter);
 
-    new XboxButton(operatorController, AdvancedXboxController.Button.B)
-      .whileHeld(() -> shooter.shooterSetOpenLoop(0.4))
-      .whenReleased(() -> shooter.turnOffShooter(), shooter);
+    // new XboxButton(operatorController, AdvancedXboxController.Button.B)
+    //   .whileHeld(() -> shooter.shooterSetOpenLoop(0.4))
+    //   .whenReleased(() -> shooter.turnOffShooter(), shooter);
     
     // Lower hub
-    new XboxButton(operatorController, AdvancedXboxController.Button.A)
-      .whileHeld(() -> shooter.shooterSetOpenLoop(0.33))
-      .whenReleased(() -> shooter.turnOffShooter(), shooter);
+    // new XboxButton(operatorController, AdvancedXboxController.Button.A)
+    //   .whileHeld(() -> shooter.shooterSetOpenLoop(0.33))
+    //   .whenReleased(() -> shooter.turnOffShooter(), shooter);
 
     // shooter wimpy shot manual
     new XboxButton(operatorController, AdvancedXboxController.Button.X)
@@ -206,6 +205,13 @@ public class RobotContainer {
         shooter.indexerSetOpenLoop(-0.5);
       }, shooter)
       .whenReleased(() -> shooter.turnOffShooter(), shooter);
+
+    new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
+      .whenPressed(new Shoot(shooter, (limelight.calculateRPM(limelight.distance(), "upper") / 6000), limelight.calculateRPM(limelight.distance(), "upper")))
+      .whenReleased(new TurnOffShooter(shooter));
+      
+    new XboxButton(operatorController, AdvancedXboxController.Button.A)
+      .whenPressed(() -> limelight.turnOnLED(), limelight);
     }
 
 

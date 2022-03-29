@@ -7,9 +7,11 @@ public class Shuffleboard extends SubsystemBase {
     private static Shuffleboard instance;
 
     private Shooter shooter;
+    private Limelight limelight;
 
     private Shuffleboard() {
         shooter = Shooter.getInstance();
+        limelight = Limelight.getInstance();
     }
 
     public static Shuffleboard getInstance() {
@@ -22,6 +24,7 @@ public class Shuffleboard extends SubsystemBase {
 
     public void logShooter() {
         SmartDashboard.putNumber("Shooter RPM", shooter.getShooterRPM());
+        SmartDashboard.putNumber("Distance", limelight.distance());
     }
 
     @Override

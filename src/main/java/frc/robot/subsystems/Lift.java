@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -43,13 +44,15 @@ public final class Lift extends SubsystemBase {
         rightPrimary.configFactoryDefault();
         // centralPrimary.configFactoryDefault();
 
+        rightPrimary.follow(leftPrimary);
+
         leftEncoder.configFactoryDefault();
         rightEncoder.configFactoryDefault();
         // centralEncoder.configFactoryDefault();
     }
 
-    // double maxCounts = 20.75;
-    public void setLiftOpenLoop(double leftDemand, double rightDemand) {
+    // double maxCounts = 20.75;-+
+    public void setLiftOpenLoop(double demand) {
         // if (leftEncoder.getPosition() > maxCounts) {
         //     leftPrimary.set(ControlMode.PercentOutput, -0.5);
         //     rightPrimary.set(ControlMode.PercentOutput, -0.5);
@@ -57,8 +60,7 @@ public final class Lift extends SubsystemBase {
         //     leftPrimary.set(ControlMode.PercentOutput, 0.5);
         //     rightPrimary.set(ControlMode.PercentOutput, 0.5);
         // } else {
-            leftPrimary.set(ControlMode.PercentOutput, leftDemand);
-            rightPrimary.set(ControlMode.PercentOutput, rightDemand == 0 ? rightDemand : (rightDemand > 0 ? rightDemand - 0.08 : rightDemand + 0.08));
+            leftPrimary.set(ControlMode.PercentOutput, demand);
         // }
     }
 

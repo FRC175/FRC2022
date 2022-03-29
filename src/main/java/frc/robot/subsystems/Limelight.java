@@ -103,7 +103,7 @@ public final class Limelight extends SubsystemBase {
         //height from ground tape
         double h2 = 102;
         //Mounting angle
-        double a1 = 45;
+        double a1 = 40;
         //Angle from camera to tape
         double a2 = getVerticalOffset();
         // distance equation results in inches
@@ -114,14 +114,14 @@ public final class Limelight extends SubsystemBase {
 
     public double calculateRPM(double distance, String hubToScore) {
         // Distance Constants
-        double d1 = 36;
-        double d2 = 72;
-        double d3 = 96;
-        double d4 = 108;
+        double d1 = 123;
+        double d2 = 113;
+        double d3 = 103;
+        double d4 = 93;
         // CHANGE THESE VALUES
-        double RPMupper1 = 3300;
-        double RPMupper2 = 3450;
-        double RPMupper3 = 3600;
+        double RPMupper1 = 3600;
+        double RPMupper2 = 3600;
+        double RPMupper3 = 3500;
         double RPMupper4 = 3700;
         double RPMlower1 = 2000;
         double RPMlower2 = 3000;
@@ -141,7 +141,7 @@ public final class Limelight extends SubsystemBase {
                 RPMlower3 * (distance - d1) / (d3 - d1) * (distance - d2) / (d3 - d2) * (distance - d4) / (d3 - d4) +
                 RPMlower4 * (distance - d1) / (d4 - d1) * (distance - d2) / (d4 - d2) * (distance - d3) / (d4 - d3);
         } else {
-            estimateRPM = 1500;
+            estimateRPM = 2000;
         }
 
         return estimateRPM;
