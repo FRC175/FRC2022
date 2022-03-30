@@ -17,6 +17,7 @@ import frc.robot.commands.auto.LowGoalAndDrive;
 import frc.robot.commands.auto.HighGoalAndDrive;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.models.XboxButton;
+import frc.robot.models.AdvancedXboxController.Button;
 // import frc.robot.positions.LEDPattern;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
@@ -108,13 +109,13 @@ public class RobotContainer {
       }, drive ).andThen(() -> drive.arcadeDrive(0, 0) , drive)
     );
 
-    shooter.setDefaultCommand(
-      new RunCommand(() -> {
-        double demand = operatorController.getRightY();
-        shooter.shooterSetOpenLoop(Math.abs(demand));
-      }, shooter
-      ).andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
-    );
+    // shooter.setDefaultCommand(
+    //   new RunCommand(() -> {
+    //     double demand = operatorController.getRightY();
+    //     shooter.shooterSetOpenLoop(Math.abs(demand));
+    //   }, shooter
+    //   ).andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
+    // );
 
     colorSensor.setDefaultCommand(
       new RunCommand(() -> {
@@ -212,6 +213,10 @@ public class RobotContainer {
       
     new XboxButton(operatorController, AdvancedXboxController.Button.A)
       .whenPressed(() -> limelight.turnOnLED(), limelight);
+
+      new XboxButton(operatorController, AdvancedXboxController.Button.B)
+      .whenPressed(new Shoot(shooter, 0.33, 2000))
+      .whenReleased(new TurnOffShooter(shooter));
     }
 
 

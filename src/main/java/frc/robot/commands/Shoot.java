@@ -11,7 +11,7 @@ public class Shoot extends SequentialCommandGroup {
         addCommands(
             new RevShooter(shooter, speed, rpm),
             new RevIndexer(shooter),
-            new WaitCommand(0.5),
+            new WaitCommand(1),
             new TurnOffShooter(shooter)
         );
     }

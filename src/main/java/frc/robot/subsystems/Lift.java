@@ -46,6 +46,9 @@ public final class Lift extends SubsystemBase {
 
         rightPrimary.follow(leftPrimary);
 
+        leftPrimary.setInverted(true);
+        rightPrimary.setInverted(true);
+
         leftEncoder.configFactoryDefault();
         rightEncoder.configFactoryDefault();
         // centralEncoder.configFactoryDefault();

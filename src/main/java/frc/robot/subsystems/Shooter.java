@@ -12,7 +12,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Shooter extends SubsystemBase {
     private final CANSparkMax indexer;
     private final CANSparkMax shooterWheel;
+    private final CANSparkMax shooterSlaveWheel;
     private final RelativeEncoder shooterWheelEncoder;
+    
 
     private static Shooter instance;
 
@@ -22,6 +24,7 @@ public class Shooter extends SubsystemBase {
     private Shooter() {
         indexer = new CANSparkMax(ShooterConstants.SHOOTER_INDEXER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         shooterWheel = new CANSparkMax(ShooterConstants.SHOOTER_WHEEL_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        shooterSlaveWheel = new CANSparkMax(ShooterConstants.SHOOTER_WHEEL_SLAVE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         configureSparks();
 
         shooterWheelEncoder = shooterWheel.getEncoder();
@@ -42,7 +45,13 @@ public class Shooter extends SubsystemBase {
         indexer.setInverted(false);
 
         shooterWheel.restoreFactoryDefaults();
+        shooterSlaveWheel.restoreFactoryDefaults();
         shooterWheel.setInverted(false);
+        shooterSlaveWheel.setInverted(true);
+        
+        
+        
+        
     }
 
     public void indexerSetOpenLoop(double demand) {
@@ -52,6 +61,7 @@ public class Shooter extends SubsystemBase {
     public void shooterSetOpenLoop(double demand) {
         SmartDashboard.putNumber("Demand", demand);
         shooterWheel.set(demand);
+        shooterSlaveWheel.set(demand);
     }
 
     public double getShooterRPM() {
