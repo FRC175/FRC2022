@@ -9,15 +9,15 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.RevShooter;
+import frc.robot.commands.Climb;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.TurnOffShooter;
 import frc.robot.commands.auto.DriveTarmac;
 import frc.robot.commands.auto.LowGoalAndDrive;
+import frc.robot.commands.auto.TwoBall;
 import frc.robot.commands.auto.HighGoalAndDrive;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.models.XboxButton;
-import frc.robot.models.AdvancedXboxController.Button;
 // import frc.robot.positions.LEDPattern;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
@@ -155,13 +155,17 @@ public class RobotContainer {
 
     // deploy intake
     new XboxButton(operatorController, AdvancedXboxController.DPad.DOWN)
-      .whenPressed(() -> intake.deploy(false), intake)
+      .whenPressed(() -> intake.deploy(true), intake)
       .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
 
     // retract intake
     new XboxButton(operatorController, AdvancedXboxController.DPad.UP)
-      .whenPressed(() -> intake.deploy(true), intake)
+      .whenPressed(() -> intake.deploy(false), intake)
       .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
+
+    // Auto climb
+    new XboxButton(driverController, AdvancedXboxController.DPad.UP)
+      .whenPressed(new Climb(lift));
 
     //lift up
     new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_BUMPER)
@@ -173,55 +177,38 @@ public class RobotContainer {
       .whileHeld(() -> lift.setLiftOpenLoop(-1), lift)
       .whenReleased(() -> lift.setLiftOpenLoop(0), lift);
 
-    //shoot
-    // new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
-    //   .whileHeld(new Shoot(shooter))
-    //   .whenReleased(new TurnOffShooter(shooter));
+    // Shoot upper hub (with limelight calculations)
+    new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
+      .whenPressed(new Shoot(shooter, (limelight.calculateRPM(limelight.distance(), "upper") / 6000), limelight.calculateRPM(limelight.distance(), "upper")))
+      .whenReleased(new TurnOffShooter(shooter));
 
-    // Upper hub
-    // new XboxButton(operatorController, AdvancedXboxController.Button.Y)
-    //   .whileHeld(() -> shooter.shooterSetOpenLoop(0.6), shooter)
-    //   .whenReleased(() -> shooter.shooterSetOpenLoop(0), shooter);
-
-    // new XboxButton(operatorController, AdvancedXboxController.Button.B)
-    //   .whileHeld(() -> shooter.shooterSetOpenLoop(0.4))
-    //   .whenReleased(() -> shooter.turnOffShooter(), shooter);
+    // Manual Upper hub shot
+    new XboxButton(operatorController, AdvancedXboxController.Button.Y)
+      .whileHeld(new Shoot(shooter, 0.6, 3600))
+      .whenReleased(new TurnOffShooter(shooter));
     
-    // Lower hub
-    // new XboxButton(operatorController, AdvancedXboxController.Button.A)
-    //   .whileHeld(() -> shooter.shooterSetOpenLoop(0.33))
-    //   .whenReleased(() -> shooter.turnOffShooter(), shooter);
+    // Manual Lower hub shot
+    new XboxButton(operatorController, AdvancedXboxController.Button.B)
+      .whenPressed(new Shoot(shooter, 0.33, 2000))
+      .whenReleased(new TurnOffShooter(shooter));
 
-    // shooter wimpy shot manual
-    new XboxButton(operatorController, AdvancedXboxController.Button.X)
-      .whileHeld(() -> {
-        shooter.shooterSetOpenLoop(0.25);
-        shooter.indexerSetOpenLoop(0.5);
-      }, shooter)
-      .whenReleased(() -> shooter.turnOffShooter(), shooter);
-
+    // Reverse shooter motors
     new XboxButton(driverController, AdvancedXboxController.Button.X)
       .whenPressed(() -> {
         shooter.shooterSetOpenLoop(-0.5);
         shooter.indexerSetOpenLoop(-0.5);
       }, shooter)
-      .whenReleased(() -> shooter.turnOffShooter(), shooter);
-
-    new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
-      .whenPressed(new Shoot(shooter, (limelight.calculateRPM(limelight.distance(), "upper") / 6000), limelight.calculateRPM(limelight.distance(), "upper")))
       .whenReleased(new TurnOffShooter(shooter));
       
+    // Toggle Limelight LEDs
     new XboxButton(operatorController, AdvancedXboxController.Button.A)
       .whenPressed(() -> limelight.turnOnLED(), limelight);
-
-      new XboxButton(operatorController, AdvancedXboxController.Button.B)
-      .whenPressed(new Shoot(shooter, 0.33, 2000))
-      .whenReleased(new TurnOffShooter(shooter));
     }
 
 
   private void configureAutoChooser() {
     autoChooser.setDefaultOption("HighGoalAndShoot", new HighGoalAndDrive(drive, shooter, intake));
+    autoChooser.addOption("TwoBall", new TwoBall(drive, shooter, intake));
     autoChooser.addOption("LowGoalAndShoot", new LowGoalAndDrive(drive, shooter, intake));
     autoChooser.addOption("DriveTarmac", new DriveTarmac(drive));
 

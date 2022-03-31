@@ -123,26 +123,11 @@ public final class Limelight extends SubsystemBase {
         double RPMupper2 = 3600;
         double RPMupper3 = 3500;
         double RPMupper4 = 3700;
-        double RPMlower1 = 2000;
-        double RPMlower2 = 3000;
-        double RPMlower3 = 3200;
-        double RPMlower4 = 3400;
 
-        double estimateRPM;
-
-        if (hubToScore.toLowerCase() == "upper") {
-            estimateRPM = RPMupper1 * (distance - d2) / (d1 - d2) * (distance - d3) / (d1 - d3) * (distance - d4) / (d1 - d4) +
-                RPMupper2 * (distance - d1) / (d2 - d1) * (distance - d3) / (d2 - d3) * (distance - d4) / (d2 - d4) +
-                RPMupper3 * (distance - d1) / (d3 - d1) * (distance - d2) / (d3 - d2) * (distance - d4) / (d3 - d4) +
-                RPMupper4 * (distance - d1) / (d4 - d1) * (distance - d2) / (d4 - d2) * (distance - d3) / (d4 - d3);
-        } else if (hubToScore.toLowerCase() == "lower") {
-            estimateRPM = RPMlower1 * (distance - d2) / (d1 - d2) * (distance - d3) / (d1 - d3) * (distance - d4) / (d1 - d4) +
-                RPMlower2 * (distance - d1) / (d2 - d1) * (distance - d3) / (d2 - d3) * (distance - d4) / (d2 - d4) +
-                RPMlower3 * (distance - d1) / (d3 - d1) * (distance - d2) / (d3 - d2) * (distance - d4) / (d3 - d4) +
-                RPMlower4 * (distance - d1) / (d4 - d1) * (distance - d2) / (d4 - d2) * (distance - d3) / (d4 - d3);
-        } else {
-            estimateRPM = 2000;
-        }
+        double estimateRPM = RPMupper1 * (distance - d2) / (d1 - d2) * (distance - d3) / (d1 - d3) * (distance - d4) / (d1 - d4) +
+            RPMupper2 * (distance - d1) / (d2 - d1) * (distance - d3) / (d2 - d3) * (distance - d4) / (d2 - d4) +
+            RPMupper3 * (distance - d1) / (d3 - d1) * (distance - d2) / (d3 - d2) * (distance - d4) / (d3 - d4) +
+            RPMupper4 * (distance - d1) / (d4 - d1) * (distance - d2) / (d4 - d2) * (distance - d3) / (d4 - d3);
 
         return estimateRPM;
     }

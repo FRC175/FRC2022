@@ -1,11 +1,11 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
-import com.ctre.phoenix.sensors.CANCoder;
 
 import frc.robot.Constants.LiftConstants;
 
@@ -13,7 +13,7 @@ public final class Lift extends SubsystemBase {
 
     private final TalonSRX leftPrimary, rightPrimary;
 
-    private final CANCoder leftEncoder, rightEncoder;
+    private final DutyCycleEncoder leftEncoder, rightEncoder;
 
     private static Lift instance;
 
@@ -22,13 +22,11 @@ public final class Lift extends SubsystemBase {
         rightPrimary = new TalonSRX(LiftConstants.RIGHT_PRIMARY_LIFT);
         // centralPrimary = new TalonSRX(LiftConstants.CENTRAL_LIFT);
 
-        leftEncoder = new CANCoder(LiftConstants.LEFT_PRIMARY_LIFT);
-        rightEncoder = new CANCoder(LiftConstants.RIGHT_PRIMARY_LIFT);
+        leftEncoder = new DutyCycleEncoder(2);
+        rightEncoder = new DutyCycleEncoder(1);
         // centralEncoder = new CANCoder(LiftConstants.CENTRAL_LIFT);
 
         configureTalons();
-
-        resetSensors();
     }
 
     public static Lift getInstance() {
@@ -44,27 +42,25 @@ public final class Lift extends SubsystemBase {
         rightPrimary.configFactoryDefault();
         // centralPrimary.configFactoryDefault();
 
-        rightPrimary.follow(leftPrimary);
-
         leftPrimary.setInverted(true);
         rightPrimary.setInverted(true);
-
-        leftEncoder.configFactoryDefault();
-        rightEncoder.configFactoryDefault();
-        // centralEncoder.configFactoryDefault();
     }
 
-    // double maxCounts = 20.75;-+
     public void setLiftOpenLoop(double demand) {
-        // if (leftEncoder.getPosition() > maxCounts) {
-        //     leftPrimary.set(ControlMode.PercentOutput, -0.5);
-        //     rightPrimary.set(ControlMode.PercentOutput, -0.5);
-        // } else if (leftEncoder.getPosition() < 0) {
-        //     leftPrimary.set(ControlMode.PercentOutput, 0.5);
-        //     rightPrimary.set(ControlMode.PercentOutput, 0.5);
-        // } else {
+        if (Math.abs(leftEncoder.get()) <= 5.7) {
             leftPrimary.set(ControlMode.PercentOutput, demand);
-        // }
+        } else {
+            leftPrimary.set(ControlMode.PercentOutput, 0);
+        }
+        
+        if (rightEncoder.get() <= 5.7) {
+            rightPrimary.set(ControlMode.PercentOutput, demand);
+        } else {
+            rightPrimary.set(ControlMode.PercentOutput, 0);
+        }
+
+        SmartDashboard.putNumber("Left Encoder", getLeftEncoderCounts().doubleValue());
+        SmartDashboard.putNumber("Right Encoder", getRightEncoderCounts().doubleValue());
     }
 
     // public void setCentralOpenLoop(double centralDemand) {
@@ -77,9 +73,17 @@ public final class Lift extends SubsystemBase {
     //     }
     // }
 
-    public void resetSensors() {
-        rightEncoder.setPosition(0);
-        leftEncoder.setPosition(0);
+    public Number getLeftEncoderCounts() {
+        return leftEncoder.get();
+    }
+
+    public Number getRightEncoderCounts() {
+        return rightEncoder.get();
+    }
+
+    public void resetEncoders() {
+        leftEncoder.reset();
+        rightEncoder.reset();
         // centralEncoder.setPosition(0);
     }
 

@@ -39,7 +39,7 @@ public final class Intake extends SubsystemBase {
     }
 
     public void deploy(boolean deploy) {
-      deployer.set(deploy ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+      deployer.set(deploy ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
     }
 
     @Override
