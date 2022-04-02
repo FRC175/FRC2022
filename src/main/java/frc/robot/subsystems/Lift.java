@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.sensors.CANCoder;
 
 import frc.robot.Constants.LiftConstants;
 
@@ -13,7 +14,7 @@ public final class Lift extends SubsystemBase {
 
     private final TalonSRX leftPrimary, rightPrimary;
 
-    private final DutyCycleEncoder leftEncoder, rightEncoder;
+    private final CANCoder leftEncoder, rightEncoder;
 
     private static Lift instance;
 
@@ -22,9 +23,16 @@ public final class Lift extends SubsystemBase {
         rightPrimary = new TalonSRX(LiftConstants.RIGHT_PRIMARY_LIFT);
         // centralPrimary = new TalonSRX(LiftConstants.CENTRAL_LIFT);
 
-        leftEncoder = new DutyCycleEncoder(2);
-        rightEncoder = new DutyCycleEncoder(1);
+        leftEncoder = new CANCoder(0);
+        rightEncoder = new CANCoder(1);
+
+        // leftEncoder = new DutyCycleEncoder(2);
+        // rightEncoder = new DutyCycleEncoder(1);
         // centralEncoder = new CANCoder(LiftConstants.CENTRAL_LIFT);
+        // leftEncoder.setDutyCycleRange(0, 100);
+        // rightEncoder.setDutyCycleRange(0, 1);
+
+        resetEncoders();
 
         configureTalons();
     }
@@ -44,23 +52,50 @@ public final class Lift extends SubsystemBase {
 
         leftPrimary.setInverted(true);
         rightPrimary.setInverted(true);
+
+        leftEncoder.configFactoryDefault();
+        rightEncoder.configFactoryDefault();
     }
 
+    private double maxCounts = 30;
+
     public void setLiftOpenLoop(double demand) {
-        if (Math.abs(leftEncoder.get()) <= 5.7) {
-            leftPrimary.set(ControlMode.PercentOutput, demand);
+        // if (Math.abs(leftEncoder.get()) <= 5.7) {
+        //     leftPrimary.set(ControlMode.PercentOutput, demand);
+        // } else {
+        //     leftPrimary.set(ControlMode.PercentOutput, 0);
+        // }
+        
+        // if (rightEncoder.get() <= 5.7) {
+        //     rightPrimary.set(ControlMode.PercentOutput, demand);
+        // } else {
+        //     rightPrimary.set(ControlMode.PercentOutput, 0);
+        // }
+        if (demand < 0) {
+            if (leftEncoder.getPosition() <= maxCounts) {
+                leftPrimary.set(ControlMode.PercentOutput, 0);
+            } else {
+                leftPrimary.set(ControlMode.PercentOutput, demand);
+            }
+            if (rightEncoder.getPosition() <= maxCounts) {
+                rightPrimary.set(ControlMode.PercentOutput, 0);
+            } else {
+                rightPrimary.set(ControlMode.PercentOutput, demand);
+            }
+        } else if (demand > 0) {
+            if (leftEncoder.getPosition() >= maxCounts) {
+                leftPrimary.set(ControlMode.PercentOutput, 0);
+            } else {
+                leftPrimary.set(ControlMode.PercentOutput, demand);
+            }
+            if (rightEncoder.getPosition() >= maxCounts) {
+                rightPrimary.set(ControlMode.PercentOutput, 0);
+            } else {
+                rightPrimary.set(ControlMode.PercentOutput, demand);
+            }
         } else {
             leftPrimary.set(ControlMode.PercentOutput, 0);
         }
-        
-        if (rightEncoder.get() <= 5.7) {
-            rightPrimary.set(ControlMode.PercentOutput, demand);
-        } else {
-            rightPrimary.set(ControlMode.PercentOutput, 0);
-        }
-
-        SmartDashboard.putNumber("Left Encoder", getLeftEncoderCounts().doubleValue());
-        SmartDashboard.putNumber("Right Encoder", getRightEncoderCounts().doubleValue());
     }
 
     // public void setCentralOpenLoop(double centralDemand) {
@@ -73,17 +108,34 @@ public final class Lift extends SubsystemBase {
     //     }
     // }
 
-    public Number getLeftEncoderCounts() {
-        return leftEncoder.get();
-    }
+    // public double getLeftEncoderCounts() {
+    //     return leftEncoder.getAbsolutePosition();
+    // }
 
-    public Number getRightEncoderCounts() {
-        return rightEncoder.get();
+    // public double getRightEncoderCounts() {
+    //     return rightEncoder.getAbsolutePosition();
+    // }
+
+    // public double getLeftEncoderOffset() {
+    //     return leftEncoder.getPositionOffset();
+    // }
+
+    // public double getRightEncoderOffset() {
+    //     return rightEncoder.getPositionOffset();
+    // }
+
+    public double getRightPosition() {
+        return rightEncoder.getPosition();
+    }
+    public double getLeftPosition() {
+        return leftEncoder.getPosition();
     }
 
     public void resetEncoders() {
-        leftEncoder.reset();
-        rightEncoder.reset();
+        // leftEncoder.reset();
+        // rightEncoder.reset();
+        leftEncoder.setPosition(0);
+        rightEncoder.setPosition(0);
         // centralEncoder.setPosition(0);
     }
 

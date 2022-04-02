@@ -41,8 +41,9 @@ public class Climb extends CommandBase {
   }
 
   // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return Math.abs(lift.getLeftEncoderCounts().doubleValue()) >= maxCounts && lift.getRightEncoderCounts().doubleValue() >= maxCounts;
-  }
+  //@Override
+  //public void isFinished() {
+    // return Math.abs(lift.getLeftEncoderCounts().doubleValue()) >= maxCounts && lift.getRightEncoderCounts().doubleValue() >= maxCounts;
+    //return true
+  //}
 }

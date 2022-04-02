@@ -125,7 +125,10 @@ public class RobotContainer {
     );
 
     shuffleboard.setDefaultCommand(
-      new RunCommand(() -> shuffleboard.logShooter(), shuffleboard)
+      new RunCommand(() -> {
+        shuffleboard.logShooter();
+        shuffleboard.logClimb();
+      }, shuffleboard)
     );
   }
 
