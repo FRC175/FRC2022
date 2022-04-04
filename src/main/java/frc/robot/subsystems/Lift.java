@@ -14,7 +14,7 @@ public final class Lift extends SubsystemBase {
 
     private final TalonSRX leftPrimary, rightPrimary;
 
-    private final CANCoder leftEncoder, rightEncoder;
+    private final DutyCycleEncoder leftEncoder, rightEncoder;
 
     private static Lift instance;
 
@@ -23,11 +23,11 @@ public final class Lift extends SubsystemBase {
         rightPrimary = new TalonSRX(LiftConstants.RIGHT_PRIMARY_LIFT);
         // centralPrimary = new TalonSRX(LiftConstants.CENTRAL_LIFT);
 
-        leftEncoder = new CANCoder(0);
-        rightEncoder = new CANCoder(1);
+        // leftEncoder = new CANCoder(0);
+        // rightEncoder = new CANCoder(1);
 
-        // leftEncoder = new DutyCycleEncoder(2);
-        // rightEncoder = new DutyCycleEncoder(1);
+        leftEncoder = new DutyCycleEncoder(0);
+        rightEncoder = new DutyCycleEncoder(1);
         // centralEncoder = new CANCoder(LiftConstants.CENTRAL_LIFT);
         // leftEncoder.setDutyCycleRange(0, 100);
         // rightEncoder.setDutyCycleRange(0, 1);
@@ -52,9 +52,6 @@ public final class Lift extends SubsystemBase {
 
         leftPrimary.setInverted(true);
         rightPrimary.setInverted(true);
-
-        leftEncoder.configFactoryDefault();
-        rightEncoder.configFactoryDefault();
     }
 
     private double maxCounts = 30;
@@ -71,31 +68,51 @@ public final class Lift extends SubsystemBase {
         // } else {
         //     rightPrimary.set(ControlMode.PercentOutput, 0);
         // }
-        if (demand < 0) {
-            if (leftEncoder.getPosition() <= maxCounts) {
-                leftPrimary.set(ControlMode.PercentOutput, 0);
+        // if (demand < 0) {
+        //     if (leftEncoder.getPosition() <= maxCounts) {
+        //         leftPrimary.set(ControlMode.PercentOutput, 0);
+        //     } else {
+        //         leftPrimary.set(ControlMode.PercentOutput, demand);
+        //     }
+        //     if (rightEncoder.getPosition() <= maxCounts) {
+        //         rightPrimary.set(ControlMode.PercentOutput, 0);
+        //     } else {
+        //         rightPrimary.set(ControlMode.PercentOutput, demand);
+        //     }
+        // } else if (demand > 0) {
+        //     if (leftEncoder.getPosition() >= maxCounts) {
+        //         leftPrimary.set(ControlMode.PercentOutput, 0);
+        //     } else {
+        //         leftPrimary.set(ControlMode.PercentOutput, demand);
+        //     }
+        //     if (rightEncoder.getPosition() >= maxCounts) {
+        //         rightPrimary.set(ControlMode.PercentOutput, 0);
+        //     } else {
+        //         rightPrimary.set(ControlMode.PercentOutput, demand);
+        //     }
+        // } else {
+        //     leftPrimary.set(ControlMode.PercentOutput, 0);
+        // }
+
+        if (getLeftPosition() > 0 && getLeftPosition() < 3) {
+            System.out.print(demand);
+        } else if (getLeftPosition() < 0) {
+            if (demand <= 0) {
+                System.out.println("0");
             } else {
-                leftPrimary.set(ControlMode.PercentOutput, demand);
+                System.out.println("1");
             }
-            if (rightEncoder.getPosition() <= maxCounts) {
-                rightPrimary.set(ControlMode.PercentOutput, 0);
-            } else {
-                rightPrimary.set(ControlMode.PercentOutput, demand);
-            }
-        } else if (demand > 0) {
-            if (leftEncoder.getPosition() >= maxCounts) {
-                leftPrimary.set(ControlMode.PercentOutput, 0);
-            } else {
-                leftPrimary.set(ControlMode.PercentOutput, demand);
-            }
-            if (rightEncoder.getPosition() >= maxCounts) {
-                rightPrimary.set(ControlMode.PercentOutput, 0);
-            } else {
-                rightPrimary.set(ControlMode.PercentOutput, demand);
-            }
+        } else if (getLeftPosition() > 3) {
+            if (demand >= 0) {
+                System.out.println("0");
         } else {
-            leftPrimary.set(ControlMode.PercentOutput, 0);
+                System.out.println("-1");
+            }
         }
+        System.out.println("working");
+        // leftPrimary.set(ControlMode.PercentOutput, demand);
+        // System.out.println(demand);
+        // rightPrimary.set(ControlMode.PercentOutput, demand);
     }
 
     // public void setCentralOpenLoop(double centralDemand) {
@@ -125,17 +142,15 @@ public final class Lift extends SubsystemBase {
     // }
 
     public double getRightPosition() {
-        return rightEncoder.getPosition();
+        return rightEncoder.getDistance();
     }
     public double getLeftPosition() {
-        return leftEncoder.getPosition();
+        return leftEncoder.getDistance();
     }
 
     public void resetEncoders() {
-        // leftEncoder.reset();
-        // rightEncoder.reset();
-        leftEncoder.setPosition(0);
-        rightEncoder.setPosition(0);
+        leftEncoder.reset();
+        rightEncoder.reset();
         // centralEncoder.setPosition(0);
     }
 
