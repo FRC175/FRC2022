@@ -56,74 +56,37 @@ public final class Lift extends SubsystemBase {
 
     private double maxCounts = 30;
 
+    double demandMutable = 0;
+
     public void setLiftOpenLoop(double demand) {
-        // if (Math.abs(leftEncoder.get()) <= 5.7) {
-        //     leftPrimary.set(ControlMode.PercentOutput, demand);
-        // } else {
-        //     leftPrimary.set(ControlMode.PercentOutput, 0);
-        // }
+
         
-        // if (rightEncoder.get() <= 5.7) {
-        //     rightPrimary.set(ControlMode.PercentOutput, demand);
-        // } else {
-        //     rightPrimary.set(ControlMode.PercentOutput, 0);
-        // }
-        // if (demand < 0) {
-        //     if (leftEncoder.getPosition() <= maxCounts) {
-        //         leftPrimary.set(ControlMode.PercentOutput, 0);
-        //     } else {
-        //         leftPrimary.set(ControlMode.PercentOutput, demand);
-        //     }
-        //     if (rightEncoder.getPosition() <= maxCounts) {
-        //         rightPrimary.set(ControlMode.PercentOutput, 0);
-        //     } else {
-        //         rightPrimary.set(ControlMode.PercentOutput, demand);
-        //     }
-        // } else if (demand > 0) {
-        //     if (leftEncoder.getPosition() >= maxCounts) {
-        //         leftPrimary.set(ControlMode.PercentOutput, 0);
-        //     } else {
-        //         leftPrimary.set(ControlMode.PercentOutput, demand);
-        //     }
-        //     if (rightEncoder.getPosition() >= maxCounts) {
-        //         rightPrimary.set(ControlMode.PercentOutput, 0);
-        //     } else {
-        //         rightPrimary.set(ControlMode.PercentOutput, demand);
-        //     }
-        // } else {
-        //     leftPrimary.set(ControlMode.PercentOutput, 0);
-        // }
 
         if (getLeftPosition() > 0 && getLeftPosition() < 3) {
-            System.out.print(demand);
+            System.out.println(demand);
+            leftPrimary.set(ControlMode.PercentOutput, demand);
+
         } else if (getLeftPosition() < 0) {
             if (demand <= 0) {
                 System.out.println("0");
+                leftPrimary.set(ControlMode.PercentOutput, 0);
             } else {
                 System.out.println("1");
+                leftPrimary.set(ControlMode.PercentOutput, demand);
             }
         } else if (getLeftPosition() > 3) {
             if (demand >= 0) {
                 System.out.println("0");
+                leftPrimary.set(ControlMode.PercentOutput, 0);
         } else {
                 System.out.println("-1");
+                leftPrimary.set(ControlMode.PercentOutput, demand);
             }
         }
+        
         System.out.println("working");
-        // leftPrimary.set(ControlMode.PercentOutput, demand);
-        // System.out.println(demand);
-        // rightPrimary.set(ControlMode.PercentOutput, demand);
+        SmartDashboard.putNumber("Demand", demand);
     }
-
-    // public void setCentralOpenLoop(double centralDemand) {
-    //     if (centralEncoder.getPosition() > maxCounts) {
-    //         centralPrimary.set(ControlMode.PercentOutput, -1);
-    //     } else if (leftEncoder.getPosition() < 0) {
-    //         centralPrimary.set(ControlMode.PercentOutput, 1);
-    //     } else {
-    //         centralPrimary.set(ControlMode.PercentOutput, centralDemand);
-    //     }
-    // }
 
     // public double getLeftEncoderCounts() {
     //     return leftEncoder.getAbsolutePosition();
@@ -143,6 +106,7 @@ public final class Lift extends SubsystemBase {
 
     public double getRightPosition() {
         return rightEncoder.getDistance();
+        
     }
     public double getLeftPosition() {
         return leftEncoder.getDistance();

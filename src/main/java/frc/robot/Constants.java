@@ -53,4 +53,8 @@ public final class Constants {
         public static final int SHOOTER_WHEEL_PORT = 16;
         public static final int SHOOTER_WHEEL_SLAVE_PORT = 15;
     }
+
+    public static final class LEDConstants {
+        public static final int LED_PORT = 0;
+    }
 }

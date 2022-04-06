@@ -18,9 +18,12 @@ import frc.robot.commands.auto.TwoBall;
 import frc.robot.commands.auto.HighGoalAndDrive;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.models.XboxButton;
+import frc.robot.positions.LEDColor;
+import frc.robot.positions.LEDPattern;
 // import frc.robot.positions.LEDPattern;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shuffleboard;
@@ -48,6 +51,7 @@ public class RobotContainer {
   private final Shooter shooter;
   private final ColorSensor colorSensor; 
   private final Shuffleboard shuffleboard;
+  private final LED led;
   private final AdvancedXboxController driverController;
   private final AdvancedXboxController operatorController;
   private final SendableChooser<Command> autoChooser;
@@ -65,6 +69,7 @@ public class RobotContainer {
     limelight = Limelight.getInstance();
     colorSensor = ColorSensor.getInstance();
     shuffleboard = Shuffleboard.getInstance();
+    led = LED.getInstance();
 
     autoChooser = new SendableChooser<>();
     inverse = false; 
@@ -116,6 +121,12 @@ public class RobotContainer {
     //   }, shooter
     //   ).andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
     // );
+    // intake.setDefaultCommand(
+    //   new RunCommand(() -> {
+    //     intake.setIntakeOpenLoop(-operatorController.getLeftTriggerAxis());
+    //   }, intake
+    //   ).andThen(() -> intake.setIntakeOpenLoop(0))
+    // );
 
     colorSensor.setDefaultCommand(
       new RunCommand(() -> {
@@ -128,8 +139,13 @@ public class RobotContainer {
       new RunCommand(() -> {
         shuffleboard.logShooter();
         shuffleboard.logClimb();
+        shuffleboard.logIntake();
+        // led.setColor(LEDColor.RED);
+        led.setPattern(LEDPattern.SINELON_OCEAN);
       }, shuffleboard)
     );
+
+    
   }
 
   public static double getVoltage() {
@@ -172,12 +188,12 @@ public class RobotContainer {
 
     //lift up
     new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_BUMPER)
-      .whileHeld(() -> lift.setLiftOpenLoop(1), lift)
+      .whileHeld(() -> lift.setLiftOpenLoop(0.1), lift)
       .whenReleased(() -> lift.setLiftOpenLoop(0), lift);
 
     //lift down
     new XboxButton(operatorController, AdvancedXboxController.Button.LEFT_BUMPER)
-      .whileHeld(() -> lift.setLiftOpenLoop(-1), lift)
+      .whileHeld(() -> lift.setLiftOpenLoop(-0.1), lift)
       .whenReleased(() -> lift.setLiftOpenLoop(0), lift);
 
     // Shoot upper hub (with limelight calculations)
@@ -196,7 +212,7 @@ public class RobotContainer {
       .whenReleased(new TurnOffShooter(shooter));
 
     // Reverse shooter motors
-    new XboxButton(driverController, AdvancedXboxController.Button.X)
+    new XboxButton(operatorController, AdvancedXboxController.Button.X)
       .whenPressed(() -> {
         shooter.shooterSetOpenLoop(-0.5);
         shooter.indexerSetOpenLoop(-0.5);
@@ -206,7 +222,23 @@ public class RobotContainer {
     // Toggle Limelight LEDs
     new XboxButton(operatorController, AdvancedXboxController.Button.A)
       .whenPressed(() -> limelight.turnOnLED(), limelight);
+
+    // new XboxButton(driverController, AdvancedXboxController.Button.A)
+    //   .whenPressed(() -> intake.setIntakeOpenLoop(-0.25), intake)
+    //   .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
+    // new XboxButton(driverController, AdvancedXboxController.Button.B)
+    //   .whenPressed(() -> intake.setIntakeOpenLoop(-0.5), intake)
+    //   .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
+    // new XboxButton(driverController, AdvancedXboxController.Button.Y)
+    //   .whenPressed(() -> intake.setIntakeOpenLoop(-0.75), intake)
+    //   .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
+    // new XboxButton(driverController, AdvancedXboxController.Button.X)
+    //   .whenPressed(() -> intake.setIntakeOpenLoop(-1), intake)
+    //   .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
     }
+    
+    
+    
 
 
   private void configureAutoChooser() {

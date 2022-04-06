@@ -9,11 +9,13 @@ public class Shuffleboard extends SubsystemBase {
     private Shooter shooter;
     private Limelight limelight;
     private Lift lift;
+    private Intake intake;
 
     private Shuffleboard() {
         shooter = Shooter.getInstance();
         limelight = Limelight.getInstance();
         lift = Lift.getInstance();
+        intake = Intake.getInstance();
     }
 
     public static Shuffleboard getInstance() {
@@ -36,6 +38,10 @@ public class Shuffleboard extends SubsystemBase {
         // SmartDashboard.putNumber("Right Abs Position", lift.getRightEncoderCounts());
         SmartDashboard.putNumber("Left Position", lift.getLeftPosition());
         SmartDashboard.putNumber("Right Position", lift.getRightPosition());
+    }
+
+    public void logIntake() {
+        SmartDashboard.putNumber("Intake RPM", intake.getIntakeMotorRPM());
     }
 
     @Override
