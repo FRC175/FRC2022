@@ -26,8 +26,8 @@ public final class Lift extends SubsystemBase {
         // leftEncoder = new CANCoder(0);
         // rightEncoder = new CANCoder(1);
 
-        leftEncoder = new DutyCycleEncoder(0);
-        rightEncoder = new DutyCycleEncoder(1);
+        leftEncoder = new DutyCycleEncoder(1);
+        rightEncoder = new DutyCycleEncoder(0);
         // centralEncoder = new CANCoder(LiftConstants.CENTRAL_LIFT);
         // leftEncoder.setDutyCycleRange(0, 100);
         // rightEncoder.setDutyCycleRange(0, 1);
@@ -54,28 +54,26 @@ public final class Lift extends SubsystemBase {
         rightPrimary.setInverted(true);
     }
 
-    private double maxCounts = 30;
+    private double maxPos = 6;
 
     double demandMutable = 0;
 
     public void setLiftOpenLoop(double demand) {
-
         
 
-        if (getLeftPosition() > 0 && getLeftPosition() < 3) {
+        if (getLeftPosition() > 0 && getLeftPosition() < maxPos) {
             System.out.println("Left " + demand);
             leftPrimary.set(ControlMode.PercentOutput, demand);
-
         } else if (getLeftPosition() < 0) {
-            if (demand <= 0) {
+            if (demand >= 0) {
                 System.out.println("Left 0");
                 leftPrimary.set(ControlMode.PercentOutput, 0);
             } else {
                 System.out.println("Left " + demand);
                 leftPrimary.set(ControlMode.PercentOutput, demand);
             }
-        } else if (getLeftPosition() > 3) {
-            if (demand >= 0) {
+        } else if (getLeftPosition() > maxPos) {
+            if (demand <= 0) {
                 System.out.println("Left 0");
                 leftPrimary.set(ControlMode.PercentOutput, 0);
         } else {
@@ -84,27 +82,32 @@ public final class Lift extends SubsystemBase {
             }
         }
 
-        if (getRightPosition() > 0 && getRightPosition() < 3) {
+        if (getRightPosition() > 0 && getRightPosition() < maxPos) {
             System.out.println("Right " + demand);
-            leftPrimary.set(ControlMode.PercentOutput, demand);
+            rightPrimary.set(ControlMode.PercentOutput, demand);
 
         } else if (getRightPosition() < 0) {
-            if (demand <= 0) {
-                System.out.println("Right 0");
-                leftPrimary.set(ControlMode.PercentOutput, 0);
-            } else {
-                System.out.println("Right " + demand);
-                leftPrimary.set(ControlMode.PercentOutput, demand);
-            }
-        } else if (getRightPosition() > 3) {
             if (demand >= 0) {
                 System.out.println("Right 0");
-                leftPrimary.set(ControlMode.PercentOutput, 0);
+                rightPrimary.set(ControlMode.PercentOutput, 0);
+            } else {
+                System.out.println("Right " + demand);
+                rightPrimary.set(ControlMode.PercentOutput, demand);
+            }
+        } else if (getRightPosition() > maxPos) {
+            if (demand <= 0) {
+                System.out.println("Right 0");
+                rightPrimary.set(ControlMode.PercentOutput, 0);
         } else {
                 System.out.println("Right " + demand);
-                leftPrimary.set(ControlMode.PercentOutput, demand);
+                rightPrimary.set(ControlMode.PercentOutput, demand);
             }
         }
+
+
+        //setup
+        // leftPrimary.set(ControlMode.PercentOutput, demand);
+        // rightPrimary.set(ControlMode.PercentOutput, demand);
     }
 
     // public double getLeftEncoderCounts() {
@@ -124,7 +127,7 @@ public final class Lift extends SubsystemBase {
     // }
 
     public double getRightPosition() {
-        return rightEncoder.getDistance();
+        return -rightEncoder.getDistance();
         
     }
     public double getLeftPosition() {
@@ -134,6 +137,8 @@ public final class Lift extends SubsystemBase {
     public void resetEncoders() {
         leftEncoder.reset();
         rightEncoder.reset();
+        leftEncoder.setDistancePerRotation(1);
+        rightEncoder.setDistancePerRotation(1);
         // centralEncoder.setPosition(0);
     }
 
