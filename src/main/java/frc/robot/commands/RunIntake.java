@@ -31,7 +31,7 @@ public class RunIntake extends CommandBase {
   @Override
   public void execute() {
 
-		intake.setIntakeOpenLoop(runIntake ? 0.4 : 0);
+		intake.setIntakeOpenLoop(runIntake ? -0.5 : 0);
 
   }
 

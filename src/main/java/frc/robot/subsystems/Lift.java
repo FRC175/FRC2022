@@ -63,29 +63,48 @@ public final class Lift extends SubsystemBase {
         
 
         if (getLeftPosition() > 0 && getLeftPosition() < 3) {
-            System.out.println(demand);
+            System.out.println("Left " + demand);
             leftPrimary.set(ControlMode.PercentOutput, demand);
 
         } else if (getLeftPosition() < 0) {
             if (demand <= 0) {
-                System.out.println("0");
+                System.out.println("Left 0");
                 leftPrimary.set(ControlMode.PercentOutput, 0);
             } else {
-                System.out.println("1");
+                System.out.println("Left " + demand);
                 leftPrimary.set(ControlMode.PercentOutput, demand);
             }
         } else if (getLeftPosition() > 3) {
             if (demand >= 0) {
-                System.out.println("0");
+                System.out.println("Left 0");
                 leftPrimary.set(ControlMode.PercentOutput, 0);
         } else {
-                System.out.println("-1");
+                System.out.println("Left " + demand);
                 leftPrimary.set(ControlMode.PercentOutput, demand);
             }
         }
-        
-        System.out.println("working");
-        SmartDashboard.putNumber("Demand", demand);
+
+        if (getRightPosition() > 0 && getRightPosition() < 3) {
+            System.out.println("Right " + demand);
+            leftPrimary.set(ControlMode.PercentOutput, demand);
+
+        } else if (getRightPosition() < 0) {
+            if (demand <= 0) {
+                System.out.println("Right 0");
+                leftPrimary.set(ControlMode.PercentOutput, 0);
+            } else {
+                System.out.println("Right " + demand);
+                leftPrimary.set(ControlMode.PercentOutput, demand);
+            }
+        } else if (getRightPosition() > 3) {
+            if (demand >= 0) {
+                System.out.println("Right 0");
+                leftPrimary.set(ControlMode.PercentOutput, 0);
+        } else {
+                System.out.println("Right " + demand);
+                leftPrimary.set(ControlMode.PercentOutput, demand);
+            }
+        }
     }
 
     // public double getLeftEncoderCounts() {

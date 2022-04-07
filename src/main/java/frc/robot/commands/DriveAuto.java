@@ -30,11 +30,8 @@ public class DriveAuto extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      while (drive.rightCounts() <= counts) {
-        // if (drive.getRange() > 30) {
-          drive.arcadeDrive(0.5, 0);
-        // }
-      }
+    if (counts < 0) drive.arcadeDrive(-0.75, 0);
+    else drive.arcadeDrive(0.75, 0);
   }
 
   // Called once the command ends or is interrupted.
@@ -46,6 +43,7 @@ public class DriveAuto extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    if (counts > 0) return !(drive.rightCounts() <= counts);
+    else return !(drive.rightCounts() >= counts);
   }
 }

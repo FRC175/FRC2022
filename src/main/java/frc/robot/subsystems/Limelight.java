@@ -99,10 +99,12 @@ public final class Limelight extends SubsystemBase {
 
     public double distance() {
         //height from ground camera
-        double h1 = 18;
+        //og 18, 30
+        double h1 = 20;
         //height from ground tape
         double h2 = 102;
         //Mounting angle
+        //og 40, 30
         double a1 = 40;
         //Angle from camera to tape
         double a2 = getVerticalOffset();
@@ -112,7 +114,7 @@ public final class Limelight extends SubsystemBase {
         return d;
     }
 
-    public double calculateRPM(double distance, String hubToScore) {
+    public double calculateRPM(double distance) {
         // Distance Constants
         double d1 = 123;
         double d2 = 113;

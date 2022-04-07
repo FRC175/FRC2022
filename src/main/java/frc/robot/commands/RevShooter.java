@@ -61,6 +61,7 @@ public class RevShooter extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    System.out.println(rpm);
     System.out.println("isFinished: " + Math.abs(shooter.getShooterRPM() - rpm));
     return Math.abs(shooter.getShooterRPM() - rpm) < 230;
   }

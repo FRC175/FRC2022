@@ -198,7 +198,7 @@ public class RobotContainer {
 
     // Shoot upper hub (with limelight calculations)
     new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
-      .whenPressed(new Shoot(shooter, (limelight.calculateRPM(limelight.distance(), "upper") / 6000), limelight.calculateRPM(limelight.distance(), "upper")))
+      .whenPressed(new Shoot(shooter, (limelight.calculateRPM(limelight.distance()) / 6000), limelight.calculateRPM(limelight.distance())))
       .whenReleased(new TurnOffShooter(shooter));
 
     // Manual Upper hub shot
@@ -242,8 +242,9 @@ public class RobotContainer {
 
 
   private void configureAutoChooser() {
-    autoChooser.setDefaultOption("HighGoalAndShoot", new HighGoalAndDrive(drive, shooter, intake));
-    autoChooser.addOption("TwoBall", new TwoBall(drive, shooter, intake));
+    autoChooser.setDefaultOption("TwoBall", new TwoBall(drive, shooter, intake, limelight));
+    autoChooser.addOption("HighGoalAndShoot", new HighGoalAndDrive(drive, shooter, intake));
+    
     autoChooser.addOption("LowGoalAndShoot", new LowGoalAndDrive(drive, shooter, intake));
     autoChooser.addOption("DriveTarmac", new DriveTarmac(drive));
 

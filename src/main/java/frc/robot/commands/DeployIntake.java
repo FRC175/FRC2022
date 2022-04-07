@@ -28,7 +28,8 @@ public class DeployIntake extends CommandBase{
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      intake.deploy(false);
+      intake.deploy(true);
+      System.out.println("deploy intake");
   }
 
   // Called once the command ends or is interrupted.
