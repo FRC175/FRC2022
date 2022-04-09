@@ -1,12 +1,10 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.sensors.CANCoder;
 
 import frc.robot.Constants.LiftConstants;
 
@@ -61,11 +59,11 @@ public final class Lift extends SubsystemBase {
     public void setLiftOpenLoop(double demand) {
         
 
-        if (getLeftPosition() > 0 && getLeftPosition() < maxPos) {
+        if (getLeftPosition() > 0.1 && getLeftPosition() < maxPos) {
             System.out.println("Left " + demand);
             leftPrimary.set(ControlMode.PercentOutput, demand);
-        } else if (getLeftPosition() < 0) {
-            if (demand >= 0) {
+        } else if (getLeftPosition() < 0.1) {
+            if (demand >= 0.1) {
                 System.out.println("Left 0");
                 leftPrimary.set(ControlMode.PercentOutput, 0);
             } else {
@@ -73,7 +71,7 @@ public final class Lift extends SubsystemBase {
                 leftPrimary.set(ControlMode.PercentOutput, demand);
             }
         } else if (getLeftPosition() > maxPos) {
-            if (demand <= 0) {
+            if (demand <= 0.1) {
                 System.out.println("Left 0");
                 leftPrimary.set(ControlMode.PercentOutput, 0);
         } else {
@@ -82,11 +80,11 @@ public final class Lift extends SubsystemBase {
             }
         }
 
-        if (getRightPosition() > 0 && getRightPosition() < maxPos) {
+        if (getRightPosition() > 0.1 && getRightPosition() < maxPos) {
             System.out.println("Right " + demand);
             rightPrimary.set(ControlMode.PercentOutput, demand);
 
-        } else if (getRightPosition() < 0) {
+        } else if (getRightPosition() < 0.1) {
             if (demand >= 0) {
                 System.out.println("Right 0");
                 rightPrimary.set(ControlMode.PercentOutput, 0);
@@ -108,6 +106,14 @@ public final class Lift extends SubsystemBase {
         //setup
         // leftPrimary.set(ControlMode.PercentOutput, demand);
         // rightPrimary.set(ControlMode.PercentOutput, demand);
+    }
+
+    public void resetLeftLift(double demand) {
+        leftPrimary.set(ControlMode.PercentOutput, demand);
+    }
+
+    public void resetRightLift(double demand) {
+        rightPrimary.set(ControlMode.PercentOutput, demand);
     }
 
     // public double getLeftEncoderCounts() {
@@ -137,8 +143,9 @@ public final class Lift extends SubsystemBase {
     public void resetEncoders() {
         leftEncoder.reset();
         rightEncoder.reset();
-        leftEncoder.setDistancePerRotation(1);
-        rightEncoder.setDistancePerRotation(1);
+        
+        // leftEncoder.setDistancePerRotation(1);
+        // rightEncoder.setDistancePerRotation(1);
         // centralEncoder.setPosition(0);
     }
 

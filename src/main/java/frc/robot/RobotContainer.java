@@ -188,16 +188,21 @@ public class RobotContainer {
 
     //lift up
     new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_BUMPER)
-      .whileHeld(() -> {lift.setLiftOpenLoop(-0.4);
-        System.out.println("go");
-      
-      }, lift)
+      .whileHeld(() -> lift.setLiftOpenLoop(-0.60), lift)
       .whenReleased(() -> lift.setLiftOpenLoop(0), lift);
 
     //lift down
     new XboxButton(operatorController, AdvancedXboxController.Button.LEFT_BUMPER)
-      .whileHeld(() -> lift.setLiftOpenLoop(0.40), lift)
+      .whileHeld(() -> lift.setLiftOpenLoop(0.60), lift)
       .whenReleased(() -> lift.setLiftOpenLoop(0), lift);
+
+    new XboxButton(driverController, AdvancedXboxController.Button.X)
+      .whileHeld(() -> lift.resetLeftLift(0.4), lift)
+      .whenReleased(() -> lift.resetLeftLift(0), lift);
+
+    new XboxButton(driverController, AdvancedXboxController.Button.B)
+      .whileHeld(() -> lift.resetRightLift(0.4), lift)
+      .whenReleased(() -> lift.resetRightLift(0), lift);
 
     // Shoot upper hub (with limelight calculations)
     new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
