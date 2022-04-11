@@ -28,7 +28,7 @@ import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shuffleboard;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.ColorSensor;
+// import frc.robot.subsystems.ColorSensor;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
@@ -49,7 +49,7 @@ public class RobotContainer {
   private final Lift lift;
   private final Limelight limelight;
   private final Shooter shooter;
-  private final ColorSensor colorSensor; 
+  // private final ColorSensor colorSensor; 
   private final Shuffleboard shuffleboard;
   private final LED led;
   private final AdvancedXboxController driverController;
@@ -67,7 +67,7 @@ public class RobotContainer {
     lift = Lift.getInstance();
     shooter = Shooter.getInstance();
     limelight = Limelight.getInstance();
-    colorSensor = ColorSensor.getInstance();
+    // colorSensor = ColorSensor.getInstance();
     shuffleboard = Shuffleboard.getInstance();
     led = LED.getInstance();
 
@@ -128,12 +128,12 @@ public class RobotContainer {
     //   ).andThen(() -> intake.setIntakeOpenLoop(0))
     // );
 
-    colorSensor.setDefaultCommand(
-      new RunCommand(() -> {
-        colorSensor.getColorOnIntake();
-        colorSensor.getColorString();
-      }, colorSensor)
-    );
+    // colorSensor.setDefaultCommand(
+    //   new RunCommand(() -> {
+    //     colorSensor.getColorOnIntake();
+    //     colorSensor.getColorString();
+    //   }, colorSensor)
+    // );
 
     shuffleboard.setDefaultCommand(
       new RunCommand(() -> {
@@ -208,6 +208,12 @@ public class RobotContainer {
     new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
       .whenPressed(new Shoot(shooter, (limelight.calculateRPM(limelight.distance()) / 6000), limelight.calculateRPM(limelight.distance())))
       .whenReleased(new TurnOffShooter(shooter));
+
+    new XboxButton(operatorController, AdvancedXboxController.DPad.RIGHT)
+      .whenPressed(() -> limelight.updateOffset(50));
+
+    new XboxButton(operatorController, AdvancedXboxController.DPad.LEFT)
+      .whenPressed(() -> limelight.updateOffset(-50));
 
     // Manual Upper hub shot
     new XboxButton(operatorController, AdvancedXboxController.Button.Y)

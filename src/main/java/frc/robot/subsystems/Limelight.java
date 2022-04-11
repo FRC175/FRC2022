@@ -13,11 +13,13 @@ public final class Limelight extends SubsystemBase {
 
     private double rotation;
     private boolean isAtTarget;
+    private int offset;
 
     private static Limelight instance;
 
     private Limelight() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
+        offset = 0;
     }
 
     public static Limelight getInstance() {
@@ -131,7 +133,15 @@ public final class Limelight extends SubsystemBase {
             RPMupper3 * (distance - d1) / (d3 - d1) * (distance - d2) / (d3 - d2) * (distance - d4) / (d3 - d4) +
             RPMupper4 * (distance - d1) / (d4 - d1) * (distance - d2) / (d4 - d2) * (distance - d3) / (d4 - d3);
 
-        return estimateRPM;
+        return estimateRPM + offset;
+    }
+
+    public int getCurrentOffset() {
+        return offset;
+    }
+
+    public void updateOffset(int amount) {
+        offset += amount;
     }
 
 

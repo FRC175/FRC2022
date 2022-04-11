@@ -59,11 +59,11 @@ public final class Lift extends SubsystemBase {
     public void setLiftOpenLoop(double demand) {
         
 
-        if (getLeftPosition() > 0.1 && getLeftPosition() < maxPos) {
+        if (getLeftPosition() > 0 && getLeftPosition() < maxPos) {
             System.out.println("Left " + demand);
             leftPrimary.set(ControlMode.PercentOutput, demand);
-        } else if (getLeftPosition() < 0.1) {
-            if (demand >= 0.1) {
+        } else if (getLeftPosition() < 0) {
+            if (demand >= 0) {
                 System.out.println("Left 0");
                 leftPrimary.set(ControlMode.PercentOutput, 0);
             } else {
@@ -71,7 +71,7 @@ public final class Lift extends SubsystemBase {
                 leftPrimary.set(ControlMode.PercentOutput, demand);
             }
         } else if (getLeftPosition() > maxPos) {
-            if (demand <= 0.1) {
+            if (demand <= 0) {
                 System.out.println("Left 0");
                 leftPrimary.set(ControlMode.PercentOutput, 0);
         } else {
@@ -80,11 +80,11 @@ public final class Lift extends SubsystemBase {
             }
         }
 
-        if (getRightPosition() > 0.1 && getRightPosition() < maxPos) {
+        if (getRightPosition() > 0 && getRightPosition() < maxPos) {
             System.out.println("Right " + demand);
             rightPrimary.set(ControlMode.PercentOutput, demand);
 
-        } else if (getRightPosition() < 0.1) {
+        } else if (getRightPosition() < 0) {
             if (demand >= 0) {
                 System.out.println("Right 0");
                 rightPrimary.set(ControlMode.PercentOutput, 0);

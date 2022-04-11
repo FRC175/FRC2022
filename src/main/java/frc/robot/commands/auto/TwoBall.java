@@ -20,7 +20,7 @@ public final class TwoBall extends SequentialCommandGroup {
 
         addCommands(
             new DeployIntake(intake),
-            new DriveAuto(drive, 25),
+            new DriveAuto(drive, 20),
             new WaitCommand(2),
             new RevShooter(shooter, limelight.calculateRPM(limelight.distance()) / 6000, limelight.calculateRPM(limelight.distance())),
             new RevIndexer(shooter),
