@@ -144,7 +144,10 @@ public final class Drive extends SubsystemBase {
     }
 
     public void shift(boolean shift) {
-        shifter.set(shift ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+        if (leftMasterEncoder.getVelocity() != 0 && rightMasterEncoder.getVelocity() != 0) {
+            shifter.set(shift ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+            SmartDashboard.putBoolean("Is Shift?", shift);
+        }
     }
 
     public double getRightRPM() {

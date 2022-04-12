@@ -18,7 +18,6 @@ import frc.robot.commands.auto.TwoBall;
 import frc.robot.commands.auto.HighGoalAndDrive;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.models.XboxButton;
-import frc.robot.positions.LEDColor;
 import frc.robot.positions.LEDPattern;
 // import frc.robot.positions.LEDPattern;
 import frc.robot.subsystems.Drive;
@@ -159,7 +158,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     //shift
-    new XboxButton(driverController, AdvancedXboxController.Button.LEFT_STICK)
+    new XboxButton(driverController, AdvancedXboxController.Button.A)
       .whileHeld(() -> drive.shift(true), drive)
       .whenReleased(() -> drive.shift(false), drive);
 
@@ -169,7 +168,7 @@ public class RobotContainer {
 
     //intake spin
     new XboxButton(operatorController, AdvancedXboxController.Trigger.LEFT)
-      .whenPressed(() -> intake.setIntakeOpenLoop(-0.5), intake)
+      .whenPressed(() -> intake.setIntakeOpenLoop(-0.75), intake)
       .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
 
     // deploy intake
@@ -188,12 +187,12 @@ public class RobotContainer {
 
     //lift up
     new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_BUMPER)
-      .whileHeld(() -> lift.setLiftOpenLoop(-0.60), lift)
+      .whileHeld(() -> lift.setLiftOpenLoop(-0.9), lift)
       .whenReleased(() -> lift.setLiftOpenLoop(0), lift);
 
     //lift down
     new XboxButton(operatorController, AdvancedXboxController.Button.LEFT_BUMPER)
-      .whileHeld(() -> lift.setLiftOpenLoop(0.60), lift)
+      .whileHeld(() -> lift.setLiftOpenLoop(0.9), lift)
       .whenReleased(() -> lift.setLiftOpenLoop(0), lift);
 
     new XboxButton(driverController, AdvancedXboxController.Button.X)
@@ -206,7 +205,7 @@ public class RobotContainer {
 
     // Shoot upper hub (with limelight calculations)
     new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
-      .whenPressed(new Shoot(shooter, (limelight.calculateRPM(limelight.distance()) / 6000), limelight.calculateRPM(limelight.distance())))
+      .whenPressed(new Shoot(drive, shooter, limelight, (limelight.calculateRPM(limelight.distance()) / 6000), limelight.calculateRPM(limelight.distance())))
       .whenReleased(new TurnOffShooter(shooter));
 
     new XboxButton(operatorController, AdvancedXboxController.DPad.RIGHT)
@@ -217,12 +216,12 @@ public class RobotContainer {
 
     // Manual Upper hub shot
     new XboxButton(operatorController, AdvancedXboxController.Button.Y)
-      .whileHeld(new Shoot(shooter, 0.6, 3600))
+      .whileHeld(new Shoot(drive, shooter, limelight, 0.6, 3600))
       .whenReleased(new TurnOffShooter(shooter));
     
     // Manual Lower hub shot
     new XboxButton(operatorController, AdvancedXboxController.Button.B)
-      .whenPressed(new Shoot(shooter, 0.33, 2000))
+      .whenPressed(new Shoot(drive, shooter, limelight, 0.33, 2000))
       .whenReleased(new TurnOffShooter(shooter));
 
     // Reverse shooter motors
