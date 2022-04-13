@@ -19,7 +19,6 @@ import frc.robot.commands.auto.HighGoalAndDrive;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.models.XboxButton;
 import frc.robot.positions.LEDPattern;
-// import frc.robot.positions.LEDPattern;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LED;
@@ -27,7 +26,6 @@ import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shuffleboard;
 import frc.robot.subsystems.Limelight;
-// import frc.robot.subsystems.ColorSensor;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
@@ -48,7 +46,6 @@ public class RobotContainer {
   private final Lift lift;
   private final Limelight limelight;
   private final Shooter shooter;
-  // private final ColorSensor colorSensor; 
   private final Shuffleboard shuffleboard;
   private final LED led;
   private final AdvancedXboxController driverController;
@@ -57,7 +54,6 @@ public class RobotContainer {
 
   private static RobotContainer instance;
 
-  private boolean inverse;
   private boolean shift;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -67,12 +63,12 @@ public class RobotContainer {
     lift = Lift.getInstance();
     shooter = Shooter.getInstance();
     limelight = Limelight.getInstance();
-    // colorSensor = ColorSensor.getInstance();
     shuffleboard = Shuffleboard.getInstance();
     led = LED.getInstance();
 
     autoChooser = new SendableChooser<>();
-    inverse = false; 
+
+    shift = false;
 
     driverController = new AdvancedXboxController(ControllerConstants.DRIVER_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
     operatorController = new AdvancedXboxController(ControllerConstants.OPERATOR_CONTROLLER_PORT, ControllerConstants.CONTROLLER_DEADBAND);
@@ -103,13 +99,8 @@ public class RobotContainer {
       new RunCommand(() -> {
         double throttle = driverController.getRightTriggerAxis() - driverController.getLeftTriggerAxis();
         double turn = -1 * driverController.getLeftX(); //-1 to turn in correct direction
-         
-        // inverse / regular drive
-        if (inverse) {
-          drive.inverseDrive(throttle, turn);
-        } else {
-          drive.arcadeDrive(throttle, turn);
-        }
+
+        drive.arcadeDrive(throttle, turn);
 
         if (shift) {
           drive.shift(true);
@@ -117,29 +108,8 @@ public class RobotContainer {
           drive.shift(false);
         }
 
-      }, drive ).andThen(() -> drive.arcadeDrive(0, 0) , drive)
+      }, drive).andThen(() -> drive.arcadeDrive(0, 0) , drive)
     );
-
-    // shooter.setDefaultCommand(
-    //   new RunCommand(() -> {
-    //     double demand = operatorController.getRightY();
-    //     shooter.shooterSetOpenLoop(Math.abs(demand));
-    //   }, shooter
-    //   ).andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
-    // );
-    // intake.setDefaultCommand(
-    //   new RunCommand(() -> {
-    //     intake.setIntakeOpenLoop(-operatorController.getLeftTriggerAxis());
-    //   }, intake
-    //   ).andThen(() -> intake.setIntakeOpenLoop(0))
-    // );
-
-    // colorSensor.setDefaultCommand(
-    //   new RunCommand(() -> {
-    //     colorSensor.getColorOnIntake();
-    //     colorSensor.getColorString();
-    //   }, colorSensor)
-    // );
 
     shuffleboard.setDefaultCommand(
       new RunCommand(() -> {
@@ -164,19 +134,25 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // shift
+    // ----------------------------------------------------------------------------------------------------
+    // DRIVE
+    // ----------------------------------------------------------------------------------------------------
+    // shift gears
     new XboxButton(driverController, AdvancedXboxController.Button.A)
       .whenPressed(() -> shift = !shift);
+
+    // ----------------------------------------------------------------------------------------------------
+    // INTAKE
+    // ----------------------------------------------------------------------------------------------------
+    //intake spin
+    new XboxButton(operatorController, AdvancedXboxController.Trigger.LEFT)
+      .whenPressed(() -> intake.setIntakeOpenLoop(-0.65), intake)
+      .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
 
     // reverse intake
     new XboxButton(driverController, AdvancedXboxController.Button.Y)
       .whileHeld(() -> intake.setIntakeOpenLoop(0.65))
       .whenReleased(() -> intake.setIntakeOpenLoop(0));
-
-    //intake spin
-    new XboxButton(operatorController, AdvancedXboxController.Trigger.LEFT)
-      .whenPressed(() -> intake.setIntakeOpenLoop(-0.65), intake)
-      .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
 
     // deploy intake
     new XboxButton(operatorController, AdvancedXboxController.DPad.DOWN)
@@ -188,6 +164,9 @@ public class RobotContainer {
       .whenPressed(() -> intake.deploy(false), intake)
       .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
 
+    // ----------------------------------------------------------------------------------------------------
+    // CLIMB
+    // ----------------------------------------------------------------------------------------------------
     // Auto climb
     new XboxButton(driverController, AdvancedXboxController.DPad.UP)
       .whenPressed(new Climb(lift));
@@ -202,23 +181,29 @@ public class RobotContainer {
       .whileHeld(() -> lift.setLiftOpenLoop(0.9), lift)
       .whenReleased(() -> lift.setLiftOpenLoop(0), lift);
 
-    // Manually lift
+    // Manually lift up
     new XboxButton(driverController, AdvancedXboxController.Button.X)
       .whileHeld(() -> lift.resetLeftLift(0.4), lift)
       .whenReleased(() -> lift.resetLeftLift(0), lift);
 
+    // Manually lift down
     new XboxButton(driverController, AdvancedXboxController.Button.B)
       .whileHeld(() -> lift.resetRightLift(0.4), lift)
       .whenReleased(() -> lift.resetRightLift(0), lift);
 
+    // ----------------------------------------------------------------------------------------------------
+    // SHOOTER
+    // ----------------------------------------------------------------------------------------------------
     // Shoot upper hub (with limelight calculations)
     new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
       .whenPressed(new Shoot(drive, shooter, limelight, limelight.getFinalRPM() / 6000, limelight.getFinalRPM()))
       .whenReleased(new TurnOffShooter(shooter));
 
+    // Add 50 RPM to offset for limelight calculations
     new XboxButton(operatorController, AdvancedXboxController.DPad.RIGHT)
       .whenPressed(() -> limelight.updateOffset(50));
 
+    // Subtract 50 RPM from offset for limelight calculations
     new XboxButton(operatorController, AdvancedXboxController.DPad.LEFT)
       .whenPressed(() -> limelight.updateOffset(-50));
 
@@ -239,7 +224,11 @@ public class RobotContainer {
         shooter.indexerSetOpenLoop(-0.5);
       }, shooter)
       .whenReleased(new TurnOffShooter(shooter));
-      
+
+
+    // ----------------------------------------------------------------------------------------------------
+    // LIMELIGHT
+    // ----------------------------------------------------------------------------------------------------
     // Toggle Limelight LEDs
     new XboxButton(operatorController, AdvancedXboxController.Button.A)
       .whenPressed(() -> {
@@ -249,19 +238,6 @@ public class RobotContainer {
           limelight.turnOnLED();
         }
       }, limelight);
-
-    // new XboxButton(driverController, AdvancedXboxController.Button.A)
-    //   .whenPressed(() -> intake.setIntakeOpenLoop(-0.25), intake)
-    //   .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
-    // new XboxButton(driverController, AdvancedXboxController.Button.B)
-    //   .whenPressed(() -> intake.setIntakeOpenLoop(-0.5), intake)
-    //   .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
-    // new XboxButton(driverController, AdvancedXboxController.Button.Y)
-    //   .whenPressed(() -> intake.setIntakeOpenLoop(-0.75), intake)
-    //   .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
-    // new XboxButton(driverController, AdvancedXboxController.Button.X)
-    //   .whenPressed(() -> intake.setIntakeOpenLoop(-1), intake)
-    //   .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
     }
     
     
