@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.shooter;
 
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Limelight;

@@ -5,11 +5,11 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
-import frc.robot.commands.DeployIntake;
-import frc.robot.commands.DriveAuto;
-import frc.robot.commands.RevIndexer;
-import frc.robot.commands.RevShooter;
-import frc.robot.commands.TurnOffShooter;
+import frc.robot.commands.drive.DriveAuto;
+import frc.robot.commands.intake.DeployIntake;
+import frc.robot.commands.shooter.RevIndexer;
+import frc.robot.commands.shooter.RevShooter;
+import frc.robot.commands.shooter.TurnOffShooter;
 
 
 public final class HighGoalAndDrive extends SequentialCommandGroup {

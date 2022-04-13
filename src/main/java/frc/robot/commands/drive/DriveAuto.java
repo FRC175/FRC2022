@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.drive;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drive;
@@ -30,8 +30,7 @@ public class DriveAuto extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (counts < 0) drive.arcadeDrive(-0.75, 0);
-    else drive.arcadeDrive(0.75, 0);
+    drive.arcadeDrive(counts < 0 ? -0.75 : 0.75, 0);
   }
 
   // Called once the command ends or is interrupted.

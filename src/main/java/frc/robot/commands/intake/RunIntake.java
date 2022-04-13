@@ -1,25 +1,24 @@
-package frc.robot.commands;
+package frc.robot.commands.intake;
 
-import frc.robot.subsystems.Lift;
-
+import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class Climb extends CommandBase {
+
+public class RunIntake extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Lift lift;
-  private double maxCounts;
+  private final Intake intake;
+  private boolean runIntake;
 
   /**
-   * Creates a new Climb command.
+   * Creates a new RunIntake command.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public Climb(Lift lift) {
-      this.lift = lift;
+  public RunIntake(Intake intake, boolean runIntake) {
+      this.intake = intake;
+      this.runIntake = runIntake;
 
-      maxCounts = 5.7;
-
-      addRequirements(lift);
+      addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
@@ -31,19 +30,19 @@ public class Climb extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      lift.setLiftOpenLoop(1);
+
+		intake.setIntakeOpenLoop(runIntake ? -0.65 : 0);
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-      lift.setLiftOpenLoop(0);
   }
 
   // Returns true when the command should end.
-  //@Override
-  //public void isFinished() {
-    // return Math.abs(lift.getLeftEncoderCounts().doubleValue()) >= maxCounts && lift.getRightEncoderCounts().doubleValue() >= maxCounts;
-    //return true
-  //}
+  @Override
+  public boolean isFinished() {
+    return true;
+  }
 }

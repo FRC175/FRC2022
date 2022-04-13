@@ -29,7 +29,7 @@ public class Shuffleboard extends SubsystemBase {
     public void logShooter() {
         SmartDashboard.putNumber("Shooter RPM", shooter.getShooterRPM());
         SmartDashboard.putNumber("Distance", limelight.distance());
-        SmartDashboard.putNumber("Desired RPM", limelight.calculateRPM(limelight.distance()));
+        SmartDashboard.putNumber("Desired RPM", limelight.getFinalRPM());
         SmartDashboard.putNumber("Current Offset", limelight.getCurrentOffset());
     }
 

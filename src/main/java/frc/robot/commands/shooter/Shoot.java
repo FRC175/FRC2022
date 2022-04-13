@@ -1,8 +1,9 @@
-package frc.robot.commands;
+package frc.robot.commands.shooter;
 
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
@@ -12,9 +13,10 @@ public class Shoot extends SequentialCommandGroup {
     public Shoot(Drive drive, Shooter shooter, Limelight limelight, double speed, double rpm) {
         addCommands(
             new LockOntoTarget(drive, limelight),
+            new InstantCommand(() -> System.out.println("Sent Speed: " + speed)),
             new RevShooter(shooter, speed, rpm),
             new RevIndexer(shooter),
-            new WaitCommand(1),
+            new WaitCommand(2),
             new TurnOffShooter(shooter)
         );
     }

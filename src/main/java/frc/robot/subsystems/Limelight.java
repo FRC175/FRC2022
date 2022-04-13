@@ -13,7 +13,7 @@ public final class Limelight extends SubsystemBase {
 
     private double rotation;
     private boolean isAtTarget;
-    private int offset;
+    private double offset;
 
     private static Limelight instance;
 
@@ -44,6 +44,11 @@ public final class Limelight extends SubsystemBase {
 
     public void turnOffLED() {
         setLED(false);
+    }
+
+    public boolean areLEDsOn() {
+        Number ledsOn = 3;
+        return table.getEntry("ledMode").getNumber(3) == ledsOn;
     }
 
     public void blinkLED() {
@@ -133,14 +138,18 @@ public final class Limelight extends SubsystemBase {
             RPMupper3 * (distance - d1) / (d3 - d1) * (distance - d2) / (d3 - d2) * (distance - d4) / (d3 - d4) +
             RPMupper4 * (distance - d1) / (d4 - d1) * (distance - d2) / (d4 - d2) * (distance - d3) / (d4 - d3);
 
-        return estimateRPM + offset;
+        return (estimateRPM + getCurrentOffset());
     }
 
-    public int getCurrentOffset() {
+    public double getFinalRPM() {
+        return calculateRPM(distance());
+    }
+
+    public double getCurrentOffset() {
         return offset;
     }
 
-    public void updateOffset(int amount) {
+    public void updateOffset(double amount) {
         offset += amount;
     }
 

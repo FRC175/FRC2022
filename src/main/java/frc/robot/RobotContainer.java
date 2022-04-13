@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.Climb;
-import frc.robot.commands.Shoot;
-import frc.robot.commands.TurnOffShooter;
 import frc.robot.commands.auto.DriveTarmac;
 import frc.robot.commands.auto.LowGoalAndDrive;
 import frc.robot.commands.auto.TwoBall;
+import frc.robot.commands.lift.Climb;
+import frc.robot.commands.shooter.Shoot;
+import frc.robot.commands.shooter.TurnOffShooter;
 import frc.robot.commands.auto.HighGoalAndDrive;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.models.XboxButton;
@@ -58,6 +58,7 @@ public class RobotContainer {
   private static RobotContainer instance;
 
   private boolean inverse;
+  private boolean shift;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -110,6 +111,12 @@ public class RobotContainer {
           drive.arcadeDrive(throttle, turn);
         }
 
+        if (shift) {
+          drive.shift(true);
+        } else {
+          drive.shift(false);
+        }
+
       }, drive ).andThen(() -> drive.arcadeDrive(0, 0) , drive)
     );
 
@@ -157,18 +164,18 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //shift
+    // shift
     new XboxButton(driverController, AdvancedXboxController.Button.A)
-      .whileHeld(() -> drive.shift(true), drive)
-      .whenReleased(() -> drive.shift(false), drive);
+      .whenPressed(() -> shift = !shift);
 
-    // //inverse drive
-    // new XboxButton(driverController, AdvancedXboxController.Button.B)
-    //   .whileHeld(() -> inverse = inverse ? false : true);
+    // reverse intake
+    new XboxButton(driverController, AdvancedXboxController.Button.Y)
+      .whileHeld(() -> intake.setIntakeOpenLoop(0.65))
+      .whenReleased(() -> intake.setIntakeOpenLoop(0));
 
     //intake spin
     new XboxButton(operatorController, AdvancedXboxController.Trigger.LEFT)
-      .whenPressed(() -> intake.setIntakeOpenLoop(-0.75), intake)
+      .whenPressed(() -> intake.setIntakeOpenLoop(-0.65), intake)
       .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
 
     // deploy intake
@@ -195,6 +202,7 @@ public class RobotContainer {
       .whileHeld(() -> lift.setLiftOpenLoop(0.9), lift)
       .whenReleased(() -> lift.setLiftOpenLoop(0), lift);
 
+    // Manually lift
     new XboxButton(driverController, AdvancedXboxController.Button.X)
       .whileHeld(() -> lift.resetLeftLift(0.4), lift)
       .whenReleased(() -> lift.resetLeftLift(0), lift);
@@ -205,7 +213,7 @@ public class RobotContainer {
 
     // Shoot upper hub (with limelight calculations)
     new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
-      .whenPressed(new Shoot(drive, shooter, limelight, (limelight.calculateRPM(limelight.distance()) / 6000), limelight.calculateRPM(limelight.distance())))
+      .whenPressed(new Shoot(drive, shooter, limelight, limelight.getFinalRPM() / 6000, limelight.getFinalRPM()))
       .whenReleased(new TurnOffShooter(shooter));
 
     new XboxButton(operatorController, AdvancedXboxController.DPad.RIGHT)
@@ -234,7 +242,13 @@ public class RobotContainer {
       
     // Toggle Limelight LEDs
     new XboxButton(operatorController, AdvancedXboxController.Button.A)
-      .whenPressed(() -> limelight.turnOnLED(), limelight);
+      .whenPressed(() -> {
+        if (limelight.areLEDsOn()) {
+          limelight.turnOffLED();
+        } else {
+          limelight.turnOnLED();
+        }
+      }, limelight);
 
     // new XboxButton(driverController, AdvancedXboxController.Button.A)
     //   .whenPressed(() -> intake.setIntakeOpenLoop(-0.25), intake)
