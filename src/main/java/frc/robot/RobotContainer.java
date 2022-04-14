@@ -151,8 +151,8 @@ public class RobotContainer {
 
     // reverse intake
     new XboxButton(driverController, AdvancedXboxController.Button.Y)
-      .whileHeld(() -> intake.setIntakeOpenLoop(0.65))
-      .whenReleased(() -> intake.setIntakeOpenLoop(0));
+      .whileHeld(() -> intake.setIntakeOpenLoop(0.65), intake)
+      .whenReleased(() -> intake.setIntakeOpenLoop(0), intake);
 
     // deploy intake
     new XboxButton(operatorController, AdvancedXboxController.DPad.DOWN)
@@ -196,25 +196,25 @@ public class RobotContainer {
     // ----------------------------------------------------------------------------------------------------
     // Shoot upper hub (with limelight calculations)
     new XboxButton(operatorController, AdvancedXboxController.Trigger.RIGHT)
-      .whenPressed(new Shoot(drive, shooter, limelight, limelight.getFinalRPM() / 6000, limelight.getFinalRPM()))
+      .whenPressed(new Shoot(drive, shooter, limelight, 0, false))
       .whenReleased(new TurnOffShooter(shooter));
 
     // Add 50 RPM to offset for limelight calculations
     new XboxButton(operatorController, AdvancedXboxController.DPad.RIGHT)
-      .whenPressed(() -> limelight.updateOffset(50));
+      .whenPressed(() -> limelight.updateOffset(50), limelight);
 
     // Subtract 50 RPM from offset for limelight calculations
     new XboxButton(operatorController, AdvancedXboxController.DPad.LEFT)
-      .whenPressed(() -> limelight.updateOffset(-50));
+      .whenPressed(() -> limelight.updateOffset(-50), limelight);
 
     // Manual Upper hub shot
     new XboxButton(operatorController, AdvancedXboxController.Button.Y)
-      .whileHeld(new Shoot(drive, shooter, limelight, 0.6, 3600))
+      .whileHeld(new Shoot(drive, shooter, limelight, 3600, true))
       .whenReleased(new TurnOffShooter(shooter));
     
     // Manual Lower hub shot
     new XboxButton(operatorController, AdvancedXboxController.Button.B)
-      .whenPressed(new Shoot(drive, shooter, limelight, 0.33, 2000))
+      .whenPressed(new Shoot(drive, shooter, limelight, 2000, true))
       .whenReleased(new TurnOffShooter(shooter));
 
     // Reverse shooter motors
@@ -246,9 +246,8 @@ public class RobotContainer {
 
   private void configureAutoChooser() {
     autoChooser.setDefaultOption("TwoBall", new TwoBall(drive, shooter, intake, limelight));
-    autoChooser.addOption("HighGoalAndShoot", new HighGoalAndDrive(drive, shooter, intake));
-    
-    autoChooser.addOption("LowGoalAndShoot", new LowGoalAndDrive(drive, shooter, intake));
+    autoChooser.addOption("HighGoalAndShoot", new HighGoalAndDrive(drive, shooter, intake, limelight));
+    autoChooser.addOption("LowGoalAndShoot", new LowGoalAndDrive(drive, shooter, intake, limelight));
     autoChooser.addOption("DriveTarmac", new DriveTarmac(drive));
 
     SmartDashboard.putData(autoChooser);

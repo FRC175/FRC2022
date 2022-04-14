@@ -6,30 +6,26 @@ import frc.robot.Constants.ShooterConstants;
 
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter extends SubsystemBase {
     private final CANSparkMax indexer;
     private final CANSparkMax shooterWheel;
-    private final CANSparkMax shooterSlaveWheel;
+    private final CANSparkMax shooterWheelSlave;
     private final RelativeEncoder shooterWheelEncoder;
-    
 
     private static Shooter instance;
-
-    private boolean scoreInUpperHub;
-
 
     private Shooter() {
         indexer = new CANSparkMax(ShooterConstants.SHOOTER_INDEXER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         shooterWheel = new CANSparkMax(ShooterConstants.SHOOTER_WHEEL_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
-        shooterSlaveWheel = new CANSparkMax(ShooterConstants.SHOOTER_WHEEL_SLAVE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
+        shooterWheelSlave = new CANSparkMax(ShooterConstants.SHOOTER_WHEEL_SLAVE_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         configureSparks();
 
         shooterWheelEncoder = shooterWheel.getEncoder();
-
-        scoreInUpperHub = false;
     }
 
     public static Shooter getInstance() {
@@ -45,9 +41,10 @@ public class Shooter extends SubsystemBase {
         indexer.setInverted(false);
 
         shooterWheel.restoreFactoryDefaults();
-        shooterSlaveWheel.restoreFactoryDefaults();
         shooterWheel.setInverted(false);
-        shooterSlaveWheel.setInverted(true);
+
+        shooterWheelSlave.restoreFactoryDefaults();
+        shooterWheelSlave.setInverted(true);
     }
 
     public void indexerSetOpenLoop(double demand) {
@@ -57,7 +54,7 @@ public class Shooter extends SubsystemBase {
     public void shooterSetOpenLoop(double demand) {
         SmartDashboard.putNumber("Demand", demand);
         shooterWheel.set(demand);
-        shooterSlaveWheel.set(demand);
+        shooterWheelSlave.set(demand);
     }
 
     public double getShooterRPM() {
@@ -67,14 +64,6 @@ public class Shooter extends SubsystemBase {
     public void turnOffShooter() {
         shooterSetOpenLoop(0);
         indexerSetOpenLoop(0);
-    }
-
-    public boolean getScoreInUpperHub() {
-        return scoreInUpperHub;
-    }
-
-    public void switchScoreInUpperHub() {
-        scoreInUpperHub = !scoreInUpperHub;
     }
 
     @Override

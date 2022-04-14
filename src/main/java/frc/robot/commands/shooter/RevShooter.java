@@ -1,5 +1,6 @@
 package frc.robot.commands.shooter;
 
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -7,19 +8,22 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class RevShooter extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Shooter shooter;
+  private final Limelight limelight;
 
-  private double speed;
   private double rpm;
+  private boolean staticRPM;
 
   /**
    * Creates a new RevShooter command.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public RevShooter(Shooter shooter, double speed, double rpm) {
+  public RevShooter(Shooter shooter, Limelight limelight, double rpm, boolean staticRPM) {
       this.shooter = shooter;
-      this.speed = speed;
+      this.limelight = limelight;
       this.rpm = rpm;
+      this.staticRPM = staticRPM;
+      System.out.println("DEFINED RPM: " + rpm);
 
       addRequirements(shooter);
   }
@@ -27,29 +31,15 @@ public class RevShooter extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-      shooter.resetSensors();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-  shooter.indexerSetOpenLoop(0);
-	shooter.shooterSetOpenLoop(speed);
-
-    //   if (colorSensor.isRightBall(SmartDashboard.getString("Team Color", "null"))) {
-    //     double estimateRPM = limelight.calculateRPM(limelight.distance(), hubToScore);
-    //     double percentDemandToSend = Math.abs(estimateRPM / 6000);
-
-    //     shooter.shooterSetOpenLoop(percentDemandToSend);
-
-    //     SmartDashboard.putString("Shooter Status", "Reving Indexer. Firing...");
-    //     shooter.indexerSetOpenLoop(0.5);
-    //   } else {
-    //     //wimpy shot
-    //     shooter.shooterSetOpenLoop(0.25);
-    //     shooter.indexerSetOpenLoop(0.5);
-    //   }
+    rpm = !staticRPM ? limelight.getFinalRPM() : rpm;
+    shooter.indexerSetOpenLoop(0);
+	  shooter.shooterSetOpenLoop(rpm / 6000);
   }
 
   // Called once the command ends or is interrupted.

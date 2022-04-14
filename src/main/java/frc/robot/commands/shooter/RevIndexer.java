@@ -28,22 +28,7 @@ public class RevIndexer extends CommandBase{
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
 		shooter.indexerSetOpenLoop(0.4);
-
-    //   if (colorSensor.isRightBall(SmartDashboard.getString("Team Color", "null"))) {
-    //     double estimateRPM = limelight.calculateRPM(limelight.distance(), hubToScore);
-    //     double percentDemandToSend = Math.abs(estimateRPM / 6000);
-
-    //     shooter.shooterSetOpenLoop(percentDemandToSend);
-
-    //     SmartDashboard.putString("Shooter Status", "Reving Indexer. Firing...");
-    //     shooter.indexerSetOpenLoop(0.5);
-    //   } else {
-    //     //wimpy shot
-    //     shooter.shooterSetOpenLoop(0.25);
-    //     shooter.indexerSetOpenLoop(0.5);
-    //   }
   }
 
   // Called once the command ends or is interrupted.

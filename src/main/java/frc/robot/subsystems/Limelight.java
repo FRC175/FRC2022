@@ -14,12 +14,14 @@ public final class Limelight extends SubsystemBase {
     private double rotation;
     private boolean isAtTarget;
     private double offset;
+    private boolean ledsOn;
 
     private static Limelight instance;
 
     private Limelight() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
         offset = 0;
+        ledsOn = true;
     }
 
     public static Limelight getInstance() {
@@ -35,6 +37,7 @@ public final class Limelight extends SubsystemBase {
     }
 
     public void setLED(boolean enable) {
+        ledsOn = enable;
         table.getEntry("ledMode").setNumber(enable ? 3 : 1);
     }
 
@@ -47,8 +50,7 @@ public final class Limelight extends SubsystemBase {
     }
 
     public boolean areLEDsOn() {
-        Number ledsOn = 3;
-        return table.getEntry("ledMode").getNumber(3) == ledsOn;
+        return ledsOn;
     }
 
     public void blinkLED() {

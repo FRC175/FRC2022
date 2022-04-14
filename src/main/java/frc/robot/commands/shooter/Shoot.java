@@ -10,11 +10,11 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class Shoot extends SequentialCommandGroup {
 
-    public Shoot(Drive drive, Shooter shooter, Limelight limelight, double speed, double rpm) {
+    public Shoot(Drive drive, Shooter shooter, Limelight limelight, double speed, boolean staticRPM) {
         addCommands(
             new LockOntoTarget(drive, limelight),
             new InstantCommand(() -> System.out.println("Sent Speed: " + speed)),
-            new RevShooter(shooter, speed, rpm),
+            new RevShooter(shooter, limelight, speed, staticRPM),
             new RevIndexer(shooter),
             new WaitCommand(2),
             new TurnOffShooter(shooter)
