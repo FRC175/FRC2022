@@ -23,7 +23,6 @@ public class RevShooter extends CommandBase {
       this.limelight = limelight;
       this.rpm = rpm;
       this.staticRPM = staticRPM;
-      System.out.println("DEFINED RPM: " + rpm);
 
       addRequirements(shooter);
   }
@@ -39,7 +38,7 @@ public class RevShooter extends CommandBase {
   public void execute() {
     rpm = !staticRPM ? limelight.getFinalRPM() : rpm;
     shooter.indexerSetOpenLoop(0);
-	  shooter.shooterSetOpenLoop(rpm / 6000);
+	  shooter.shooterSetOpenLoop(rpm / 5700);
   }
 
   // Called once the command ends or is interrupted.
@@ -52,7 +51,7 @@ public class RevShooter extends CommandBase {
   @Override
   public boolean isFinished() {
     System.out.println(rpm);
-    System.out.println("isFinished: " + Math.abs(shooter.getShooterRPM() - rpm));
-    return Math.abs(shooter.getShooterRPM() - rpm) < 230;
+    System.out.println("isFinished: " + Math.abs(shooter.getAverageShooterRPM() - rpm));
+    return Math.abs(shooter.getAverageShooterRPM() - rpm) < 230;
   }
 }

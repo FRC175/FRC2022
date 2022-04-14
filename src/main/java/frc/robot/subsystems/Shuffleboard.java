@@ -27,10 +27,13 @@ public class Shuffleboard extends SubsystemBase {
     }
 
     public void logShooter() {
+        SmartDashboard.putNumber("Average Shooter RPM", shooter.getAverageShooterRPM());
         SmartDashboard.putNumber("Shooter RPM", shooter.getShooterRPM());
+        SmartDashboard.putNumber("Shooter Slave RPM", shooter.getShooterSlaveRPM());
         SmartDashboard.putNumber("Distance", limelight.distance());
         SmartDashboard.putNumber("Desired RPM", limelight.getFinalRPM());
         SmartDashboard.putNumber("Current Offset", limelight.getCurrentOffset());
+        SmartDashboard.putNumber("Output", shooter.getOutput());
     }
 
     public void logClimb() {
@@ -43,7 +46,7 @@ public class Shuffleboard extends SubsystemBase {
     }
 
     public void logIntake() {
-        SmartDashboard.putNumber("Intake RPM", intake.getIntakeMotorRPM());
+        SmartDashboard.putNumber("Intake RPM", Math.abs(intake.getIntakeMotorRPM()));
     }
 
     @Override

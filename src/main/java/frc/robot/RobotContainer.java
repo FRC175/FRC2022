@@ -111,6 +111,13 @@ public class RobotContainer {
       }, drive).andThen(() -> drive.arcadeDrive(0, 0) , drive)
     );
 
+    shooter.setDefaultCommand((
+      new RunCommand(() -> {
+        shooter.shooterSetOpenLoop(shooter.getOutput() / 6000);
+      }, shooter)
+      .andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
+    ));
+
     shuffleboard.setDefaultCommand(
       new RunCommand(() -> {
         shuffleboard.logShooter();
@@ -120,8 +127,6 @@ public class RobotContainer {
         led.setPattern(LEDPattern.SINELON_OCEAN);
       }, shuffleboard)
     );
-
-    
   }
 
   public static double getVoltage() {
@@ -201,11 +206,11 @@ public class RobotContainer {
 
     // Add 50 RPM to offset for limelight calculations
     new XboxButton(operatorController, AdvancedXboxController.DPad.RIGHT)
-      .whenPressed(() -> limelight.updateOffset(50), limelight);
+      .whenPressed(() -> shooter.updateOutput(100), limelight);
 
     // Subtract 50 RPM from offset for limelight calculations
     new XboxButton(operatorController, AdvancedXboxController.DPad.LEFT)
-      .whenPressed(() -> limelight.updateOffset(-50), limelight);
+      .whenPressed(() -> shooter.updateOutput(-100), limelight);
 
     // Manual Upper hub shot
     new XboxButton(operatorController, AdvancedXboxController.Button.Y)
@@ -225,6 +230,10 @@ public class RobotContainer {
       }, shooter)
       .whenReleased(new TurnOffShooter(shooter));
 
+    new XboxButton(operatorController, AdvancedXboxController.Button.RIGHT_STICK)
+      .whenPressed(() -> shooter.indexerSetOpenLoop(0.4))
+      .whenReleased(() -> shooter.indexerSetOpenLoop(0));
+
 
     // ----------------------------------------------------------------------------------------------------
     // LIMELIGHT
@@ -238,11 +247,7 @@ public class RobotContainer {
           limelight.turnOnLED();
         }
       }, limelight);
-    }
-    
-    
-    
-
+  }
 
   private void configureAutoChooser() {
     autoChooser.setDefaultOption("TwoBall", new TwoBall(drive, shooter, intake, limelight));

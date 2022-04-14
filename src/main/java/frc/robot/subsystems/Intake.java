@@ -49,10 +49,6 @@ public final class Intake extends SubsystemBase {
       return intakeMotorEncoder.getVelocity();
     }
 
-    
-
-    
-
     @Override
     public void resetSensors() {
         

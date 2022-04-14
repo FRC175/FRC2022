@@ -6,8 +6,6 @@ import frc.robot.Constants.ShooterConstants;
 
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -15,9 +13,11 @@ public class Shooter extends SubsystemBase {
     private final CANSparkMax indexer;
     private final CANSparkMax shooterWheel;
     private final CANSparkMax shooterWheelSlave;
-    private final RelativeEncoder shooterWheelEncoder;
+    private final RelativeEncoder shooterWheelEncoder, shooterWheelSlaveEncoder;
 
     private static Shooter instance;
+
+    private double output;
 
     private Shooter() {
         indexer = new CANSparkMax(ShooterConstants.SHOOTER_INDEXER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -26,6 +26,9 @@ public class Shooter extends SubsystemBase {
         configureSparks();
 
         shooterWheelEncoder = shooterWheel.getEncoder();
+        shooterWheelSlaveEncoder = shooterWheelSlave.getEncoder();
+
+        output = 0;
     }
 
     public static Shooter getInstance() {
@@ -59,6 +62,22 @@ public class Shooter extends SubsystemBase {
 
     public double getShooterRPM() {
         return shooterWheelEncoder.getVelocity();
+    }
+
+    public double getShooterSlaveRPM() {
+        return shooterWheelSlaveEncoder.getVelocity();
+    }
+
+    public double getAverageShooterRPM() {
+        return (getShooterRPM() + getShooterSlaveRPM()) / 2;
+    }
+
+    public double getOutput() {
+        return output;
+    }
+    
+    public void updateOutput(double amount) {
+        output += amount;
     }
 
     public void turnOffShooter() {

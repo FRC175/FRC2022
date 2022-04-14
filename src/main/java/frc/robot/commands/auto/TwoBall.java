@@ -9,7 +9,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.commands.drive.DriveAuto;
 import frc.robot.commands.intake.DeployIntake;
 import frc.robot.commands.intake.RunIntake;
-import frc.robot.commands.shooter.Shoot;
+import frc.robot.commands.shooter.ShootAuto;
 
 
 public final class TwoBall extends SequentialCommandGroup {
@@ -19,12 +19,12 @@ public final class TwoBall extends SequentialCommandGroup {
         addCommands(
             new DeployIntake(intake),
             new DriveAuto(drive, 20),
-            new Shoot(drive, shooter, limelight, limelight.getFinalRPM(), false),
+            new ShootAuto(drive, shooter, limelight, limelight.getFinalRPM(), false),
             new RunIntake(intake, true),
             new DriveAuto(drive, 45),
             new WaitCommand(1),
             new DriveAuto(drive, -30),
-            new Shoot(drive, shooter, limelight, limelight.getFinalRPM(), false),
+            new ShootAuto(drive, shooter, limelight, limelight.getFinalRPM(), false),
             new RunIntake(intake, false)
         );
     }

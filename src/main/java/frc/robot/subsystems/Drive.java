@@ -10,14 +10,12 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import frc.robot.Constants;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SPI;
 
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
-
-
 
 /**
  * Drive represents the drivetrain. It is composed of 4 CIM motors (all controlled with Talon SRXs), a Pigeon gyro, and
@@ -37,9 +35,6 @@ public final class Drive extends SubsystemBase {
     private final DoubleSolenoid shifter;
 
     private final ADXRS450_Gyro gyro;
-
-
-    
 
     /**
      * The single instance of {@link Drive} used to implement the "singleton" design pattern. A description of the
