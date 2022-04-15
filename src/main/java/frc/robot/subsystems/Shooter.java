@@ -17,8 +17,6 @@ public class Shooter extends SubsystemBase {
 
     private static Shooter instance;
 
-    private double output;
-
     private Shooter() {
         indexer = new CANSparkMax(ShooterConstants.SHOOTER_INDEXER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
         shooterWheel = new CANSparkMax(ShooterConstants.SHOOTER_WHEEL_PORT, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -27,8 +25,6 @@ public class Shooter extends SubsystemBase {
 
         shooterWheelEncoder = shooterWheel.getEncoder();
         shooterWheelSlaveEncoder = shooterWheelSlave.getEncoder();
-
-        output = 0;
     }
 
     public static Shooter getInstance() {
@@ -70,14 +66,6 @@ public class Shooter extends SubsystemBase {
 
     public double getAverageShooterRPM() {
         return (getShooterRPM() + getShooterSlaveRPM()) / 2;
-    }
-
-    public double getOutput() {
-        return output;
-    }
-    
-    public void updateOutput(double amount) {
-        output += amount;
     }
 
     public void turnOffShooter() {

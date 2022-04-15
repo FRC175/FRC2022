@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.utils.InterpolatingDouble;
+import frc.robot.utils.InterpolatingTreeMap;
 
 /**
  * Limelight represents the vision processing unit. It is composed of 1 Limelight camera.
@@ -18,10 +20,14 @@ public final class Limelight extends SubsystemBase {
 
     private static Limelight instance;
 
+    private InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> mappedInterpolationPoints;
+
     private Limelight() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
         offset = 0;
         ledsOn = true;
+
+        configureInterpolationTable();
     }
 
     public static Limelight getInstance() {
@@ -30,6 +36,17 @@ public final class Limelight extends SubsystemBase {
         }
 
         return instance;
+    }
+
+    private void configureInterpolationTable() {
+        mappedInterpolationPoints = new InterpolatingTreeMap<>();
+
+        mappedInterpolationPoints.put(new InterpolatingDouble(76.0), new InterpolatingDouble(3300.0));
+        mappedInterpolationPoints.put(new InterpolatingDouble(93.0), new InterpolatingDouble(3425.0));
+        mappedInterpolationPoints.put(new InterpolatingDouble(105.0), new InterpolatingDouble(3500.0));
+        mappedInterpolationPoints.put(new InterpolatingDouble(113.0), new InterpolatingDouble(3500.0));
+        mappedInterpolationPoints.put(new InterpolatingDouble(141.0), new InterpolatingDouble(3800.0));
+        mappedInterpolationPoints.put(new InterpolatingDouble(152.0), new InterpolatingDouble(3960.0));
     }
 
     private void setPipeline(int pipelineNum) {
@@ -124,23 +141,7 @@ public final class Limelight extends SubsystemBase {
     }
 
     public double calculateRPM(double distance) {
-        // Distance Constants
-        double d1 = 123;
-        double d2 = 113;
-        double d3 = 103;
-        double d4 = 93;
-        // CHANGE THESE VALUES
-        double RPMupper1 = 3600;
-        double RPMupper2 = 3600;
-        double RPMupper3 = 3500;
-        double RPMupper4 = 3700;
-
-        double estimateRPM = RPMupper1 * (distance - d2) / (d1 - d2) * (distance - d3) / (d1 - d3) * (distance - d4) / (d1 - d4) +
-            RPMupper2 * (distance - d1) / (d2 - d1) * (distance - d3) / (d2 - d3) * (distance - d4) / (d2 - d4) +
-            RPMupper3 * (distance - d1) / (d3 - d1) * (distance - d2) / (d3 - d2) * (distance - d4) / (d3 - d4) +
-            RPMupper4 * (distance - d1) / (d4 - d1) * (distance - d2) / (d4 - d2) * (distance - d3) / (d4 - d3);
-
-        return (estimateRPM + getCurrentOffset());
+        return mappedInterpolationPoints.getInterpolated(new InterpolatingDouble(distance)).value + getCurrentOffset();
     }
 
     public double getFinalRPM() {

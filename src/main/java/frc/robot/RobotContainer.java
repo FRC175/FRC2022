@@ -47,7 +47,7 @@ public class RobotContainer {
   private final Limelight limelight;
   private final Shooter shooter;
   private final Shuffleboard shuffleboard;
-  private final LED led;
+  // private final LED led;
   private final AdvancedXboxController driverController;
   private final AdvancedXboxController operatorController;
   private final SendableChooser<Command> autoChooser;
@@ -64,7 +64,7 @@ public class RobotContainer {
     shooter = Shooter.getInstance();
     limelight = Limelight.getInstance();
     shuffleboard = Shuffleboard.getInstance();
-    led = LED.getInstance();
+    // led = LED.getInstance();
 
     autoChooser = new SendableChooser<>();
 
@@ -111,20 +111,13 @@ public class RobotContainer {
       }, drive).andThen(() -> drive.arcadeDrive(0, 0) , drive)
     );
 
-    shooter.setDefaultCommand((
-      new RunCommand(() -> {
-        shooter.shooterSetOpenLoop(shooter.getOutput() / 6000);
-      }, shooter)
-      .andThen(() -> shooter.shooterSetOpenLoop(0), shooter)
-    ));
-
     shuffleboard.setDefaultCommand(
       new RunCommand(() -> {
         shuffleboard.logShooter();
         shuffleboard.logClimb();
         shuffleboard.logIntake();
         // led.setColor(LEDColor.RED);
-        led.setPattern(LEDPattern.SINELON_OCEAN);
+        // led.setPattern(LEDPattern.SINELON_OCEAN);
       }, shuffleboard)
     );
   }
@@ -206,11 +199,11 @@ public class RobotContainer {
 
     // Add 50 RPM to offset for limelight calculations
     new XboxButton(operatorController, AdvancedXboxController.DPad.RIGHT)
-      .whenPressed(() -> shooter.updateOutput(100), limelight);
+      .whenPressed(() -> limelight.updateOffset(50), limelight);
 
     // Subtract 50 RPM from offset for limelight calculations
     new XboxButton(operatorController, AdvancedXboxController.DPad.LEFT)
-      .whenPressed(() -> shooter.updateOutput(-100), limelight);
+      .whenPressed(() -> limelight.updateOffset(-50), limelight);
 
     // Manual Upper hub shot
     new XboxButton(operatorController, AdvancedXboxController.Button.Y)

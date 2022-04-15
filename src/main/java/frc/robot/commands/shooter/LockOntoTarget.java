@@ -32,8 +32,8 @@ public class LockOntoTarget extends CommandBase {
   @Override
   public void execute() {
     double horizontalOffset = limelight.getHorizontalOffset();
-    if (horizontalOffset != 0) {
-      drive.arcadeDrive(0, horizontalOffset < 0 ? 0.15 : -0.15);
+    if (Math.abs(horizontalOffset) > 1.8) {
+      drive.arcadeDrive(0, horizontalOffset < 0 ? 0.12 : -0.12);
     } else {
       drive.arcadeDrive(0, 0);
     }
@@ -48,6 +48,6 @@ public class LockOntoTarget extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(limelight.getHorizontalOffset()) <= 2;
+    return Math.abs(limelight.getHorizontalOffset()) <= 1.8;
   }
 }

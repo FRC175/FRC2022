@@ -33,14 +33,9 @@ public class Shuffleboard extends SubsystemBase {
         SmartDashboard.putNumber("Distance", limelight.distance());
         SmartDashboard.putNumber("Desired RPM", limelight.getFinalRPM());
         SmartDashboard.putNumber("Current Offset", limelight.getCurrentOffset());
-        SmartDashboard.putNumber("Output", shooter.getOutput());
     }
 
     public void logClimb() {
-        // SmartDashboard.putNumber("Left Lift Offset", lift.getLeftEncoderOffset());
-        // SmartDashboard.putNumber("Right Lift Offset", lift.getRightEncoderOffset());
-        // SmartDashboard.putNumber("Left Abs Position", lift.getLeftEncoderCounts());
-        // SmartDashboard.putNumber("Right Abs Position", lift.getRightEncoderCounts());
         SmartDashboard.putNumber("Left Position", lift.getLeftPosition());
         SmartDashboard.putNumber("Right Position", lift.getRightPosition());
     }
