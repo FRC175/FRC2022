@@ -24,7 +24,7 @@ public final class Limelight extends SubsystemBase {
 
     private Limelight() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
-        offset = 0;
+        offset = -50;
         ledsOn = true;
 
         configureInterpolationTable();
@@ -136,7 +136,6 @@ public final class Limelight extends SubsystemBase {
         double a2 = getVerticalOffset();
         // distance equation results in inches
         double d = (h2 - h1) / Math.tan((a1 + a2) * (3.14159 / 180.0));
-        SmartDashboard.putNumber("Distance to Tape", d);
         return d;
     }
 

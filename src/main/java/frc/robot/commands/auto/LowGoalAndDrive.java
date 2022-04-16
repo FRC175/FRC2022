@@ -8,10 +8,7 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.drive.DriveAuto;
 import frc.robot.commands.intake.DeployIntake;
-import frc.robot.commands.shooter.RevIndexer;
-import frc.robot.commands.shooter.RevShooter;
-import frc.robot.commands.shooter.TurnOffShooter;
-
+import frc.robot.commands.shooter.ModifiedShoot;
 
 public final class LowGoalAndDrive extends SequentialCommandGroup {
 
@@ -20,10 +17,7 @@ public final class LowGoalAndDrive extends SequentialCommandGroup {
         addCommands(
             new DeployIntake(intake),
             new WaitCommand(2),
-            new RevShooter(shooter, limelight, 2000, true),
-            new RevIndexer(shooter),
-            new WaitCommand(1),
-            new TurnOffShooter(shooter),
+            new ModifiedShoot(shooter, limelight, 2000, true),
             new DriveAuto(drive, 70)
         );
     }

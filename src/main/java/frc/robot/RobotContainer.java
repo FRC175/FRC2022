@@ -13,15 +13,14 @@ import frc.robot.commands.auto.DriveTarmac;
 import frc.robot.commands.auto.LowGoalAndDrive;
 import frc.robot.commands.auto.TwoBall;
 import frc.robot.commands.lift.Climb;
+import frc.robot.commands.shooter.ModifiedShoot;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.shooter.TurnOffShooter;
 import frc.robot.commands.auto.HighGoalAndDrive;
 import frc.robot.models.AdvancedXboxController;
 import frc.robot.models.XboxButton;
-import frc.robot.positions.LEDPattern;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shuffleboard;
@@ -107,6 +106,8 @@ public class RobotContainer {
         } else {
           drive.shift(false);
         }
+
+        SmartDashboard.putBoolean("Is Shift?", shift);
 
       }, drive).andThen(() -> drive.arcadeDrive(0, 0) , drive)
     );
@@ -207,12 +208,12 @@ public class RobotContainer {
 
     // Manual Upper hub shot
     new XboxButton(operatorController, AdvancedXboxController.Button.Y)
-      .whileHeld(new Shoot(drive, shooter, limelight, 3600, true))
+      .whileHeld(new ModifiedShoot(shooter, limelight, 3600, true))
       .whenReleased(new TurnOffShooter(shooter));
     
     // Manual Lower hub shot
     new XboxButton(operatorController, AdvancedXboxController.Button.B)
-      .whenPressed(new Shoot(drive, shooter, limelight, 2000, true))
+      .whileHeld(new ModifiedShoot(shooter, limelight, 2000, true))
       .whenReleased(new TurnOffShooter(shooter));
 
     // Reverse shooter motors
