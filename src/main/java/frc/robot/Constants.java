@@ -12,4 +12,49 @@ package frc.robot;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
-public final class Constants {}
+public final class Constants {
+
+    public static final int PCM_PORT = 18;
+    public static final class ControllerConstants {
+        public static final int DRIVER_CONTROLLER_PORT = 0;
+        public static final int OPERATOR_CONTROLLER_PORT = 1;
+
+        public static final double CONTROLLER_DEADBAND = 0.1;
+    }
+
+    public static final class DriveConstants {
+        public static final int RIGHT_MASTER_PORT = 2;
+        public static final int RIGHT_SLAVE_PORT = 5;
+        public static final int LEFT_MASTER_PORT = 17;
+        public static final int LEFT_SLAVE_PORT = 14;
+
+        public static final int SHIFTER_FORWARD_CHANNEL = 0;
+        public static final int SHIFTER_REVERSE_CHANNEL = 1;
+    }
+
+    public static final class IntakeConstants {
+        public static final int INTAKE_PORT = 11;
+
+        public static final int INTAKE_ARM_FORWARD_CHANNEL = 2;
+        public static final int INTAKE_ARM_REVERSE_CHANNEL = 3;
+    }
+
+    public static final class LiftConstants {
+        public static final int RIGHT_PRIMARY_LIFT = 6;
+        public static final int LEFT_PRIMARY_LIFT = 13;
+        public static final int CENTRAL_LIFT = 19;
+
+        public static final int LIFT_FORWARD_CHANNEL = 4;
+        public static final int LIFT_REVERSE_CHANNEL = 5;
+    }
+
+    public static final class ShooterConstants {
+        public static final int SHOOTER_INDEXER_PORT = 8;
+        public static final int SHOOTER_WHEEL_PORT = 16;
+        public static final int SHOOTER_WHEEL_SLAVE_PORT = 15;
+    }
+
+    public static final class LEDConstants {
+        public static final int LED_PORT = 0;
+    }
+}
